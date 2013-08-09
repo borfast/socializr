@@ -1,0 +1,19 @@
+{
+	"name": "borfast/socializr",
+	"description": "Simple PHP library for posting to several social networks.",
+	"version": "0.1",
+	"type": "library",
+	"license": "Do What The Fuck You Want To Public License",
+	"authors": [
+		{
+			"name": "Raúl Santos",
+			"homepage": "http://www.borfast.com"
+		}
+	],
+	"require": {
+		"j7mbo/twitter-api-php": "dev-master"
+	},
+	"autoload": {
+		"psr-0": {"Borfast\\": "src/"}
+	}
+}
