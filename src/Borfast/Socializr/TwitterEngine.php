@@ -28,7 +28,7 @@ class TwitterEngine implements SocializrInterface
 
     public function post($content)
     {
-        $response = $twitter->statuses->update($content);
+        $response = $this->twitter->statuses->update($content);
 
         return $response;
     }
