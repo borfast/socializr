@@ -5,7 +5,8 @@ namespace Borfast\Socializr;
 class Socializr
 {
     protected $config = array();
-    protected $networks = array();
+    protected $login_providers = array('Google', 'Facebook');
+    protected $posting_providers = array('Twitter', 'Facebook');
 
     public function __construct($config)
     {
@@ -14,33 +15,44 @@ class Socializr
 
 
     /**
-     * Post the given content to the given social network, using the given
-     * credentials.
+     * Post the given content to the given provider, using the given credentials.
      */
-    public function post($content, $network, $auth)
+    public function post($content, $provider, $auth)
     {
-        // Only allow configured networks.
-        if (!in_array($network, array_keys($this->config['networks']))) {
-            throw new Exception('Unknown network');
+        // Only allow configured providers.
+        if (!in_array($provider, array_keys($this->config['providers']))) {
+            throw new Exception('Unknown provider');
         }
 
-        $network_engine = '\\Borfast\\Socializr\\'.$network;
-        $network_config = $this->config['networks'][$network];
-        $network_config['oauth_access_token'] = $auth['oauth_access_token'];
-        $network_config['oauth_access_token_secret'] = $auth['oauth_access_token_secret'];
-        $this->networks[$network] = new $network_engine($network_config, $auth);
+        // Only create a new ProviderEngine instance if necessary.
+        if (empty($this->providers[$provider])) {
+            $provider_engine = '\\Borfast\\Socializr\\'.$provider.'Engine';
+            $provider_config = $this->config['providers'][$provider];
+            $provider_config['oauth_access_token'] = $auth['oauth_access_token'];
+            $provider_config['oauth_access_token_secret'] = $auth['oauth_access_token_secret'];
+            $this->posting_providers[$provider] = new $provider_engine($provider_config, $auth);
+        }
 
-        return $this->networks[$network]->post($content);
+        return $this->posting_providers[$provider]->post($content);
     }
 
 
     /**
-     * Gets the list of supported login services.
+     * Gets the list of supported login service providers.
      */
-    public static function getLoginServices()
+    public static function getLoginProviders()
     {
-        $login_services = array('Google', 'Facebook');
+        $login_providers = array('Google', 'Facebook');
 
-        return $login_services;
+        return $login_providers;
+    }
+
+
+    /**
+     * Tries to authorize the user against the given provider.
+     */
+    public function authorize($provider)
+    {
+
     }
 }
