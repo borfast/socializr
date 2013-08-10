@@ -14,18 +14,21 @@ class Socializr
 
 
     /**
-     * Post the given content to the given social network.
+     * Post the given content to the given social network, using the given
+     * credentials.
      */
-    public function post($content, $network)
+    public function post($content, $network, $auth)
     {
         // Only allow configured networks.
         if (!in_array($network, array_keys($this->config['networks']))) {
             throw new Exception('Unknown network');
         }
 
-        $network_class = '\\Borfast\\Socializr\\'.$network;
+        $network_engine = '\\Borfast\\Socializr\\'.$network;
         $network_config = $this->config['networks'][$network];
-        $this->networks[$network] = new $network_class($network_config);
+        $network_config['oauth_access_token'] = $auth['oauth_access_token'];
+        $network_config['oauth_access_token_secret'] = $auth['oauth_access_token_secret'];
+        $this->networks[$network] = new $network_engine($network_config, $auth);
 
         return $this->networks[$network]->post($content);
     }
