@@ -32,4 +32,15 @@ class Socializr
 
         return $this->networks[$network]->post($content);
     }
+
+
+    /**
+     * Gets the list of supported login services.
+     */
+    public static function getLoginServices()
+    {
+        $login_services = array('Google', 'Facebook');
+
+        return $login_services;
+    }
 }
