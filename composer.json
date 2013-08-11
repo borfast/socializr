@@ -11,8 +11,9 @@
 		}
 	],
 	"require": {
-		 "j7mbo/twitter-api-php": "dev-master",
-		 "facebook/php-sdk": "dev-master"
+		"lusitanian/oauth": "dev-master",
+		"j7mbo/twitter-api-php": "dev-master",
+		"facebook/php-sdk": "dev-master"
 	},
 	"autoload": {
 		"psr-0": {"Borfast\\": "src/"}

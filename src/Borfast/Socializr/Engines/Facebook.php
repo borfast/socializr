@@ -3,22 +3,27 @@
 namespace Borfast\Socializr\Engines;
 
 use Borfast\Socializr\SocializrInterface;
+use OAuth\ServiceFactory;
 
 class Facebook implements SocializrInterface
 {
     protected $facebook = null;
+    protected $facebook_service = null;
 
 
-    public function __construct($config ,$auth)
+    public function __construct($config)
     {
         $facebook_config = array(
-            'appId' => $config['appId'],
-            'secret' => $config['secret'],
+            'appId' => $config['consumer_key'],
+            'secret' => $config['consumer_secret'],
         );
 
-
         $this->facebook = new \Facebook($facebook_config);
-        $this->facebook->setAccessToken($auth['oauth_access_token']);
+    }
+
+    public function setAuth($auth)
+    {
+        $this->facebook->setAccessToken($access_token);
     }
 
 
@@ -33,5 +38,22 @@ class Facebook implements SocializrInterface
         $response = $this->facebook->api($path, $method, $params);
 
         return $response;
+    }
+
+
+    public function authorize($storage, $credentials)
+    {
+        $service_factory = new ServiceFactory();
+        $this->facebook_service = $service_factory->createService('facebook', $credentials, $storage, array());
+        $url = $this->facebook_service->getAuthorizationUri();
+        header('Location: ' . $url);
+        exit;
+    }
+
+
+    public function getOauthToken($get)
+    {
+        $token = $this->facebook_service->requestAccessToken($get['code']);
+        return $token;
     }
 }
