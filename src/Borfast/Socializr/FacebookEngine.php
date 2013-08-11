@@ -28,7 +28,7 @@ class FacebookEngine implements SocializrInterface
         $params = array(
             'message' => $content,
         );
-        $response = $facebook->api($path, $method, $params);
+        $response = $this->facebook->api($path, $method, $params);
 
         return $response;
     }
