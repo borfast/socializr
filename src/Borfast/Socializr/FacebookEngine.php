@@ -2,8 +2,6 @@
 
 namespace Borfast\Socializr;
 
-use ZendService\Twitter\Twitter;
-
 class FacebookEngine implements SocializrInterface
 {
     protected $facebook = null;
@@ -12,14 +10,12 @@ class FacebookEngine implements SocializrInterface
     public function __construct($config ,$auth)
     {
         $facebook_config = array(
-            // 'oauth_access_token' => $auth['oauth_access_token'],
-            // 'oauth_access_token_secret' => $auth['oauth_access_token_secret'],
             'appId' => $config['appId'],
             'secret' => $config['secret'],
         );
 
 
-        $this->facebook = new Facebook($facebook_config);
+        $this->facebook = new \Facebook($facebook_config);
         $this->facebook->setAccessToken($auth['oauth_access_token']);
     }
 
