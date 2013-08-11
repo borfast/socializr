@@ -1,8 +1,10 @@
 <?php
 
-namespace Borfast\Socializr;
+namespace Borfast\Socializr\Engines;
 
-class TwitterEngine implements SocializrInterface
+use Borfast\Socializr\SocializrInterface;
+
+class Twitter implements SocializrInterface
 {
     protected $twitter = null;
 

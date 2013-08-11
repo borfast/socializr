@@ -1,8 +1,10 @@
 <?php
 
-namespace Borfast\Socializr;
+namespace Borfast\Socializr\Engines;
 
-class FacebookEngine implements SocializrInterface
+use Borfast\Socializr\SocializrInterface;
+
+class Facebook implements SocializrInterface
 {
     protected $facebook = null;
 

@@ -5,12 +5,33 @@ namespace Borfast\Socializr;
 class Socializr
 {
     protected $config = array();
-    protected $login_providers = array('Google', 'Facebook');
-    protected $posting_providers = array('Twitter', 'Facebook');
+    protected $providers = array();
 
     public function __construct($config)
     {
+        if (!array_key_exists('providers', $config)) {
+            throw new \Exception('No providers found in configuration.');
+        }
+
         $this->config = $config;
+    }
+
+
+    protected function getProviderEngine($provider, $auth)
+    {
+        // Only allow configured providers.
+        if (!array_key_exists($provider, $this->config['providers'])) {
+            throw new \Exception("'$provider' is not in the list of configured providers");
+        }
+
+        // Only create a new ProviderEngine instance if necessary.
+        if (!isset($this->providers[$provider])) {
+            $provider_engine = '\\Borfast\\Socializr\\Engines\\'.$provider;
+            $provider_config = $this->config['providers'][$provider];
+            $this->providers[$provider] = new $provider_engine($provider_config, $auth);
+        }
+
+        return $this->providers[$provider];
     }
 
 
@@ -19,19 +40,7 @@ class Socializr
      */
     public function post($content, $provider, $auth)
     {
-        // Only allow configured providers.
-        if (!in_array($provider, array_keys($this->config['providers']))) {
-            throw new \Exception("'$provider' is not in the list of known providers");
-        }
-
-        // Only create a new ProviderEngine instance if necessary.
-        if (empty($this->posting_providers[$provider])) {
-            $provider_engine = '\\Borfast\\Socializr\\'.$provider.'Engine';
-            $provider_config = $this->config['providers'][$provider];
-            $this->posting_providers[$provider] = new $provider_engine($provider_config, $auth);
-        }
-
-        return $this->posting_providers[$provider]->post($content);
+        return $this->getProviderEngine($provider, $auth)->post($content);
     }
 
 
