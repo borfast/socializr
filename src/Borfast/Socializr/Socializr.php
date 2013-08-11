@@ -20,12 +20,12 @@ class Socializr
     public function post($content, $provider, $auth)
     {
         // Only allow configured providers.
-        if (!in_array($provider, array_keys($this->config['providers']))) {
+        if (!in_array($provider, array_keys($this->config['posting_providers']))) {
             throw new \Exception('Unknown provider');
         }
 
         // Only create a new ProviderEngine instance if necessary.
-        if (empty($this->providers[$provider])) {
+        if (empty($this->posting_providers[$provider])) {
             $provider_engine = '\\Borfast\\Socializr\\'.$provider.'Engine';
             $provider_config = $this->config['providers'][$provider];
             $provider_config['oauth_access_token'] = $auth['oauth_access_token'];
