@@ -20,7 +20,7 @@ class Socializr
     public function post($content, $provider, $auth)
     {
         // Only allow configured providers.
-        if (!in_array($provider, array_keys($this->config['posting_providers']))) {
+        if (!in_array($provider, array_keys($this->config['providers']))) {
             throw new \Exception('Unknown provider');
         }
 
