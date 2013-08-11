@@ -21,7 +21,7 @@ class Socializr
     {
         // Only allow configured providers.
         if (!in_array($provider, array_keys($this->config['providers']))) {
-            throw new Exception('Unknown provider');
+            throw new \Exception('Unknown provider');
         }
 
         // Only create a new ProviderEngine instance if necessary.
