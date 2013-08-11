@@ -18,8 +18,9 @@ class FacebookEngine implements SocializrInterface
             'secret' => $config['secret'],
         );
 
+
         $this->facebook = new Facebook($facebook_config);
-        $this->facebook->setAccessToken($auth);
+        $this->facebook->setAccessToken($auth['oauth_access_token']);
     }
 
 
