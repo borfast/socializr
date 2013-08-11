@@ -21,15 +21,13 @@ class Socializr
     {
         // Only allow configured providers.
         if (!in_array($provider, array_keys($this->config['providers']))) {
-            throw new Exception('Unknown provider');
+            throw new \Exception("'$provider' is not in the list of known providers");
         }
 
         // Only create a new ProviderEngine instance if necessary.
-        if (empty($this->providers[$provider])) {
+        if (empty($this->posting_providers[$provider])) {
             $provider_engine = '\\Borfast\\Socializr\\'.$provider.'Engine';
             $provider_config = $this->config['providers'][$provider];
-            $provider_config['oauth_access_token'] = $auth['oauth_access_token'];
-            $provider_config['oauth_access_token_secret'] = $auth['oauth_access_token_secret'];
             $this->posting_providers[$provider] = new $provider_engine($provider_config, $auth);
         }
 
