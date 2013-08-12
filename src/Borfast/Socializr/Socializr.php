@@ -88,10 +88,10 @@ class Socializr
 
 
 
-    public function getOauthToken($provider, $get)
+    public function storeOauthToken($provider, $params)
     {
         $engine = $this->getProviderEngine($provider);
-        $token = $engine->getOauthToken($get);
+        $token = $engine->storeOauthToken($params);
         return $token;
     }
 }

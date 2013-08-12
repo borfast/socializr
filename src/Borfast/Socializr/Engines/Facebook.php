@@ -40,9 +40,9 @@ class Facebook extends AbstractEngine
     }
 
 
-    public function setOauthToken($get)
+    public function storeOauthToken($params)
     {
-        $token = $this->service->requestAccessToken($get['code']);
+        $token = $this->service->requestAccessToken($params['code']);
         return $token;
     }
 }

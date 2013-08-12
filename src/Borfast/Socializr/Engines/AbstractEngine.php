@@ -71,7 +71,7 @@ abstract class AbstractEngine
 	 * @params array $params The URL params. Each engine knows how to get the
 	 * token for its specific provider.
 	 */
-	abstract public function setOauthToken($params);
+	abstract public function storeOauthToken($params);
 
 
     abstract public function post($content);
