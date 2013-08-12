@@ -3,10 +3,6 @@
 namespace Borfast\Socializr;
 
 use OAuth\OAuth1\Signature\Signature;
-use OAuth\OAuth1\Service\Twitter;
-use OAuth\Common\Storage\Session;
-use OAuth\Common\Consumer\Credentials;
-use OAuth\Common\Http\Uri\Uri;
 
 class Socializr
 {
@@ -23,11 +19,20 @@ class Socializr
     }
 
 
+    /**
+     * Get the specified provider engine. This method tries to get an existing
+     * instance first and only creates a new one if it doesn't already exist.
+     */
     protected function getProviderEngine($provider)
     {
         // Only allow configured providers.
         if (!array_key_exists($provider, $this->config['providers'])) {
             throw new \Exception("'$provider' is not in the list of configured providers");
+        }
+
+        // Cater for the possibility of having one single general callback URL.
+        if (empty($this->config['providers'][$provider]['callback'])) {
+            $this->config['providers'][$provider]['callback'] = $this->config['callback'];
         }
 
         // Only create a new ProviderEngine instance if necessary.
@@ -42,47 +47,45 @@ class Socializr
 
 
     /**
+     * Try to authorize the user against the given provider.
+     */
+    public function authorize($provider)
+    {
+        $engine = $this->getProviderEngine($provider);
+        $engine->authorize();
+    }
+
+
+    /**
      * Post the given content to the given provider, using the given credentials.
      */
-    public function post($content, $provider, $auth)
+    public function post($content, $provider)
     {
-        $engine = $this->getProviderEngine($provider, $auth);
-        $engine->setAuth($auth);
+        $engine = $this->getProviderEngine($provider);
         return $engine->post($content);
     }
 
 
     /**
-     * Gets the list of supported login service providers.
+     * Post the given content to all the configured providers.
      */
-    public static function getLoginProviders()
+    public function postToAll($content)
     {
-        $login_providers = array('Google', 'Facebook');
-
-        return $login_providers;
+        foreach ($this->getProviders() as $provider) {
+            $this->post($content, $provider);
+        }
     }
 
 
     /**
-     * Tries to authorize the user against the given provider.
+     * Gets the list of supported service providers.
      */
-    public function authorize($provider, $callback)
+    public function getProviders()
     {
-        // We need to use a persistent storage to save the token, because oauth1
-        // requires the token secret received before' the redirect (request
-        // token request) in the access token request.
-        $storage = new Session();
-
-        // Setup the credentials for the requests
-        $credentials = new Credentials(
-            $this->config['providers'][$provider]['consumer_key'],
-            $this->config['providers'][$provider]['consumer_secret'],
-            $callback
-        );
-
-        $engine = $this->getProviderEngine($provider);
-        $engine->authorize($storage, $credentials);
+        return array_keys($this->config['providers']);
     }
+
+
 
 
     public function getOauthToken($provider, $get)

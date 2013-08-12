@@ -2,33 +2,32 @@
 
 namespace Borfast\Socializr\Engines;
 
-use Borfast\Socializr\SocializrInterface;
-use OAuth\ServiceFactory;
+use Borfast\Socializr\Engines\AbstractEngine;
 
-class Facebook implements SocializrInterface
+class Facebook extends AbstractEngine
 {
-    protected $facebook = null;
-    protected $facebook_service = null;
+    public static $PROVIDER = 'Facebook';
 
+    protected $facebook;
 
     public function __construct($config)
     {
+        // Facebook PHP SDK
         $facebook_config = array(
             'appId' => $config['consumer_key'],
             'secret' => $config['consumer_secret'],
         );
 
         $this->facebook = new \Facebook($facebook_config);
-    }
 
-    public function setAuth($auth)
-    {
-        $this->facebook->setAccessToken($access_token);
+        $this->config = $config;
+        parent::__construct($config);
     }
 
 
     public function post($content)
     {
+        $this->facebook->setAccessToken($access_token);
         $uid = $this->facebook->getUser();
         $path = '/'.$uid.'/feed';
         $method = 'POST';
@@ -41,19 +40,9 @@ class Facebook implements SocializrInterface
     }
 
 
-    public function authorize($storage, $credentials)
+    public function setOauthToken($get)
     {
-        $service_factory = new ServiceFactory();
-        $this->facebook_service = $service_factory->createService('facebook', $credentials, $storage, array());
-        $url = $this->facebook_service->getAuthorizationUri();
-        header('Location: ' . $url);
-        exit;
-    }
-
-
-    public function getOauthToken($get)
-    {
-        $token = $this->facebook_service->requestAccessToken($get['code']);
+        $token = $this->service->requestAccessToken($get['code']);
         return $token;
     }
 }
