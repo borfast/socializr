@@ -29,14 +29,13 @@ class Facebook extends AbstractEngine
 
     public function post($content)
     {
-        $this->facebook->setAccessToken($access_token);
-        $uid = $this->facebook->getUser();
-        $path = '/'.$uid.'/feed';
+        $path = '/'.$this->getUid().'/feed';
         $method = 'POST';
         $params = array(
             'message' => $content,
         );
-        $response = $this->facebook->api($path, $method, $params);
+
+        $response = $this->service->request($path, 'POST', $params);
 
         return $response;
     }
