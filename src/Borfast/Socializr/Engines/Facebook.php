@@ -9,19 +9,8 @@ class Facebook extends AbstractEngine
 {
     public static $PROVIDER = 'Facebook';
 
-    protected $facebook;
-
     public function __construct(array $config, TokenStorageInterface $storage)
     {
-        // Facebook PHP SDK
-        $facebook_config = array(
-            'appId' => $config['consumer_key'],
-            'secret' => $config['consumer_secret'],
-        );
-
-        $this->facebook = new \Facebook($facebook_config);
-
-        // Lusitanian PHP OAuth
         $this->config = $config;
         parent::__construct($config, $storage);
     }
