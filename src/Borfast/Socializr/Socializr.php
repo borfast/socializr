@@ -3,17 +3,22 @@
 namespace Borfast\Socializr;
 
 use OAuth\OAuth1\Signature\Signature;
+use OAuth\Common\Storage\TokenStorageInterface;
 
 class Socializr
 {
     protected $config = array();
     protected $providers = array();
+    protected $storage;
 
-    public function __construct($config)
+
+    public function __construct(array $config, TokenStorageInterface $storage)
     {
         if (!array_key_exists('providers', $config)) {
             throw new \Exception('No providers found in configuration.');
         }
+
+        $this->storage = $storage;
 
         $this->config = $config;
     }
@@ -39,7 +44,7 @@ class Socializr
         if (!isset($this->providers[$provider])) {
             $provider_engine = '\\Borfast\\Socializr\\Engines\\'.$provider;
             $provider_config = $this->config['providers'][$provider];
-            $this->providers[$provider] = new $provider_engine($provider_config);
+            $this->providers[$provider] = new $provider_engine($provider_config, $this->storage);
         }
 
         return $this->providers[$provider];
@@ -86,8 +91,9 @@ class Socializr
     }
 
 
-
-
+    /**
+     * Retrieve the auth token from the provider's response and store it.
+     */
     public function storeOauthToken($provider, $params)
     {
         $engine = $this->getProviderEngine($provider);

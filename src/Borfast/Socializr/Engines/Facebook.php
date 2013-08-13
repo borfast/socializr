@@ -3,6 +3,7 @@
 namespace Borfast\Socializr\Engines;
 
 use Borfast\Socializr\Engines\AbstractEngine;
+use OAuth\Common\Storage\TokenStorageInterface;
 
 class Facebook extends AbstractEngine
 {
@@ -10,7 +11,7 @@ class Facebook extends AbstractEngine
 
     protected $facebook;
 
-    public function __construct($config)
+    public function __construct(array $config, TokenStorageInterface $storage)
     {
         // Facebook PHP SDK
         $facebook_config = array(
@@ -20,8 +21,9 @@ class Facebook extends AbstractEngine
 
         $this->facebook = new \Facebook($facebook_config);
 
+        // Lusitanian PHP OAuth
         $this->config = $config;
-        parent::__construct($config);
+        parent::__construct($config, $storage);
     }
 
 
@@ -44,5 +46,19 @@ class Facebook extends AbstractEngine
     {
         $token = $this->service->requestAccessToken($params['code']);
         return $token;
+    }
+
+
+    public function getUid()
+    {
+        $rawInfo = $rawInfo ?: $this->rawInfo();
+
+        return $rawInfo['id'];
+    }
+
+    public function rawInfo()
+    {
+        $response = $this->service->request('/me');
+        return json_decode($response);
     }
 }
