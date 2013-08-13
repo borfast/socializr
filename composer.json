@@ -11,8 +11,7 @@
 		}
 	],
 	"require": {
-		"lusitanian/oauth": "dev-master",
-		"j7mbo/twitter-api-php": "dev-master"
+		"lusitanian/oauth": "dev-master"
 	},
 	"autoload": {
 		"psr-0": {"Borfast\\": "src/"}
