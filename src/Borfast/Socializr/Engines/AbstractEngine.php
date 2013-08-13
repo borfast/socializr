@@ -77,4 +77,5 @@ abstract class AbstractEngine implements ProviderInterface
 
     abstract public function post($content);
     abstract public function getUid();
+    abstract public function rawInfo();
 }

@@ -28,7 +28,7 @@ class Socializr
      * Get the specified provider engine. This method tries to get an existing
      * instance first and only creates a new one if it doesn't already exist.
      */
-    protected function getProviderEngine($provider)
+    public function getProviderEngine($provider)
     {
         // Only allow configured providers.
         if (!array_key_exists($provider, $this->config['providers'])) {
@@ -68,6 +68,12 @@ class Socializr
     {
         $engine = $this->getProviderEngine($provider);
         return $engine->post($content);
+    }
+
+    public function getUid($provider)
+    {
+        $engine = $this->getProviderEngine($provider);
+        return $engine->getUid();
     }
 
 
