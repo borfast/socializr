@@ -66,6 +66,12 @@ abstract class AbstractEngine implements ProviderInterface
     }
 
 
+    public function getSessionData()
+    {
+        return $this->storage->retrieveAccessToken(static::$PROVIDER)->getAccessToken();
+    }
+
+
     /**
      * The method that sets the OAuth token for the current provider. It must be
      * called after the authorize() method.
@@ -77,5 +83,5 @@ abstract class AbstractEngine implements ProviderInterface
 
     abstract public function post($content);
     abstract public function getUid();
-    abstract public function rawInfo();
+    abstract public function getProfile();
 }

@@ -106,4 +106,18 @@ class Socializr
         $token = $engine->storeOauthToken($params);
         return $token;
     }
+
+
+    public function getProfile($provider)
+    {
+        $engine = $this->getProviderEngine($provider);
+        return $engine->getProfile();
+    }
+
+
+    public function getSessionData($provider)
+    {
+        $engine = $this->getProviderEngine($provider);
+        return $engine->getSessionData();
+    }
 }

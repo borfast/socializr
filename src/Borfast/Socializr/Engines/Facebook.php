@@ -51,12 +51,12 @@ class Facebook extends AbstractEngine
 
     public function getUid()
     {
-        $raw_info = $this->rawInfo();
+        $profile = $this->getProfile();
 
-        return $raw_info['id'];
+        return $profile['id'];
     }
 
-    public function rawInfo()
+    public function getProfile()
     {
         $response = $this->service->request('/me');
         return json_decode($response, true);
