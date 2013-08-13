@@ -20,6 +20,8 @@ abstract class AbstractEngine implements ProviderInterface
 
     public function __construct(array $config, TokenStorageInterface $storage)
     {
+        $this->config = $config;
+
         // We need to use a persistent storage to save the token, because oauth
         // requires the token secret received before' the redirect (request
         // token request) in the access token request.

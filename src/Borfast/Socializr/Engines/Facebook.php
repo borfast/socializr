@@ -9,13 +9,6 @@ class Facebook extends AbstractEngine
 {
     public static $PROVIDER = 'Facebook';
 
-    public function __construct(array $config, TokenStorageInterface $storage)
-    {
-        $this->config = $config;
-        parent::__construct($config, $storage);
-    }
-
-
     public function post($content)
     {
         $path = '/'.$this->getUid().'/feed';
