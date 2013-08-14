@@ -57,6 +57,11 @@ class Twitter extends AbstractEngine
     public function getProfile()
     {
         $response = $this->service->request('users/show.json?user_id='.$this->user_id);
-        return json_decode($response, true);
+        $profile = json_decode($response, true);
+
+        // Twitter doesn't give away users' email addresses via the API.
+        $profile['email'] = null;
+
+        return $profile;
     }
 }
