@@ -70,6 +70,18 @@ class Socializr
         return $engine->post($content);
     }
 
+
+    /**
+     * Post the given content to all the configured providers.
+     */
+    public function postToAll($content)
+    {
+        foreach ($this->getProviders() as $provider) {
+            $this->post($content, $provider::$provider_name);
+        }
+    }
+
+
     public function getUid($provider)
     {
         $engine = $this->getProviderEngine($provider);
@@ -78,22 +90,11 @@ class Socializr
 
 
     /**
-     * Post the given content to all the configured providers.
-     */
-    public function postToAll($content)
-    {
-        foreach ($this->getProviders() as $provider) {
-            $this->post($content, $provider);
-        }
-    }
-
-
-    /**
-     * Gets the list of supported service providers.
+     * Get the list of supported service providers.
      */
     public function getProviders()
     {
-        return array_keys($this->config['providers']);
+        return $this->providers;
     }
 
 

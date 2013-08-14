@@ -7,7 +7,7 @@ use OAuth\Common\Storage\TokenStorageInterface;
 
 class Facebook extends AbstractEngine
 {
-    public static $PROVIDER = 'Facebook';
+    public static $provider_name = 'Facebook';
 
     public function post($content)
     {
@@ -25,8 +25,7 @@ class Facebook extends AbstractEngine
 
     public function storeOauthToken($params)
     {
-        $token = $this->service->requestAccessToken($params['code']);
-        return $token;
+        $this->service->requestAccessToken($params['code']);
     }
 
 

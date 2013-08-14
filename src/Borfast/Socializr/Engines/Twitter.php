@@ -7,7 +7,10 @@ use OAuth\Common\Storage\TokenStorageInterface;
 
 class Twitter extends AbstractEngine
 {
-    public static $PROVIDER = 'Twitter';
+    public static $provider_name = 'Twitter';
+
+    protected $user_id;
+    protected $screen_name;
 
     public function post($content)
     {
@@ -35,20 +38,25 @@ class Twitter extends AbstractEngine
     public function storeOauthToken($params)
     {
         $token = $this->storage->retrieveAccessToken('Twitter');
-        $this->service->requestAccessToken($params['oauth_token'], $params['oauth_verifier'], $token->getRequestTokenSecret());
+        $result = $this->service->requestAccessToken($params['oauth_token'], $params['oauth_verifier'], $token->getRequestTokenSecret());
+
+        // Why is this failing?!
+        $response = $this->service->request('account/verify_credentials.json');
+
+        $extra_params = $result->getExtraParams();
+        $this->user_id = $extra_params['user_id'];
+        $this->screen_name = $extra_params['screen_name'];
     }
 
 
     public function getUid()
     {
-        $profile = $this->getProfile();
-
-        return $profile['id'];
+        return $this->user_id;
     }
 
     public function getProfile()
     {
-        $response = $this->service->request('/me');
+        $response = $this->service->request('users/show.json?user_id='.$this->user_id);
         return json_decode($response, true);
     }
 }

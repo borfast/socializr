@@ -9,7 +9,7 @@ use OAuth\ServiceFactory;
 
 abstract class AbstractEngine implements ProviderInterface
 {
-    public static $PROVIDER;
+    public static $provider_name;
 
     protected $storage;
     protected $credentials;
@@ -47,7 +47,7 @@ abstract class AbstractEngine implements ProviderInterface
 
         $this->service_factory = new ServiceFactory();
         $this->service = $this->service_factory->createService(
-            static::$PROVIDER,
+            static::$provider_name,
             $this->credentials,
             $this->storage,
             $this->config['scopes']
@@ -70,7 +70,7 @@ abstract class AbstractEngine implements ProviderInterface
 
     public function getSessionData()
     {
-        return $this->storage->retrieveAccessToken(static::$PROVIDER)->getAccessToken();
+        return $this->storage->retrieveAccessToken(static::$provider_name)->getAccessToken();
     }
 
 
