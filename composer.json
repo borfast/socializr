@@ -1,25 +1,25 @@
 {
-	"name": "borfast/socializr",
-	"description": "Simple PHP library for posting to several social networks.",
-	"version": "0.1",
-	"type": "library",
-	"license": "Do What The Fuck You Want To Public License",
-	"authors": [
-		{
-			"name": "Raúl Santos",
-			"homepage": "https://github.com/borfast/socializr"
-		}
-	],
+    "name": "borfast/socializr",
+    "description": "Simple PHP library for posting to several social networks.",
+    "version": "0.1",
+    "type": "library",
+    "license": "Do What The Fuck You Want To Public License",
+    "authors": [
+        {
+            "name": "Raúl Santos",
+            "homepage": "https://github.com/borfast/socializr"
+        }
+    ],
     "repositories": [
         {
             "type": "vcs",
             "url":  "https://github.com/borfast/PHPoAuthLib.git"
         },
     ],
-	"require": {
-		"lusitanian/oauth": "dev-master"
-	},
-	"autoload": {
-		"psr-0": {"Borfast\\": "src/"}
-	}
+    "require": {
+        "lusitanian/oauth": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {"Borfast\\": "src/"}
+    }
 }
