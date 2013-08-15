@@ -10,6 +10,12 @@
 			"homepage": "http://www.borfast.com"
 		}
 	],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "https://github.com/borfast/PHPoAuthLib.git"
+        },
+    ],
 	"require": {
 		"lusitanian/oauth": "dev-master"
 	},
