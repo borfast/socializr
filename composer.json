@@ -10,12 +10,6 @@
             "homepage": "https://github.com/borfast/socializr"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url":  "https://github.com/borfast/PHPoAuthLib.git"
-        }
-    ],
     "require": {
         "lusitanian/oauth": "dev-master"
     },
