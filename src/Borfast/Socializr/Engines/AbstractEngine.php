@@ -86,4 +86,11 @@ abstract class AbstractEngine implements ProviderInterface
     abstract public function post($content);
     abstract public function getUid();
     abstract public function getProfile();
+
+    public function get($path, $params = array())
+    {
+        $response = json_decode($this->service->request($path, 'GET', $params), true);
+
+        return $response;
+    }
 }

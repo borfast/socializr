@@ -121,4 +121,10 @@ class Socializr
         $engine = $this->getProviderEngine($provider);
         return $engine->getSessionData();
     }
+
+    public function get($provider, $path, $params = array())
+    {
+        $engine = $this->getProviderEngine($provider);
+        return $engine->get($path, $params);
+    }
 }
