@@ -64,4 +64,12 @@ class Twitter extends AbstractEngine
 
         return $profile;
     }
+
+    public function getStats()
+    {
+        $response = $this->service->request('followers/ids.json?user_id='.$this->user_id);
+        $response = json_decode($response);
+        $response = count($response->ids);
+        return $response;
+    }
 }

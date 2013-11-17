@@ -41,4 +41,26 @@ class Facebook extends AbstractEngine
         $response = $this->service->request('/me');
         return json_decode($response, true);
     }
+
+    public function getStats()
+    {
+        return $this->getFriendsCount();
+    }
+
+    /****************************************************
+     *
+     * From here on these are Facebook-specific methods.
+     *
+     ***************************************************/
+    public function getFriendsCount()
+    {
+        $path = '/'.$this->getUid().'/subscribers';
+        // $path = '/fql?q=SELECT friend_count FROM user WHERE uid = '.$this->getUid();
+        $method = 'GET';
+
+        $response = json_decode($this->service->request($path, $method));
+        $response = count($response->data);
+
+        return $response;
+    }
 }
