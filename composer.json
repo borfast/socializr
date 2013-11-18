@@ -11,7 +11,8 @@
         }
     ],
     "require": {
-        "lusitanian/oauth": "dev-master"
+        "lusitanian/oauth": "dev-master",
+        "facebook/php-sdk": "@stable"
     },
     "autoload": {
         "psr-0": {"Borfast\\": "src/"}

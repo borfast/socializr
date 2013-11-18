@@ -54,12 +54,30 @@ class Facebook extends AbstractEngine
      ***************************************************/
     public function getFriendsCount()
     {
+        // $facebook = new \Facebook(array(
+        //     'appId'  => $this->config['consumer_key'],
+        //     'secret' => $this->config['consumer_secret'],
+        // ));
+        // $token = $this->storage->retrieveAccessToken('Facebook')->getAccessToken();
+        // $facebook->setAccessToken($token);
+        // $user = $facebook->getUser();
+        // // d($user);
+        // $profile = $facebook->api('/me');
+        // // d($profile);
+        // // $followers = $facebook->api('/fql?q=SELECT subscriber_id FROM subscription WHERE subscribed_id = me()');
+        // $followers = $facebook->api('/'.$user.'/subscribers');
+        // d($followers);
+        // exit;
+
+
+
+
         $path = '/'.$this->getUid().'/subscribers';
         // $path = '/fql?q=SELECT friend_count FROM user WHERE uid = '.$this->getUid();
         $method = 'GET';
 
         $response = json_decode($this->service->request($path, $method));
-        $response = count($response->data);
+        $response = $response->summary->total_count;
 
         return $response;
     }
