@@ -14,13 +14,31 @@ class FacebookPage extends AbstractEngine
     {
         $this->page_id = $options['page_id'];
 
-        $path = '/'.$this->page_id.'/feed';
-        $method = 'POST';
+
+
+
+        $facebook = new \Facebook(array(
+            'appId'  => $this->config['consumer_key'],
+            'secret' => $this->config['consumer_secret'],
+        ));
+        $token = $this->storage->retrieveAccessToken('Facebook')->getAccessToken();
+        $facebook->setAccessToken($token);
+        $user = $facebook->getUser();
+        $profile = $facebook->api('/me');
         $params = array(
             'message' => $content,
         );
+        $response = $facebook->api('/'.$this->page_id.'/feed', 'POST', $params);
 
-        $response = $this->service->request($path, 'POST', $params);
+
+
+        // $path = '/'.$this->page_id.'/feed';
+        // $method = 'POST';
+        // $params = array(
+        //     'message' => $content,
+        // );
+
+        // $response = $this->service->request($path, 'POST', $params);
 
         return $response;
     }
