@@ -9,7 +9,7 @@ class Facebook extends AbstractEngine
 {
     public static $provider_name = 'Facebook';
 
-    public function post($content)
+    public function post($content, array $options = array())
     {
         $path = '/'.$this->getUid().'/feed';
         $method = 'POST';
@@ -80,5 +80,28 @@ class Facebook extends AbstractEngine
         $response = $response->summary->total_count;
 
         return $response;
+    }
+
+    public function getFacebookPages()
+    {
+        $path = '/'.$this->getUid().'/accounts';
+        $method = 'GET';
+
+        $response = json_decode($this->service->request($path, $method));
+        $pages = array(
+            'paging' => $response->paging,
+            'pages' => array()
+
+        );
+
+        // Make the page IDs available as the array keys
+        foreach ($response->data as $page) {
+            $path = '/'.$page->id.'?fields=picture';
+            $picture = json_decode($this->service->request($path, $method));
+            $page->picture = $picture->picture->data->url;
+            $pages['pages'][$page->id] = $page;
+        }
+
+        return $pages;
     }
 }

@@ -28,7 +28,7 @@ class Socializr
      * Get the specified provider engine. This method tries to get an existing
      * instance first and only creates a new one if it doesn't already exist.
      */
-    public function getProviderEngine($provider)
+    public function getProviderEngine($provider, array $options = array())
     {
         // Only allow configured providers.
         if (!array_key_exists($provider, $this->config['providers'])) {
@@ -132,5 +132,22 @@ class Socializr
     {
         $engine = $this->getProviderEngine($provider);
         return $engine->getStats();
+    }
+
+    public function getFacebookPages()
+    {
+        $engine = $this->getProviderEngine('Facebook');
+        return $engine->getFacebookPages();
+    }
+
+
+    /**
+     * Dear future me, please forgive me, I was in a hurry.
+     * I need to change Socializr to accept extra options.
+     */
+    public function post_to_fb_page($content, $page_id)
+    {
+        $engine = $this->getProviderEngine('FacebookPage');
+        return $engine->post($content, array('page_id' => $page_id));
     }
 }

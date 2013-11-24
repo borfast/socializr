@@ -1,4 +1,10 @@
-A very simple PHP library for posting to several social networks, started out
+HERE BE DRAGONS!
+
+This is being updated in a hurry and the code is ugly, so don't expect to be
+able to use this easily for your own project, because for now it's not meant to
+be used in anything other than the project I'm working on.
+
+This is a very simple PHP library for posting to several social networks, started out
 of frustration for not finding anything like it besides Hybridauth, which
 doesn't really suite my needs or quality requirements.
 

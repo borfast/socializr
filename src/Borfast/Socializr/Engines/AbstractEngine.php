@@ -44,7 +44,6 @@ abstract class AbstractEngine implements ProviderInterface
             $this->config['scopes'] = explode(', ', $this->config['scopes']);
         }
 
-
         $this->service_factory = new ServiceFactory();
         $this->service = $this->service_factory->createService(
             static::$provider_name,
@@ -83,7 +82,7 @@ abstract class AbstractEngine implements ProviderInterface
      */
     abstract public function storeOauthToken($params);
 
-    abstract public function post($content);
+    abstract public function post($content, array $options = array());
     abstract public function getUid();
     abstract public function getProfile();
     abstract public function getStats();

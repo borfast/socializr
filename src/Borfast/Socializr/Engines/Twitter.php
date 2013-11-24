@@ -12,7 +12,7 @@ class Twitter extends AbstractEngine
     protected $user_id;
     protected $screen_name;
 
-    public function post($content)
+    public function post($content, array $options = array())
     {
         $path = '/statuses/update.json';
         $method = 'POST';
