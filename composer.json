@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "lusitanian/oauth": "dev-master",
+        "lusitanian/oauth": "dev-master#b707a896dc15427e9618bf5c0a0a4cb198358e72",
         "facebook/php-sdk": "@stable"
     },
     "autoload": {
