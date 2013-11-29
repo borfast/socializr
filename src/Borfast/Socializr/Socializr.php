@@ -109,10 +109,10 @@ class Socializr
     }
 
 
-    public function getProfile($provider, $uid)
+    public function getProfile($provider, $uid = null)
     {
         $engine = $this->getProviderEngine($provider);
-        return $engine->getProfile($uid = null);
+        return $engine->getProfile($uid);
     }
 
 
