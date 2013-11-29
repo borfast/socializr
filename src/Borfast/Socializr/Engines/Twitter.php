@@ -69,16 +69,19 @@ class Twitter extends AbstractEngine
 
         $profile = new Profile;
         $profile->provider = static::$provider_name;
-        $profile->id = $profile_json['id_str'];
+        $profile->raw_response = $response;
         // Twitter doesn't give away users' email addresses via the API.
         $profile->email = null;
-        $profile->name = $profile_json['name'];
-        // $profile->first_name = $profile_json['first_name'];
-        // $profile->middle_name = $profile_json['middle_name'];
-        // $profile->last_name = $profile_json['last_name'];
-        $profile->username = $profile_json['screen_name'];
-        // $profile->link = $profile_json['link'];
-        $profile->raw_response = $response;
+
+        // TODO: This needs to be done better, with an array mapping the social
+        // networks' field names to our own field names, for each provider.
+        $profile->id = (isset($profile_json['id_str'])) ? $profile_json['id_str'] : null;;
+        $profile->name = (isset($profile_json['name'])) ? $profile_json['name'] : null;;
+        $profile->first_name = (isset($profile_json['first_name'])) ? $profile_json['first_name'] : null;;
+        $profile->middle_name = (isset($profile_json['middle_name'])) ? $profile_json['middle_name'] : null;;
+        $profile->last_name = (isset($profile_json['last_name'])) ? $profile_json['last_name'] : null;;
+        $profile->username = (isset($profile_json['screen_name'])) ? $profile_json['screen_name'] : null;;
+        $profile->link = (isset($profile_json['link'])) ? $profile_json['link'] : null;;
 
         return $profile;
     }
