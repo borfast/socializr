@@ -2,6 +2,8 @@
 
 namespace Borfast\Socializr\Engines;
 
+use Borfast\Socializr\Profile;
+use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
 
@@ -28,7 +30,14 @@ class FacebookPage extends AbstractEngine
         $params = array(
             'message' => $content,
         );
-        $response = $facebook->api('/'.$this->page_id.'/feed', 'POST', $params);
+        $result = $facebook->api('/'.$this->page_id.'/feed', 'POST', $params);
+
+        $response = new Response;
+        $response->setRawResponse(json_encode($result));
+        $response->setProvider('Facebook');
+        $response->setPostId($result['id']);
+
+        return $response;
 
 
 
@@ -40,7 +49,7 @@ class FacebookPage extends AbstractEngine
 
         // $response = $this->service->request($path, 'POST', $params);
 
-        return $response;
+        // return $response;
     }
 
 

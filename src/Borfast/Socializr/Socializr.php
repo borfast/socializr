@@ -109,10 +109,10 @@ class Socializr
     }
 
 
-    public function getProfile($provider)
+    public function getProfile($provider, $uid)
     {
         $engine = $this->getProviderEngine($provider);
-        return $engine->getProfile();
+        return $engine->getProfile($uid = null);
     }
 
 
@@ -128,10 +128,10 @@ class Socializr
         return $engine->get($path, $params);
     }
 
-    public function getStats($provider)
+    public function getStats($provider, $uid = null)
     {
         $engine = $this->getProviderEngine($provider);
-        return $engine->getStats();
+        return $engine->getStats($uid);
     }
 
     public function getFacebookPages()

@@ -2,6 +2,8 @@
 
 namespace Borfast\Socializr\Engines;
 
+use Borfast\Socializr\Profile;
+use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
 
@@ -17,7 +19,13 @@ class Facebook extends AbstractEngine
             'message' => $content,
         );
 
-        $response = $this->service->request($path, 'POST', $params);
+        $result = $this->service->request($path, 'POST', $params);
+
+        $response = new Response;
+        $response->setRawResponse(json_encode($result));
+        $response->setProvider('Facebook');
+        $result_json = json_decode($result);
+        $response->setPostId($result_json->id);
 
         return $response;
     }
@@ -31,18 +39,30 @@ class Facebook extends AbstractEngine
 
     public function getUid()
     {
-        $profile = $this->getProfile();
-
-        return $profile['id'];
+        return $this->getProfile()->id;
     }
 
-    public function getProfile()
+    public function getProfile($uid = null)
     {
         $response = $this->service->request('/me');
-        return json_decode($response, true);
+        $profile_json = json_decode($response, true);
+
+        $profile = new Profile;
+        $profile->provider = static::$provider_name;
+        $profile->id = $profile_json['id'];
+        $profile->email = $profile_json['email'];
+        $profile->name = $profile_json['name'];
+        $profile->first_name = $profile_json['first_name'];
+        $profile->middle_name = $profile_json['middle_name'];
+        $profile->last_name = $profile_json['last_name'];
+        $profile->username = $profile_json['username'];
+        $profile->link = $profile_json['link'];
+        $profile->raw_response = $response;
+
+        return $profile;
     }
 
-    public function getStats()
+    public function getStats($uid = null)
     {
         return $this->getFriendsCount();
     }

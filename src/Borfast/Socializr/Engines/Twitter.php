@@ -2,6 +2,8 @@
 
 namespace Borfast\Socializr\Engines;
 
+use Borfast\Socializr\Profile;
+use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
 
@@ -20,7 +22,13 @@ class Twitter extends AbstractEngine
             'status' => $content,
         );
 
-        $response = $this->service->request($path, 'POST', $params);
+        $result = $this->service->request($path, 'POST', $params);
+
+        $response = new Response;
+        $response->setRawResponse(json_encode($result));
+        $result_json = json_decode($result);
+        $response->setProvider('Twitter');
+        $response->setPostId($result_json->id_str);
 
         return $response;
     }
@@ -54,20 +62,30 @@ class Twitter extends AbstractEngine
         return $this->user_id;
     }
 
-    public function getProfile()
+    public function getProfile($uid = null)
     {
-        $response = $this->service->request('users/show.json?user_id='.$this->user_id);
-        $profile = json_decode($response, true);
+        $response = $this->service->request('/users/show.json?user_id='.$uid);
+        $profile_json = json_decode($response, true);
 
+        $profile = new Profile;
+        $profile->provider = static::$provider_name;
+        $profile->id = $profile_json['id_str'];
         // Twitter doesn't give away users' email addresses via the API.
-        $profile['email'] = null;
+        $profile->email = null;
+        $profile->name = $profile_json['name'];
+        // $profile->first_name = $profile_json['first_name'];
+        // $profile->middle_name = $profile_json['middle_name'];
+        // $profile->last_name = $profile_json['last_name'];
+        $profile->username = $profile_json['screen_name'];
+        // $profile->link = $profile_json['link'];
+        $profile->raw_response = $response;
 
         return $profile;
     }
 
-    public function getStats()
+    public function getStats($uid = null)
     {
-        $response = $this->service->request('followers/ids.json?user_id='.$this->user_id);
+        $response = $this->service->request('/followers/ids.json?user_id='.$uid);
         $response = json_decode($response);
         $response = count($response->ids);
         return $response;
