@@ -64,9 +64,9 @@ class FacebookPage extends AbstractEngine
         return $this->page_id;
     }
 
-    public function getProfile()
+    public function getProfile($uid = null)
     {
-        $response = $this->service->request('/me');
+        $response = $this->service->request('/'.$uid);
         return json_decode($response, true);
     }
 
