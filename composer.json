@@ -11,9 +11,15 @@
         }
     ],
     "require": {
-        "lusitanian/oauth": "dev-master#b707a896dc15427e9618bf5c0a0a4cb198358e72",
+        "lusitanian/oauth": "dev-master",
         "facebook/php-sdk": "@stable"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:borfast/PHPoAuthLib.git"
+        }
+    ],
     "autoload": {
         "psr-0": {"Borfast\\": "src/"}
     }
