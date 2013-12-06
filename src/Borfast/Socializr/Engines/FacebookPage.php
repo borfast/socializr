@@ -73,10 +73,10 @@ class FacebookPage extends AbstractEngine
     /**
      * Get the number of likes this page has.
      */
-    public function getStats()
+    public function getStats($uid = null)
     {
-        // return $this->getLikesCount();
-        return 0;
+        return $this->getLikesCount();
+        // return 0;
     }
 
     /****************************************************
@@ -85,4 +85,33 @@ class FacebookPage extends AbstractEngine
      *
      ***************************************************/
 
+    public function getLikesCount()
+    {
+        // $facebook = new \Facebook(array(
+        //     'appId'  => $this->config['consumer_key'],
+        //     'secret' => $this->config['consumer_secret'],
+        // ));
+        // $token = $this->storage->retrieveAccessToken('Facebook')->getAccessToken();
+        // $facebook->setAccessToken($token);
+        // $user = $facebook->getUser();
+        // // d($user);
+        // $profile = $facebook->api('/me');
+        // // d($profile);
+        // // $followers = $facebook->api('/fql?q=SELECT subscriber_id FROM subscription WHERE subscribed_id = me()');
+        // $followers = $facebook->api('/'.$user.'/subscribers');
+        // d($followers);
+        // exit;
+
+
+
+
+        $path = '/'.$this->getUid();
+        // $path = '/fql?q=SELECT friend_count FROM user WHERE uid = '.$this->getUid();
+        $method = 'GET';
+
+        $response = json_decode($this->service->request($path, $method));
+        $response = $response->summary->total_count;
+
+        return $response;
+    }
 }
