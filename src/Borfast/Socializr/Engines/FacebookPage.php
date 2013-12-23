@@ -2,6 +2,7 @@
 
 namespace Borfast\Socializr\Engines;
 
+use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
@@ -12,23 +13,28 @@ class FacebookPage extends AbstractEngine
     public static $provider_name = 'Facebook';
     protected $page_id;
 
-    public function post($content, array $options = array())
+    public function post(Post $post)
     {
-        $this->page_id = $options['page_id'];
-
-
-
+        $this->page_id = $post->options['page_id'];
 
         $facebook = new \Facebook(array(
             'appId'  => $this->config['consumer_key'],
             'secret' => $this->config['consumer_secret'],
         ));
-        $token = $this->storage->retrieveAccessToken('Facebook')->getAccessToken();
+
+        // $token = $this->storage->retrieveAccessToken('Facebook')->getAccessToken();
+        // Let's use the page's permanent access token
+        $token = $post->options['page_access_token'];
         $facebook->setAccessToken($token);
-        $user = $facebook->getUser();
-        $profile = $facebook->api('/me');
+
+        // $user = $facebook->getUser();
+        // $profile = $facebook->api('/me');
+
         $params = array(
-            'message' => $content,
+            'caption' => $post->title,
+            'description' => $post->description,
+            'link' => $post->url,
+            'message' => $post->body,
         );
         $result = $facebook->api('/'.$this->page_id.'/feed', 'POST', $params);
 

@@ -2,6 +2,8 @@
 
 namespace Borfast\Socializr\Engines;
 
+use Borfast\Socializr\Post;
+
 use OAuth\Common\Storage\Session;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\Common\Storage\TokenStorageInterface;
@@ -82,7 +84,7 @@ abstract class AbstractEngine implements ProviderInterface
      */
     abstract public function storeOauthToken($params);
 
-    abstract public function post($content, array $options = array());
+    abstract public function post(Post $post);
     abstract public function getUid();
     abstract public function getProfile($uid = null);
     abstract public function getStats($uid = null);

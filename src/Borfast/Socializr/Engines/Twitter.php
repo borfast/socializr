@@ -2,6 +2,7 @@
 
 namespace Borfast\Socializr\Engines;
 
+use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
@@ -14,12 +15,12 @@ class Twitter extends AbstractEngine
     protected $user_id;
     protected $screen_name;
 
-    public function post($content, array $options = array())
+    public function post(Post $post)
     {
         $path = '/statuses/update.json';
         $method = 'POST';
         $params = array(
-            'status' => $content,
+            'status' => $post->body,
         );
 
         $result = $this->service->request($path, 'POST', $params);

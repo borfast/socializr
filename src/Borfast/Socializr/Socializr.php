@@ -64,10 +64,10 @@ class Socializr
     /**
      * Post the given content to the given provider, using the given credentials.
      */
-    public function post($content, $provider)
+    public function post(Post $post, $provider)
     {
         $engine = $this->getProviderEngine($provider);
-        return $engine->post($content);
+        return $engine->post($post);
     }
 
 
@@ -145,9 +145,9 @@ class Socializr
      * Dear future me, please forgive me, I was in a hurry.
      * I need to change Socializr to accept extra options.
      */
-    public function post_to_fb_page($content, $page_id)
+    public function post_to_fb_page(Post $post)
     {
         $engine = $this->getProviderEngine('FacebookPage');
-        return $engine->post($content, array('page_id' => $page_id));
+        return $engine->post($post);
     }
 }

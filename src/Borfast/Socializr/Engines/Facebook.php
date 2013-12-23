@@ -2,6 +2,7 @@
 
 namespace Borfast\Socializr\Engines;
 
+use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
@@ -11,12 +12,15 @@ class Facebook extends AbstractEngine
 {
     public static $provider_name = 'Facebook';
 
-    public function post($content, array $options = array())
+    public function post(Post $post)
     {
         $path = '/'.$this->getUid().'/feed';
         $method = 'POST';
         $params = array(
-            'message' => $content,
+            'caption' => $post->title,
+            'description' => $post->description,
+            'link' => $post->url,
+            'message' => $post->body,
         );
 
         $result = $this->service->request($path, 'POST', $params);
