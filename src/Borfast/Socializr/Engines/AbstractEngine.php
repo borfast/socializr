@@ -61,9 +61,9 @@ abstract class AbstractEngine implements ProviderInterface
      * It redirects to the provider's authentication/login page, which in turn
      * will redirect back to us.
      */
-    public function authorize()
+    public function authorize(array $params = array())
     {
-        $url = $this->service->getAuthorizationUri();
+        $url = $this->service->getAuthorizationUri($params);
         header('Location: ' . $url);
         exit;
     }
