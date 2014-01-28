@@ -30,7 +30,7 @@ class LinkedIn extends AbstractEngine
             'title' => $post->title,
             'description' => $post->description,
             'submitted-url' => $post->url,
-            'comment' => $post->body,
+            'comment' => $post->body
         );
 
         $result = $this->service->request($path, 'POST', $params);
@@ -58,7 +58,8 @@ class LinkedIn extends AbstractEngine
 
     public function getProfile($uid = null)
     {
-        $response = $this->service->request('/people/~:(id,formatted-name,maiden-name,email-address,site-standard-profile-request,num-recommenders');
+        $path = '/people/~:(id,formatted-name,maiden-name,email-address,site-standard-profile-request,num-recommenders)';
+        $response = $this->service->request($path);
         $profile_json = json_decode($response, true);
 
         $profile = new Profile;
