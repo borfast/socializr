@@ -2,7 +2,7 @@
 
 namespace Borfast\Socializr\Engines;
 
-interface ProviderInterface
+interface EngineInterface
 {
 	public function getUid();
 	public function getProfile($uid = null);

@@ -9,7 +9,7 @@ use OAuth\Common\Consumer\Credentials;
 use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\ServiceFactory;
 
-abstract class AbstractEngine implements ProviderInterface
+abstract class AbstractEngine implements EngineInterface
 {
     public static $provider_name;
 

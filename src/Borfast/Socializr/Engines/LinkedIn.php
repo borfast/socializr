@@ -58,9 +58,15 @@ class LinkedIn extends AbstractEngine
 
     public function getProfile($uid = null)
     {
-        $path = '/people/~:(id,formatted-name,maiden-name,email-address,site-standard-profile-request,num-recommenders)';
+        $path = '/people/~?format=json';
         $response = $this->service->request($path);
         $profile_json = json_decode($response, true);
+
+        if (empty($profile_json)) {
+            throw new \Exception("FUCKING LINKEDIN!!!!", 1);
+        }
+
+        // dd($profile_json);
 
         $profile = new Profile;
         $profile->provider = static::$provider_name;

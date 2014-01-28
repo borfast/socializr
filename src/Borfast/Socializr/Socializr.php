@@ -8,7 +8,7 @@ use OAuth\Common\Storage\TokenStorageInterface;
 class Socializr
 {
     protected $config = array();
-    protected $providers = array();
+    protected $engines = array();
     protected $storage;
 
 
@@ -27,6 +27,8 @@ class Socializr
     /**
      * Get the specified provider engine. This method tries to get an existing
      * instance first and only creates a new one if it doesn't already exist.
+     *
+     * @return EngineInterface The engine for the requested provider.
      */
     public function getProviderEngine($provider, array $options = array())
     {
@@ -41,34 +43,18 @@ class Socializr
         }
 
         // Only create a new ProviderEngine instance if necessary.
-        if (!isset($this->providers[$provider])) {
+        if (!isset($this->engines[$provider])) {
             $provider_engine = '\\Borfast\\Socializr\\Engines\\'.$provider;
             $provider_config = $this->config['providers'][$provider];
-            $this->providers[$provider] = new $provider_engine($provider_config, $this->storage);
+            $this->engines[$provider] = new $provider_engine($provider_config, $this->storage);
         }
 
-        return $this->providers[$provider];
+        return $this->engines[$provider];
     }
 
 
-    /**
-     * Try to authorize the user against the given provider.
-     */
-    public function authorize($provider)
-    {
-        $engine = $this->getProviderEngine($provider);
-        $engine->authorize();
-    }
 
 
-    /**
-     * Post the given content to the given provider, using the given credentials.
-     */
-    public function post(Post $post, $provider)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->post($post);
-    }
 
 
     /**
@@ -82,19 +68,19 @@ class Socializr
     }
 
 
-    public function getUid($provider)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->getUid();
-    }
-
-
     /**
      * Get the list of supported service providers.
      */
     public function getProviders()
     {
-        return $this->providers;
+        return $this->engines;
+    }
+
+
+    public function getUid($provider)
+    {
+        $engine = $this->getProviderEngine($provider);
+        return $engine->getUid();
     }
 
 
