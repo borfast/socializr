@@ -35,12 +35,6 @@ class Facebook extends AbstractEngine
     }
 
 
-    public function storeOauthToken($params)
-    {
-        $this->service->requestAccessToken($params['code']);
-    }
-
-
     public function getUid()
     {
         return $this->getProfile()->id;

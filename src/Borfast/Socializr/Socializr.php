@@ -12,13 +12,11 @@ class Socializr
     protected $storage;
 
 
-    public function __construct(array $config, TokenStorageInterface $storage)
+    public function __construct(array $config)
     {
         if (!array_key_exists('providers', $config)) {
             throw new \Exception('No providers found in configuration.');
         }
-
-        $this->storage = $storage;
 
         $this->config = $config;
     }
@@ -30,7 +28,7 @@ class Socializr
      *
      * @return EngineInterface The engine for the requested provider.
      */
-    public function getProviderEngine($provider, array $options = array())
+    public function getProviderEngine($provider, TokenStorageInterface $storage, array $options = array())
     {
         // Only allow configured providers.
         if (!array_key_exists($provider, $this->config['providers'])) {
@@ -46,15 +44,11 @@ class Socializr
         if (!isset($this->engines[$provider])) {
             $provider_engine = '\\Borfast\\Socializr\\Engines\\'.$provider;
             $provider_config = $this->config['providers'][$provider];
-            $this->engines[$provider] = new $provider_engine($provider_config, $this->storage);
+            $this->engines[$provider] = new $provider_engine($provider_config, $storage);
         }
 
         return $this->engines[$provider];
     }
-
-
-
-
 
 
     /**
@@ -77,48 +71,15 @@ class Socializr
     }
 
 
-    public function getUid($provider)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->getUid();
-    }
 
 
-    /**
-     * Retrieve the auth token from the provider's response and store it.
-     */
-    public function storeOauthToken($provider, $params)
-    {
-        $engine = $this->getProviderEngine($provider);
-        $token = $engine->storeOauthToken($params);
-        return $token;
-    }
 
 
-    public function getProfile($provider, $uid = null)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->getProfile($uid);
-    }
+    /********************
+     * HERE BE DRAGONS!
+     * This really needs to be moved away.
+     *******************/
 
-
-    public function getSessionData($provider)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->getSessionData();
-    }
-
-    public function get($provider, $path, $params = array())
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->get($path, $params);
-    }
-
-    public function getStats($provider, $uid = null)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->getStats($uid);
-    }
 
     public function getFacebookPages()
     {
