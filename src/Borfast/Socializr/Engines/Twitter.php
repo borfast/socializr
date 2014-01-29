@@ -35,7 +35,7 @@ class Twitter extends AbstractEngine
     }
 
 
-    public function authorize()
+    public function authorize(array $params = array())
     {
         $token = $this->service->requestRequestToken();
         $url = $this->service->getAuthorizationUri(array('oauth_token' => $token->getRequestToken()));
