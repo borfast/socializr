@@ -64,13 +64,13 @@ class LinkedIn extends AbstractEngine
         // TODO: This needs to be done better, with an array mapping the social
         // networks' field names to our own field names, for each provider.
         $profile->id = (isset($profile_json['id'])) ?: null;
-        $profile->email = (isset($profile_json['email-address'])) ?: null;
-        $profile->name = (isset($profile_json['formatted-name'])) ?: null;
-        $profile->first_name = (isset($profile_json['first-name'])) ?: null;
-        $profile->middle_name = (isset($profile_json['maiden-name'])) ?: null;
-        $profile->last_name = (isset($profile_json['last-name'])) ?: null;
+        $profile->email = (isset($profile_json['emailAddress'])) ?: null;
+        $profile->name = (isset($profile_json['formattedName'])) ?: null;
+        $profile->first_name = (isset($profile_json['firstName'])) ?: null;
+        $profile->middle_name = (isset($profile_json['maidenName'])) ?: null;
+        $profile->last_name = (isset($profile_json['lastName'])) ?: null;
         $profile->username = (isset($profile_json['username'])) ?: null;
-        $profile->link = (isset($profile_json['public-profile-url'])) ?: null;
+        $profile->link = (isset($profile_json['publicProfileUrl'])) ?: null;
 
         return $profile;
     }
