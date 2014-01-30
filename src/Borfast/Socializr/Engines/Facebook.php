@@ -45,20 +45,20 @@ class Facebook extends AbstractEngine
         $response = $this->service->request('/me');
         $profile_json = json_decode($response, true);
 
-        $profile = new Profile;
+        $mapping = [
+            'id' => 'id',
+            'email' => 'email',
+            'name' => 'name',
+            'first_name' => 'first_name',
+            'middle_name' => 'middle_name',
+            'last_name' => 'last_name',
+            'username' => 'username',
+            'link' => 'link'
+        ];
+
+        $profile = Profile::create($mapping, $profile_json);
         $profile->provider = static::$provider_name;
         $profile->raw_response = $response;
-
-        // TODO: This needs to be done better, with an array mapping the social
-        // networks' field names to our own field names, for each provider.
-        $profile->id = (isset($profile_json['id'])) ? $profile_json['id'] : null;
-        $profile->email = (isset($profile_json['email'])) ? $profile_json['email'] : null;
-        $profile->name = (isset($profile_json['name'])) ? $profile_json['name'] : null;
-        $profile->first_name = (isset($profile_json['first_name'])) ? $profile_json['first_name'] : null;
-        $profile->middle_name = (isset($profile_json['middle_name'])) ? $profile_json['middle_name'] : null;
-        $profile->last_name = (isset($profile_json['last_name'])) ? $profile_json['last_name'] : null;
-        $profile->username = (isset($profile_json['username'])) ? $profile_json['username'] : null;
-        $profile->link = (isset($profile_json['link'])) ? $profile_json['link'] : null;
 
         return $profile;
     }

@@ -57,20 +57,20 @@ class LinkedIn extends AbstractEngine
         $response = $this->service->request($path);
         $profile_json = json_decode($response, true);
 
-        $profile = new Profile;
+        $mapping = [
+            'id' => 'id',
+            'email' => 'emailAddress',
+            'name' => 'formattedName',
+            'first_name' => 'firstName',
+            'middle_name' => 'maidenName',
+            'last_name' => 'lastName',
+            // 'username' => 'username',
+            'link' => 'publicProfileUrl'
+        ];
+
+        $profile = Profile::create($mapping, $profile_json);
         $profile->provider = static::$provider_name;
         $profile->raw_response = $response;
-
-        // TODO: This needs to be done better, with an array mapping the social
-        // networks' field names to our own field names, for each provider.
-        $profile->id = (isset($profile_json['id'])) ? $profile_json['id'] : null;
-        $profile->email = (isset($profile_json['emailAddress'])) ? $profile_json['emailAddress'] : null;
-        $profile->name = (isset($profile_json['formattedName'])) ? $profile_json['formattedName'] : null;
-        $profile->first_name = (isset($profile_json['firstName'])) ? $profile_json['firstName'] : null;
-        $profile->middle_name = (isset($profile_json['maidenName'])) ? $profile_json['maidenName'] : null;
-        $profile->last_name = (isset($profile_json['lastName'])) ? $profile_json['lastName'] : null;
-        $profile->username = (isset($profile_json['username'])) ? $profile_json['username'] : null;
-        $profile->link = (isset($profile_json['publicProfileUrl'])) ? $profile_json['publicProfileUrl'] : null;
 
         return $profile;
     }
