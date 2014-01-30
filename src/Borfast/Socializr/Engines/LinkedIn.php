@@ -18,7 +18,8 @@ class LinkedIn extends AbstractEngine
      */
     public function authorize(array $params = array())
     {
-        parent::authorize(['state' => 'IHG45DS!$SGJOWJG#676D']);
+        $params = array_merge($params, ['state' => 'IHG45DS!$SGJOWJG#676D']);
+        parent::authorize($params);
     }
 
 
@@ -52,15 +53,9 @@ class LinkedIn extends AbstractEngine
 
     public function getProfile($uid = null)
     {
-        $path = '/people/~?format=json';
+        $path = '/people/~:(id,first-name,last-name,maiden-name,public-profile-url,formatted-name,num-connections,email-address,num-recommenders)?format=json';
         $response = $this->service->request($path);
         $profile_json = json_decode($response, true);
-
-        if (empty($profile_json)) {
-            throw new \Exception("FUCKING LINKEDIN!!!!", 1);
-        }
-
-        // dd($profile_json);
 
         $profile = new Profile;
         $profile->provider = static::$provider_name;
@@ -75,7 +70,7 @@ class LinkedIn extends AbstractEngine
         $profile->middle_name = (isset($profile_json['maiden-name'])) ?: null;
         $profile->last_name = (isset($profile_json['last-name'])) ?: null;
         $profile->username = (isset($profile_json['username'])) ?: null;
-        $profile->link = (isset($profile_json['site-standard-profile-request'])) ?: null;
+        $profile->link = (isset($profile_json['public-profile-url'])) ?: null;
 
         return $profile;
     }
