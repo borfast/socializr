@@ -8,17 +8,15 @@ use OAuth\Common\Storage\TokenStorageInterface;
 class Socializr
 {
     protected $config = array();
-    protected $providers = array();
+    protected $engines = array();
     protected $storage;
 
 
-    public function __construct(array $config, TokenStorageInterface $storage)
+    public function __construct(array $config)
     {
         if (!array_key_exists('providers', $config)) {
             throw new \Exception('No providers found in configuration.');
         }
-
-        $this->storage = $storage;
 
         $this->config = $config;
     }
@@ -27,8 +25,10 @@ class Socializr
     /**
      * Get the specified provider engine. This method tries to get an existing
      * instance first and only creates a new one if it doesn't already exist.
+     *
+     * @return EngineInterface The engine for the requested provider.
      */
-    public function getProviderEngine($provider, array $options = array())
+    public function getProviderEngine($provider, TokenStorageInterface $storage, array $options = array())
     {
         // Only allow configured providers.
         if (!array_key_exists($provider, $this->config['providers'])) {
@@ -41,33 +41,13 @@ class Socializr
         }
 
         // Only create a new ProviderEngine instance if necessary.
-        if (!isset($this->providers[$provider])) {
+        if (!isset($this->engines[$provider])) {
             $provider_engine = '\\Borfast\\Socializr\\Engines\\'.$provider;
             $provider_config = $this->config['providers'][$provider];
-            $this->providers[$provider] = new $provider_engine($provider_config, $this->storage);
+            $this->engines[$provider] = new $provider_engine($provider_config, $storage);
         }
 
-        return $this->providers[$provider];
-    }
-
-
-    /**
-     * Try to authorize the user against the given provider.
-     */
-    public function authorize($provider)
-    {
-        $engine = $this->getProviderEngine($provider);
-        $engine->authorize();
-    }
-
-
-    /**
-     * Post the given content to the given provider, using the given credentials.
-     */
-    public function post(Post $post, $provider)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->post($post);
+        return $this->engines[$provider];
     }
 
 
@@ -82,57 +62,24 @@ class Socializr
     }
 
 
-    public function getUid($provider)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->getUid();
-    }
-
-
     /**
      * Get the list of supported service providers.
      */
     public function getProviders()
     {
-        return $this->providers;
+        return $this->engines;
     }
 
 
-    /**
-     * Retrieve the auth token from the provider's response and store it.
-     */
-    public function storeOauthToken($provider, $params)
-    {
-        $engine = $this->getProviderEngine($provider);
-        $token = $engine->storeOauthToken($params);
-        return $token;
-    }
 
 
-    public function getProfile($provider, $uid = null)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->getProfile($uid);
-    }
 
 
-    public function getSessionData($provider)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->getSessionData();
-    }
+    /********************
+     * HERE BE DRAGONS!
+     * This really needs to be moved away.
+     *******************/
 
-    public function get($provider, $path, $params = array())
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->get($path, $params);
-    }
-
-    public function getStats($provider, $uid = null)
-    {
-        $engine = $this->getProviderEngine($provider);
-        return $engine->getStats($uid);
-    }
 
     public function getFacebookPages()
     {

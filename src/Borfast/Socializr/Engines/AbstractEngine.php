@@ -9,7 +9,7 @@ use OAuth\Common\Consumer\Credentials;
 use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\ServiceFactory;
 
-abstract class AbstractEngine implements ProviderInterface
+abstract class AbstractEngine implements EngineInterface
 {
     public static $provider_name;
 
@@ -18,7 +18,6 @@ abstract class AbstractEngine implements ProviderInterface
     protected $service_factory;
     protected $service;
     protected $config = array();
-
 
     public function __construct(array $config, TokenStorageInterface $storage)
     {
@@ -75,24 +74,29 @@ abstract class AbstractEngine implements ProviderInterface
     }
 
 
-    /**
-     * The method that sets the OAuth token for the current provider. It must be
-     * called after the authorize() method.
-     *
-     * @params array $params The URL params. Each engine knows how to get the
-     * token for its specific provider.
-     */
-    abstract public function storeOauthToken($params);
-
-    abstract public function post(Post $post);
-    abstract public function getUid();
-    abstract public function getProfile($uid = null);
-    abstract public function getStats($uid = null);
-
     public function get($path, $params = array())
     {
         $response = json_decode($this->service->request($path, 'GET', $params), true);
 
         return $response;
     }
+
+
+    /**
+     * The method that sets the OAuth token for the current provider. It must be
+     * called after the authorize() method. Retrieves the auth token from the
+     * provider's response and store it.
+     *
+     * @params array $params The URL params. Each engine knows how to get the
+     * token for its specific provider.
+     */
+    public function storeOauthToken($params)
+    {
+        $this->service->requestAccessToken($params['code']);
+    }
+
+    abstract public function post(Post $post);
+    abstract public function getUid();
+    abstract public function getProfile($uid = null);
+    abstract public function getStats($uid = null);
 }

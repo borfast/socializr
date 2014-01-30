@@ -44,6 +44,9 @@ class Twitter extends AbstractEngine
     }
 
 
+    /**
+     * Retrieve the auth token from the provider's response and store it.
+     */
     public function storeOauthToken($params)
     {
         $token = $this->storage->retrieveAccessToken('Twitter');
