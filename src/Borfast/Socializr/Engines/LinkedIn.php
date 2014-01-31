@@ -80,4 +80,25 @@ class LinkedIn extends AbstractEngine
     {
         return 33;
     }
+
+
+    public function getPages()
+    {
+        $path = '/companies?is-company-admin=true&format=json';
+        $response = $this->service->request($path);
+        $profile_json = json_decode($response, true);
+
+        $pages = [];
+
+        // Make the page IDs available as the array keys and get their picture
+        foreach ($profile_json['values'] as $page) {
+            $path = '/companies/'.$page['id'].':(id,name,square-logo-url)?format=json';
+            $picture = json_decode($this->service->request($path));
+            $page['picture'] = $picture->squareLogoUrl;
+
+            $pages[$page['id']] = $page;
+        }
+
+        return $pages;
+    }
 }
