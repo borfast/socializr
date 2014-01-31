@@ -5,6 +5,7 @@ namespace Borfast\Socializr\Engines;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Page;
+use Borfast\Socializr\Group;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
