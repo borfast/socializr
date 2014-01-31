@@ -79,22 +79,9 @@ class Socializr
      * HERE BE DRAGONS!
      * This really needs to be moved away.
      *******************/
-
-
     public function getFacebookPages()
     {
         $engine = $this->getProviderEngine('Facebook');
         return $engine->getFacebookPages();
-    }
-
-
-    /**
-     * Dear future me, please forgive me, I was in a hurry.
-     * I need to change Socializr to accept extra options.
-     */
-    public function post_to_fb_page(Post $post)
-    {
-        $engine = $this->getProviderEngine('FacebookPage');
-        return $engine->post($post);
     }
 }
