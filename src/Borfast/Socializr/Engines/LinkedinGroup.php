@@ -33,8 +33,8 @@ class LinkedinGroup extends AbstractEngine
             // 'visibility' => [
             //     'code' => 'anyone'
             // ],
-            'title' => 'This is the outter title',
-            'summary' => 'This is the summary',
+            'title' => $post->title,
+            'summary' => $post->body,
             'content' => [
                 'title' => $post->title,
                 'submitted-url' => $post->url,
