@@ -111,4 +111,32 @@ class Linkedin extends AbstractEngine
 
         return $pages;
     }
+
+
+    public function getGroups()
+    {
+        $path = '/people/~/group-memberships:(group:(id,name,site-group-url,small-logo-url,num-members))?membership-state=owner&format=json';
+        $response = $this->service->request($path);
+        $groups = json_decode($response, true);
+
+        dd($groups);
+
+        $group_pages = [];
+
+        $mapping = [
+            'id' => 'id',
+            'name' => 'name',
+            'picture' => 'smallLogoUrl',
+            'link' => 'siteGroupUrl'
+        ];
+
+        // Make the page IDs available as the array keys and get their picture
+        foreach ($groups['values'] as $group) {
+            $group_pages[$group['_key']] = Page::create($mapping, $group['group']);
+            $group_pages[$group['_key']]->provider = static::$provider_name;
+            $group_pages[$group['_key']]->raw_response = $response;
+        }
+
+        return $group_pages;
+    }
 }

@@ -15,9 +15,9 @@ class Page
 
 
     /**
-     * Create a new Page object based on an array of attributes and a mapping
+     * Create a new Group object based on an array of attributes and a mapping
      * from those attributes to the Profile object's attributes.
-     * The $mapping array should have this format (example for Facebook Page):
+     * The $mapping array should have this format (example for Facebook page):
      * $mapping = [
      *       'id' => 'id',
      *       'email' => 'email',
@@ -28,20 +28,20 @@ class Page
      *       'username' => 'username',
      *       'link' => 'link'
      *   ];
-     * The keys are the name of the Page object attributes, while the values
+     * The keys are the name of the Group object attributes, while the values
      * are the key of that attribute in the $attributes array. Like so:
-     * ['page_object_attribute' => 'key_in_attributes_array']
+     * ['group_object_attribute' => 'key_in_attributes_array']
      *
      * @author Raúl Santos
      */
     public static function create(array $mapping, array $attributes)
     {
-        $page = new Page;
+        $group = new Group;
 
         foreach ($mapping as $key => $name) {
-            $page->$key = (isset($attributes[$name])) ? $attributes[$name] : null;
+            $group->$key = (isset($attributes[$name])) ? $attributes[$name] : null;
         }
 
-        return $page;
+        return $group;
     }
 }
