@@ -112,7 +112,6 @@ class Facebook extends AbstractEngine
         $pages = array(
             'paging' => $response->paging,
             'pages' => array()
-
         );
 
         // Make the page IDs available as the array keys
@@ -121,6 +120,7 @@ class Facebook extends AbstractEngine
             $picture = json_decode($this->service->request($path, $method));
             $page->picture = $picture->picture->data->url;
             $pages['pages'][$page->id] = $page;
+            $pages['pages'][$page->id]->link = 'https://www.facebook.com/'.$page->id;
         }
 
         return $pages;
