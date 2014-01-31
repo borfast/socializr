@@ -20,12 +20,12 @@ class Profile
     /**
      * Create a new Profile object based on an array of attributes and a mapping
      * from those attributes to the Profile object's attributes.
-     * The $mapping array should have this format:
+     * The $mapping array should have this format (example for Facebook):
      * $mapping = [
      *       'id' => 'id',
      *       'email' => 'email',
      *       'name' => 'name',
-     *       'first_name' => 'firs_name',
+     *       'first_name' => 'first_name',
      *       'middle_name' => 'middle_name',
      *       'last_name' => 'last_name',
      *       'username' => 'username',
