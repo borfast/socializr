@@ -8,7 +8,7 @@ use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
 
-class LinkedIn extends AbstractEngine
+class Linkedin extends AbstractEngine
 {
     public static $provider_name = 'linkedin';
 
