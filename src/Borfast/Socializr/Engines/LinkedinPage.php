@@ -27,7 +27,7 @@ class LinkedinPage extends AbstractEngine
     public function post(Post $post)
     {
         $page_id = $post->options['page_id'];
-        $path = '/companies/'.$page_id.'/shares';
+        $path = '/companies/'.$page_id.'/shares?format=json';
         $method = 'POST';
         $params = array(
             'visibility' => [
@@ -40,14 +40,18 @@ class LinkedinPage extends AbstractEngine
                 'description' => $post->description,
             ],
         );
+        $params = json_encode($params);
 
-        $result = $this->service->request($path, 'POST', $params);
+        // Linkedin API requires the Content-Type header set to application/json
+        $header = ['Content-Type' => 'application/json'];
+        $result = $this->service->request($path, 'POST', $params, $header);
 
         $response = new Response;
         $response->setRawResponse(json_encode($result));
         $response->setProvider(static::$provider_name);
         $result_json = json_decode($result);
-        $response->setPostId($result_json->id);
+        $response->setPostId($result_json->updateKey);
+        $response->setPostUrl($result_json->updateUrl);
 
         return $response;
     }
@@ -86,35 +90,5 @@ class LinkedinPage extends AbstractEngine
     public function getStats($uid = null)
     {
         return 33;
-    }
-
-
-    public function getPages()
-    {
-        $path = '/companies?is-company-admin=true&format=json';
-        $response = $this->service->request($path);
-        $companies = json_decode($response, true);
-
-        $pages = [];
-
-        $mapping = [
-            'id' => 'id',
-            'name' => 'name',
-            'picture' => 'squareLogoUrl',
-            'link' => 'publicProfileUrl'
-        ];
-
-        // Make the page IDs available as the array keys and get their picture
-        foreach ($companies['values'] as $company) {
-            $path = '/companies/'.$company['id'].':(id,name,universal-name,square-logo-url,num-followers)?format=json';
-            $company_info = json_decode($this->service->request($path), true);
-
-            $pages[$company['id']] = Page::create($mapping, $company_info);
-            $pages[$company['id']]->link = 'http://www.linkedin.com/company/'.$company_info['universalName'];
-            $pages[$company['id']]->provider = static::$provider_name;
-            $pages[$company['id']]->raw_response = $response;
-        }
-
-        return $pages;
     }
 }
