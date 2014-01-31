@@ -4,6 +4,7 @@ namespace Borfast\Socializr\Engines;
 
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
+use Borfast\Socializr\Page;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
@@ -86,17 +87,26 @@ class Linkedin extends AbstractEngine
     {
         $path = '/companies?is-company-admin=true&format=json';
         $response = $this->service->request($path);
-        $profile_json = json_decode($response, true);
+        $companies = json_decode($response, true);
 
         $pages = [];
 
-        // Make the page IDs available as the array keys and get their picture
-        foreach ($profile_json['values'] as $page) {
-            $path = '/companies/'.$page['id'].':(id,name,square-logo-url)?format=json';
-            $picture = json_decode($this->service->request($path));
-            $page['picture'] = $picture->squareLogoUrl;
+        $mapping = [
+            'id' => 'id',
+            'name' => 'name',
+            'picture' => 'squareLogoUrl',
+            'link' => 'publicProfileUrl'
+        ];
 
-            $pages[$page['id']] = $page;
+        // Make the page IDs available as the array keys and get their picture
+        foreach ($companies['values'] as $company) {
+            $path = '/companies/'.$company['id'].':(id,name,universal-name,square-logo-url,num-followers)?format=json';
+            $company_info = json_decode($this->service->request($path), true);
+
+            $pages[$company['id']] = Page::create($mapping, $company_info);
+            $pages[$company['id']]->link = 'http://www.linkedin.com/company/'.$company_info['universalName'];
+            $pages[$company['id']]->provider = static::$provider_name;
+            $pages[$company['id']]->raw_response = $response;
         }
 
         return $pages;
