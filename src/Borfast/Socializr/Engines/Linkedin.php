@@ -27,22 +27,30 @@ class Linkedin extends AbstractEngine
 
     public function post(Post $post)
     {
-        $path = '/people/~/shares';
+        $path = '/people/~/shares?format=json';
         $method = 'POST';
-        $params = array(
-            'title' => $post->title,
-            'description' => $post->description,
-            'submitted-url' => $post->url,
-            'comment' => $post->body
-        );
+        $params = [
+            'visibility' => [
+                'code' => 'anyone'
+            ],
+            'comment' => $post->body,
+            'content' => [
+                'title' => $post->title,
+                'submitted-url' => $post->url,
+                'description' => $post->description,
+            ]
+        ];
+        $params = json_encode($params);
 
-        $result = $this->service->request($path, 'POST', $params);
+        $header = ['Content-Type' => 'application/json'];
+        $result = $this->service->request($path, $method, $params, $header);
 
         $response = new Response;
         $response->setRawResponse(json_encode($result));
         $response->setProvider(static::$provider_name);
         $result_json = json_decode($result);
-        $response->setPostId($result_json->id);
+        $response->setPostId($result_json->updateKey);
+        $response->setPostUrl($result_json->updateUrl);
 
         return $response;
     }

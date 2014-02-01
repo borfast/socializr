@@ -44,7 +44,7 @@ class LinkedinPage extends AbstractEngine
 
         // Linkedin API requires the Content-Type header set to application/json
         $header = ['Content-Type' => 'application/json'];
-        $result = $this->service->request($path, 'POST', $params, $header);
+        $result = $this->service->request($path, $method, $params, $header);
 
         $response = new Response;
         $response->setRawResponse(json_encode($result));
