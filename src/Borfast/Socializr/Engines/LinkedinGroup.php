@@ -52,8 +52,8 @@ class LinkedinGroup extends AbstractEngine
         $response->setRawResponse(json_encode($result));
         $response->setProvider(static::$provider_name);
         $result_json = json_decode($result);
-        $response->setPostId($result_json->id);
-        $response->setPostUrl($result_json->siteGroupPostUrl);
+        // $response->setPostId($result_json->id);
+        // $response->setPostUrl($result_json->siteGroupPostUrl);
 
         return $response;
     }
