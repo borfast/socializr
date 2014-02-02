@@ -7,6 +7,7 @@ use Borfast\Socializr\Post;
 use OAuth\Common\Storage\Session;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\Common\Storage\TokenStorageInterface;
+use OAuth\Common\Http\Client\CurlClient;
 use OAuth\ServiceFactory;
 
 abstract class AbstractEngine implements EngineInterface
@@ -18,6 +19,7 @@ abstract class AbstractEngine implements EngineInterface
     protected $service_factory;
     protected $service;
     protected $config = array();
+    protected $http_client;
 
     public function __construct(array $config, TokenStorageInterface $storage)
     {
@@ -45,7 +47,9 @@ abstract class AbstractEngine implements EngineInterface
             $this->config['scopes'] = explode(', ', $this->config['scopes']);
         }
 
-        $this->service_factory = new ServiceFactory();
+        $this->service_factory = new ServiceFactory;
+        $this->http_client = new CurlClient;
+        $this->service_factory->setHttpClient($this->http_client);
         $this->service = $this->service_factory->createService(
             static::$provider_name,
             $this->credentials,

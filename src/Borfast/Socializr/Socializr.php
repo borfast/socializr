@@ -2,7 +2,6 @@
 
 namespace Borfast\Socializr;
 
-use OAuth\OAuth1\Signature\Signature;
 use OAuth\Common\Storage\TokenStorageInterface;
 
 class Socializr
