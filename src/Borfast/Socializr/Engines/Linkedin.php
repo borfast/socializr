@@ -14,16 +14,6 @@ class Linkedin extends AbstractEngine
 {
     public static $provider_name = 'linkedin';
 
-    /**
-     * TODO: Need to use the state parameter to prevent CSRF.
-     * Store it in session and confirm that it matches once the user returns.
-     */
-    public function authorize(array $params = array())
-    {
-        $params = array_merge($params, ['state' => 'IHG45DS!$SGJOWJG#676D']);
-        parent::authorize($params);
-    }
-
 
     public function post(Post $post)
     {
