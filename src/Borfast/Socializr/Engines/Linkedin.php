@@ -98,14 +98,16 @@ class Linkedin extends AbstractEngine
         ];
 
         // Make the page IDs available as the array keys and get their picture
-        foreach ($companies['values'] as $company) {
-            $path = '/companies/'.$company['id'].':(id,name,universal-name,square-logo-url,num-followers)?format=json';
-            $company_info = json_decode($this->service->request($path), true);
+        if (!empty($companies['values'])) {
+            foreach ($companies['values'] as $company) {
+                $path = '/companies/'.$company['id'].':(id,name,universal-name,square-logo-url,num-followers)?format=json';
+                $company_info = json_decode($this->service->request($path), true);
 
-            $pages[$company['id']] = Page::create($mapping, $company_info);
-            $pages[$company['id']]->link = 'http://www.linkedin.com/company/'.$company_info['universalName'];
-            $pages[$company['id']]->provider = static::$provider_name;
-            $pages[$company['id']]->raw_response = $response;
+                $pages[$company['id']] = Page::create($mapping, $company_info);
+                $pages[$company['id']]->link = 'http://www.linkedin.com/company/'.$company_info['universalName'];
+                $pages[$company['id']]->provider = static::$provider_name;
+                $pages[$company['id']]->raw_response = $response;
+            }
         }
 
         return $pages;
@@ -128,10 +130,12 @@ class Linkedin extends AbstractEngine
         ];
 
         // Make the page IDs available as the array keys and get their picture
-        foreach ($groups['values'] as $group) {
-            $group_pages[$group['_key']] = Page::create($mapping, $group['group']);
-            $group_pages[$group['_key']]->provider = static::$provider_name;
-            $group_pages[$group['_key']]->raw_response = $response;
+        if (!empty($groups['values'])) {
+            foreach ($groups['values'] as $group) {
+                $group_pages[$group['_key']] = Page::create($mapping, $group['group']);
+                $group_pages[$group['_key']]->provider = static::$provider_name;
+                $group_pages[$group['_key']]->raw_response = $response;
+            }
         }
 
         return $group_pages;
