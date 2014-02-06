@@ -116,11 +116,11 @@ class Linkedin extends AbstractEngine
 
     public function getGroups()
     {
-        $path = '/people/~/group-memberships:(group:(id,name,site-group-url,small-logo-url,num-members))?membership-state=owner&format=json';
+        $path = '/people/~/group-memberships:(group:(id,name,site-group-url,small-logo-url,num-members,relation-to-viewer))?&format=json';
         $response = $this->service->request($path);
         $groups = json_decode($response, true);
 
-        $group_pages = [];
+        $group_ = [];
 
         $mapping = [
             'id' => 'id',
@@ -132,9 +132,18 @@ class Linkedin extends AbstractEngine
         // Make the page IDs available as the array keys and get their picture
         if (!empty($groups['values'])) {
             foreach ($groups['values'] as $group) {
-                $group_pages[$group['_key']] = Page::create($mapping, $group['group']);
+                $group_pages[$group['_key']] = Group::create($mapping, $group['group']);
                 $group_pages[$group['_key']]->provider = static::$provider_name;
                 $group_pages[$group['_key']]->raw_response = $response;
+
+                // Let's check if our user can post to this group.
+                // Thank you for this wonder, LinkedIn! It's so fun parsing infinitely nested arrays...
+                $actions = $group['group']['relationToViewer']['availableActions']['values'];
+                array_walk($actions, function ($value, $key) use ($group, $group_pages) {
+                    if ($value['code'] === 'add-post') {
+                        $group_pages[$group['_key']]->can_post = true;
+                    }
+                });
             }
         }
 
