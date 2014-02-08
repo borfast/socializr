@@ -4,6 +4,7 @@ namespace Borfast\Socializr\Engines;
 
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
+use Borfast\Socializr\Page;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
@@ -103,24 +104,30 @@ class Facebook extends AbstractEngine
         return $response;
     }
 
-    public function getFacebookPages()
+    public function getPages()
     {
-        $path = '/'.$this->getUid().'/accounts';
+        $path = '/'.$this->getUid().'/accounts?fields=name,picture,access_token,id,can_post,likes,link,username';
         $method = 'GET';
+        $response = json_decode($this->service->request($path, $method), true);
 
-        $response = json_decode($this->service->request($path, $method));
-        $pages = array(
-            'paging' => $response->paging,
-            'pages' => array()
-        );
+        $pages = [];
+
+        $mapping = [
+            'id' => 'id',
+            'name' => 'name',
+            'link' => 'link',
+            'can_post' => 'can_post',
+            'access_token' => 'access_token'
+        ];
 
         // Make the page IDs available as the array keys
-        foreach ($response->data as $page) {
-            $path = '/'.$page->id.'?fields=picture';
-            $picture = json_decode($this->service->request($path, $method));
-            $page->picture = $picture->picture->data->url;
-            $pages['pages'][$page->id] = $page;
-            $pages['pages'][$page->id]->link = 'https://www.facebook.com/'.$page->id;
+        if (!empty($response['data'])) {
+            foreach ($response['data'] as $page) {
+                $pages[$page['id']] = Page::create($mapping, $page);
+                $pages[$page['id']]->picture = $page['picture']['data']['url'];
+                $pages[$page['id']]->provider = static::$provider_name;
+                $pages[$page['id']]->raw_response = $response;
+            }
         }
 
         return $pages;

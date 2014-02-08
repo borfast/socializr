@@ -100,9 +100,6 @@ class Linkedin extends AbstractEngine
         // Make the page IDs available as the array keys and get their picture
         if (!empty($companies['values'])) {
             foreach ($companies['values'] as $company) {
-                // $path = '/companies/'.$company['id'].':(id,name,universal-name,square-logo-url,num-followers)?format=json';
-                // $company_info = json_decode($this->service->request($path), true);
-
                 $pages[$company['id']] = Page::create($mapping, $company);
                 $pages[$company['id']]->link = 'http://www.linkedin.com/company/'.$company['universalName'];
                 $pages[$company['id']]->provider = static::$provider_name;

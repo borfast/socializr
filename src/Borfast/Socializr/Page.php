@@ -9,6 +9,7 @@ class Page
     public $picture;
     public $link;
     public $access_token;
+    public $can_post = false;
 
     public $provider;
     public $raw_response;
