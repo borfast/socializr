@@ -117,7 +117,7 @@ class Linkedin extends AbstractEngine
         $response = $this->service->request($path);
         $groups = json_decode($response, true);
 
-        $group_ = [];
+        $group_pages = [];
 
         $mapping = [
             'id' => 'id',
