@@ -63,8 +63,16 @@ class Linkedin extends AbstractEngine
     public function getProfile($uid = null)
     {
         $path = '/people/~:(id,first-name,last-name,maiden-name,public-profile-url,formatted-name,num-connections,email-address,num-recommenders)?format=json';
-        $response = $this->service->request($path);
-        $profile_json = json_decode($response, true);
+        $result = $this->service->request($path);
+
+        // The response comes in JSON
+        $json_result = json_decode($result, true);
+
+        if (isset($json_result['status']) && $json_result['status'] != 200) {
+            $msg = "Error getting Linkedin profile. Error code from Linkedin: %s. Error message from Linkedin: %s";
+            $msg = sprintf($msg, $json_result['errorCode'], $json_result['message']);
+            throw new \Exception($msg, $json_result['status']);
+        }
 
         $mapping = [
             'id' => 'id',
@@ -77,9 +85,9 @@ class Linkedin extends AbstractEngine
             'link' => 'publicProfileUrl'
         ];
 
-        $profile = Profile::create($mapping, $profile_json);
+        $profile = Profile::create($mapping, $json_result);
         $profile->provider = static::$provider_name;
-        $profile->raw_response = $response;
+        $profile->raw_response = $result;
 
         return $profile;
     }
@@ -94,8 +102,18 @@ class Linkedin extends AbstractEngine
     public function getPages()
     {
         $path = '/companies:(id,name,universal-name,square-logo-url,num-followers)?is-company-admin=true&format=json';
-        $response = $this->service->request($path);
-        $companies = json_decode($response, true);
+        $result = $this->service->request($path);
+
+        // The response comes in JSON
+        $json_result = json_decode($result, true);
+
+        if (isset($json_result['status']) && $json_result['status'] != 200) {
+            $msg = "Error getting Linkedin profile. Error code from Linkedin: %s. Error message from Linkedin: %s";
+            $msg = sprintf($msg, $json_result['errorCode'], $json_result['message']);
+            throw new \Exception($msg, $json_result['status']);
+        }
+
+        $json_result = json_decode($result, true);
 
         $pages = [];
 
@@ -107,12 +125,12 @@ class Linkedin extends AbstractEngine
         ];
 
         // Make the page IDs available as the array keys and get their picture
-        if (!empty($companies['values'])) {
-            foreach ($companies['values'] as $company) {
+        if (!empty($json_result['values'])) {
+            foreach ($json_result['values'] as $company) {
                 $pages[$company['id']] = Page::create($mapping, $company);
                 $pages[$company['id']]->link = 'http://www.linkedin.com/company/'.$company['universalName'];
                 $pages[$company['id']]->provider = static::$provider_name;
-                $pages[$company['id']]->raw_response = $response;
+                $pages[$company['id']]->raw_response = $result;
             }
         }
 
