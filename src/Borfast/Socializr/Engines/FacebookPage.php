@@ -38,6 +38,12 @@ class FacebookPage extends AbstractEngine
         );
         $result = $facebook->api('/'.$this->page_id.'/feed', 'POST', $params);
 
+        // If there's no ID, the post didn't go through
+        if (!isset($result['id'])) {
+            $msg = "Error posting to Facebook page. TODO: Check an actual error message to see if there's any information there.";
+            throw new \Exception($msg, 1);
+        }
+
         $response = new Response;
         $response->setRawResponse(json_encode($result));
         $response->setProvider('Facebook');

@@ -26,8 +26,17 @@ class Facebook extends AbstractEngine
 
         $result = $this->service->request($path, 'POST', $params);
 
+        // The response comes in JSON
+        $json_result = json_decode($result, true);
+
+        // If there's no ID, the post didn't go through
+        if (!isset($json_result['id'])) {
+            $msg = "Error posting to Facebook profile. TODO: Check an actual error message to see if there's any information there.";
+            throw new \Exception($msg, 1);
+        }
+
         $response = new Response;
-        $response->setRawResponse(json_encode($result));
+        $response->setRawResponse($result); // This is already JSON.
         $response->setProvider('Facebook');
         $result_json = json_decode($result);
         $response->setPostId($result_json->id);

@@ -35,6 +35,15 @@ class LinkedinPage extends AbstractEngine
         $header = ['Content-Type' => 'application/json'];
         $result = $this->service->request($path, $method, $params, $header);
 
+        // The response comes in JSON
+        $json_result = json_decode($result, true);
+
+        if (isset($json_result['status']) && $json_result['status'] != 200) {
+            $msg = "Error posting to Linkedin page. Error code from Linkedin: %s. Error message from Linkedin: %s";
+            $msg = sprintf($msg, $json_result['errorCode'], $json_result['message']);
+            throw new \Exception($msg, $json_result['status']);
+        }
+
         $response = new Response;
         $response->setRawResponse(json_encode($result));
         $response->setProvider(static::$provider_name);
