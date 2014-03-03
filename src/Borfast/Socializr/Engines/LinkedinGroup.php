@@ -9,6 +9,8 @@ use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
 
+use \Requests;
+
 class LinkedinGroup extends AbstractEngine
 {
     public static $provider_name = 'linkedin';
@@ -16,12 +18,10 @@ class LinkedinGroup extends AbstractEngine
     public function post(Post $post)
     {
         $group_id = $post->options['group_id'];
-        $path = '/groups/'.$group_id.'/posts?format=json';
+        $token = $this->service->getStorage()->retrieveAccessToken('Linkedin')->getAccessToken();
+        $path = '/groups/'.$group_id.'/posts?format=json&oauth2_access_token='.$token;
         $method = 'POST';
         $params = array(
-            // 'visibility' => [
-            //     'code' => 'anyone'
-            // ],
             'title' => $post->title,
             'summary' => $post->body,
             'content' => [
@@ -33,25 +33,22 @@ class LinkedinGroup extends AbstractEngine
         $params = json_encode($params);
 
 
+
         // Linkedin API requires the Content-Type header set to application/json
-        $header = ['Content-Type' => 'application/json'];
-        $result = $this->service->request($path, $method, $params, $header);
+        $headers = ['Content-Type' => 'application/json'];
+        $result = Requests::post('https://api.linkedin.com/v1'.$path, $headers, $params);
 
-        // The response comes in JSON
-        $json_result = json_decode($result, true);
-
-        if (isset($json_result['status']) && $json_result['status'] != 200) {
+        if ($result->success !== true) {
             $msg = "Error posting to Linkedin group. Error code from Linkedin: %s. Error message from Linkedin: %s";
-            $msg = sprintf($msg, $json_result['errorCode'], $json_result['message']);
-            throw new \Exception($msg, $json_result['status']);
+            $msg = sprintf($msg, $result->status_code, json_decode($result->body)->message);
+            throw new \Exception($msg, $result->status_code);
         }
 
         $response = new Response;
-        $response->setRawResponse($result); // This is already JSON.
+        $response->setRawResponse($result->raw); // This is already JSON.
         $response->setProvider(static::$provider_name);
-        $result_json = $json_result;
-        // $response->setPostId($result_json->id);
-        // $response->setPostUrl($result_json->siteGroupPostUrl);
+        // $response->setPostId($result->headers['x-li-uuid']);
+        // $response->setPostUrl($result->headers['location']);
 
         return $response;
     }
