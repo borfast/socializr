@@ -22,6 +22,9 @@
         }
     ],
     "autoload": {
-        "psr-0": {"Borfast\\": "src/"}
+        "psr-0": {
+            "Borfast": "src/",
+            "Requests": "vendor/rmccue/requests/library"
+        }
     }
 }
