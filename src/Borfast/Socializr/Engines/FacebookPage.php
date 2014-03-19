@@ -8,6 +8,7 @@ use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
 
+use \Requests;
 class FacebookPage extends AbstractEngine
 {
     public static $provider_name = 'Facebook';
@@ -50,18 +51,6 @@ class FacebookPage extends AbstractEngine
         $response->setPostId($result['id']);
 
         return $response;
-
-
-
-        // $path = '/'.$this->page_id.'/feed';
-        // $method = 'POST';
-        // $params = array(
-        //     'message' => $content,
-        // );
-
-        // $response = $this->service->request($path, 'POST', $params);
-
-        // return $response;
     }
 
 
@@ -93,30 +82,33 @@ class FacebookPage extends AbstractEngine
 
     public function getLikesCount()
     {
-        // $facebook = new \Facebook(array(
-        //     'appId'  => $this->config['consumer_key'],
-        //     'secret' => $this->config['consumer_secret'],
-        // ));
-        // $token = $this->storage->retrieveAccessToken('Facebook')->getAccessToken();
-        // $facebook->setAccessToken($token);
-        // $user = $facebook->getUser();
-        // // d($user);
-        // $profile = $facebook->api('/me');
-        // // d($profile);
-        // // $followers = $facebook->api('/fql?q=SELECT subscriber_id FROM subscription WHERE subscribed_id = me()');
-        // $followers = $facebook->api('/'.$user.'/subscribers');
-        // d($followers);
-        // exit;
-
-
-
-
         $path = '/'.$this->getUid();
         // $path = '/fql?q=SELECT friend_count FROM user WHERE uid = '.$this->getUid();
         $method = 'GET';
 
         $response = json_decode($this->service->request($path, $method));
         $response = $response->summary->total_count;
+
+        return $response;
+    }
+
+
+    public function addTab($page_id, $params)
+    {
+        $path = '/'.$page_id.'/tabs';
+        $method = 'POST';
+
+        // d($params);
+
+        // $headers = ['Content-Type' => 'application/json'];
+        // $url = 'https://graph.facebook.com'.$path;
+        // $result = Requests::post($url, $headers, $params);
+        // d($result);
+        // exit;
+
+        $response = json_decode($this->service->request($path, $method, $params));
+        // d($response);
+        // exit;
 
         return $response;
     }
