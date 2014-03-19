@@ -93,10 +93,11 @@ class FacebookPage extends AbstractEngine
     }
 
 
-    public function addTab($page_id, $params)
+    public function addTab($page_id, $app_id, array $params)
     {
         $path = '/'.$page_id.'/tabs';
         $method = 'POST';
+        $params['app_id'] = $app_id;
 
         // d($params);
 
