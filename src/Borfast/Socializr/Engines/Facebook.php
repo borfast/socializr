@@ -134,7 +134,27 @@ class Facebook extends AbstractEngine
     {
         $path = '/'.$this->getUid().'/accounts?fields=name,picture,access_token,id,can_post,likes,link,username';
         $method = 'GET';
-        $response = json_decode($this->service->request($path, $method), true);
+
+        $header = ['Content-Type' => 'application/json'];
+        $result = $this->service->request($path, $method);
+        $json_result = json_decode($result, true);
+
+        // Check for explicit errors
+        if (isset($json_result['error'])) {
+            // Unauthorized error
+            if ($json_result['error']['type'] == 'OAuthException') {
+                $msg = 'Error type: %s. Error code: %s. Error subcode: %s. Message: %s';
+                $msg = sprintf(
+                    $msg,
+                    $json_result['error']['type'],
+                    $json_result['error']['code'],
+                    $json_result['error']['error_subcode'],
+                    $json_result['error']['message']
+                );
+
+                throw new ExpiredTokenException($msg);
+            }
+        }
 
         $pages = [];
 
@@ -147,12 +167,12 @@ class Facebook extends AbstractEngine
         ];
 
         // Make the page IDs available as the array keys
-        if (!empty($response['data'])) {
-            foreach ($response['data'] as $page) {
+        if (!empty($json_result['data'])) {
+            foreach ($json_result['data'] as $page) {
                 $pages[$page['id']] = Page::create($mapping, $page);
                 $pages[$page['id']]->picture = $page['picture']['data']['url'];
                 $pages[$page['id']]->provider = static::$provider_name;
-                $pages[$page['id']]->raw_response = $response;
+                $pages[$page['id']]->raw_response = $result;
             }
         }
 

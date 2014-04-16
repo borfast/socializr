@@ -31,7 +31,6 @@ class FacebookPage extends AbstractEngine
 
         $header = ['Content-Type' => 'application/json'];
         $result = $this->service->request($path, $method, $params, $header);
-
         $json_result = json_decode($result, true);
 
         // Check for explicit errors
