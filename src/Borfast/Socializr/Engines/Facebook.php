@@ -8,6 +8,7 @@ use Borfast\Socializr\Page;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
+use OAuth\Common\Token\Exception\ExpiredTokenException;
 
 class Facebook extends AbstractEngine
 {
@@ -23,23 +24,39 @@ class Facebook extends AbstractEngine
             'link' => $post->url,
             'message' => $post->body,
         );
+        $params = json_encode($params);
 
-        $result = $this->service->request($path, 'POST', $params);
+        $header = ['Content-Type' => 'application/json'];
+        $result = $this->service->request($path, $method, $params, $header);
 
-        // The response comes in JSON
         $json_result = json_decode($result, true);
 
+        // Check for explicit errors
+        if (isset($json_result['error'])) {
+            // Unauthorized error
+            if ($json_result['error']['type'] == 'OAuthException') {
+                $msg = 'Error type: %s. Error code: %s. Error subcode: %s. Message: %s';
+                $msg = sprintf(
+                    $msg,
+                    $json_result['error']['type'],
+                    $json_result['error']['code'],
+                    $json_result['error']['error_subcode'],
+                    $json_result['error']['message']
+                );
+
+                throw new ExpiredTokenException($msg);
+            }
+        }
         // If there's no ID, the post didn't go through
         if (!isset($json_result['id'])) {
-            $msg = "Error posting to Facebook profile. TODO: Check an actual error message to see if there's any information there.";
+            $msg = "Unknown error posting to Facebook profile.";
             throw new \Exception($msg, 1);
         }
 
         $response = new Response;
         $response->setRawResponse($result); // This is already JSON.
         $response->setProvider('Facebook');
-        $result_json = json_decode($result);
-        $response->setPostId($result_json->id);
+        $response->setPostId($json_result['id']);
 
         return $response;
     }

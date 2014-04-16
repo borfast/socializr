@@ -52,7 +52,7 @@ class FacebookPage extends AbstractEngine
         }
         // If there's no ID, the post didn't go through
         else if (!isset($json_result['id'])) {
-            $msg = "Error posting to Facebook page. TODO: Check an actual error message to see if there's any information there.";
+            $msg = "Unknown error posting to Facebook page.";
             throw new \Exception($msg, 1);
         }
 
