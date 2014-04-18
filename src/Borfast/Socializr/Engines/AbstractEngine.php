@@ -61,10 +61,14 @@ abstract class AbstractEngine implements EngineInterface
 
     /**
      * The method that initiates the provider authentication process.
-     * It redirects to the provider's authentication/login page, which in turn
-     * will redirect back to us.
+     * It returns the provider's authentication/login page, which in turn
+     * will redirect back to us. We don't do the redirect ourselves because that
+     * means changing the application workflow and we don't want to get in the
+     * way of how people do things.
+     *
+     * @todo Use pluggable\swappable CSRF token storage.
      */
-    public function authorize(array $params = array())
+    public function authorizeUrl(array $params = array())
     {
         // Check if this provider uses an CSRF token at all.
         if (!empty($this->config['csrf_token_name'])) {
@@ -82,8 +86,7 @@ abstract class AbstractEngine implements EngineInterface
         }
 
         $url = $this->service->getAuthorizationUri($params);
-        header('Location: ' . $url);
-        exit;
+        return $url;
     }
 
 
