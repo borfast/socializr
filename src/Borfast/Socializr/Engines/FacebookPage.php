@@ -16,6 +16,9 @@ class FacebookPage extends AbstractEngine
     public static $provider_name = 'Facebook';
     protected $page_id;
 
+    /**
+     * @todo This is repeated from the Facebook class, we should keep this DRY.
+     */
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
         $headers = ['Content-Type' => 'application/json'];
@@ -24,18 +27,19 @@ class FacebookPage extends AbstractEngine
         $json_result = json_decode($result, true);
 
         if (isset($json_result['error'])) {
-            // Unauthorized error
-            if ($json_result['error']['type'] == 'OAuthException') {
-                $msg = 'Error type: %s. Error code: %s. Error subcode: %s. Message: %s';
-                $msg = sprintf(
-                    $msg,
-                    $json_result['error']['type'],
-                    $json_result['error']['code'],
-                    $json_result['error']['error_subcode'],
-                    $json_result['error']['message']
-                );
+            $msg = 'Error type: %s. Error code: %s. Error subcode: %s. Message: %s';
+            $msg = sprintf(
+                $msg,
+                $json_result['error']['type'],
+                $json_result['error']['code'],
+                $json_result['error']['error_subcode'],
+                $json_result['error']['message']
+            );
 
+            if ($json_result['error']['type'] == 'OAuthException') {
                 throw new ExpiredTokenException($msg);
+            } else {
+                throw new \Exception($msg);
             }
         }
 
