@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "lusitanian/oauth": "dev-master",
+        "lusitanian/oauth": "dev-fix_header_name",
         "facebook/php-sdk": "@stable",
         "rmccue/requests": ">=1.6"
     },
