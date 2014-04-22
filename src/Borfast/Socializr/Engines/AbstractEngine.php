@@ -63,8 +63,6 @@ abstract class AbstractEngine implements EngineInterface
     {
         if (empty($params)) {
             $params = null;
-        } else {
-            $params = json_encode($params);
         }
 
         $result = $this->service->request($path, $method, $params, $headers);

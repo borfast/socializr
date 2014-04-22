@@ -16,7 +16,6 @@ class Facebook extends AbstractEngine
 
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
-        $headers = ['Content-Type' => 'application/json'];
         $result = parent::request($path, $method, $params, $headers);
 
         $json_result = json_decode($result, true);
