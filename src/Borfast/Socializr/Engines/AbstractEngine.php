@@ -59,6 +59,20 @@ abstract class AbstractEngine implements EngineInterface
     }
 
 
+    public function request($path, $method = 'GET', $params = [], $headers = [])
+    {
+        if (empty($params)) {
+            $params = null;
+        } else {
+            json_encode($params);
+        }
+
+        $result = $this->service->request($path, $method, $params, $headers);
+
+        return $result;
+    }
+
+
     /**
      * The method that initiates the provider authentication process.
      * It returns the provider's authentication/login page, which in turn

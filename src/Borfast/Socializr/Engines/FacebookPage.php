@@ -16,24 +16,13 @@ class FacebookPage extends AbstractEngine
     public static $provider_name = 'Facebook';
     protected $page_id;
 
-    public function post(Post $post)
+    public function request($path, $method = 'GET', $params = [], $headers = [])
     {
-        $this->page_id = $post->options['page_id'];
-        $path = '/'.$this->page_id.'/feed';
-        $method = 'POST';
-        $params = array(
-            'caption' => $post->title,
-            'description' => $post->description,
-            'link' => $post->url,
-            'message' => $post->body,
-        );
-        $params = json_encode($params);
+        $headers = ['Content-Type' => 'application/json'];
+        $result = parent::request($path, $method, $params, $headers);
 
-        $header = ['Content-Type' => 'application/json'];
-        $result = $this->service->request($path, $method, $params, $header);
         $json_result = json_decode($result, true);
 
-        // Check for explicit errors
         if (isset($json_result['error'])) {
             // Unauthorized error
             if ($json_result['error']['type'] == 'OAuthException') {
@@ -49,8 +38,27 @@ class FacebookPage extends AbstractEngine
                 throw new ExpiredTokenException($msg);
             }
         }
+
+        return $result;
+    }
+
+    public function post(Post $post)
+    {
+        $this->page_id = $post->options['page_id'];
+        $path = '/'.$this->page_id.'/feed';
+        $method = 'POST';
+        $params = array(
+            'caption' => $post->title,
+            'description' => $post->description,
+            'link' => $post->url,
+            'message' => $post->body,
+        );
+
+        $result = $this->request($path, $method, $params);
+        $json_result = json_decode($result, true);
+
         // If there's no ID, the post didn't go through
-        else if (!isset($json_result['id'])) {
+        if (!isset($json_result['id'])) {
             $msg = "Unknown error posting to Facebook page.";
             throw new \Exception($msg, 1);
         }
@@ -71,8 +79,11 @@ class FacebookPage extends AbstractEngine
 
     public function getProfile($uid = null)
     {
-        $response = $this->service->request('/'.$uid);
-        return json_decode($response, true);
+        $path = '/'.$uid;
+        $result = $this->request($path);
+        $json_result = json_decode($result, true);
+
+        return $json_result;
     }
 
     /**
@@ -81,7 +92,6 @@ class FacebookPage extends AbstractEngine
     public function getStats($uid = null)
     {
         return $this->getLikesCount();
-        // return 0;
     }
 
     /****************************************************
@@ -93,10 +103,9 @@ class FacebookPage extends AbstractEngine
     public function getLikesCount()
     {
         $path = '/'.$this->getUid();
-        // $path = '/fql?q=SELECT friend_count FROM user WHERE uid = '.$this->getUid();
-        $method = 'GET';
+        $result = $this->request($path);
 
-        $response = json_decode($this->service->request($path, $method));
+        $response = json_decode($result);
         $response = $response->summary->total_count;
 
         return $response;
@@ -107,20 +116,12 @@ class FacebookPage extends AbstractEngine
     {
         $path = '/'.$page_id.'/tabs';
         $method = 'POST';
-        $params['app_id'] = $app_id;
-        $params['access_token'] = $page_access_token;
+        $params = [
+            'app_id' => $app_id,
+            'access_token' => $page_access_token
+        ];
 
-        // d($params);
-
-        // $headers = ['Content-Type' => 'application/json'];
-        // $url = 'https://graph.facebook.com'.$path;
-        // $result = Requests::post($url, $headers, $params);
-        // d($result);
-        // exit;
-
-        $response = json_decode($this->service->request($path, $method, $params));
-        // d($response);
-        // exit;
+        $response = json_decode($this->request($path, $method, $params));
 
         return $response;
     }

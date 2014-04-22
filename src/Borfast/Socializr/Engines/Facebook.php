@@ -14,24 +14,13 @@ class Facebook extends AbstractEngine
 {
     public static $provider_name = 'Facebook';
 
-    public function post(Post $post)
+    public function request($path, $method = 'GET', $params = [], $headers = [])
     {
-        $path = '/'.$this->getUid().'/feed';
-        $method = 'POST';
-        $params = array(
-            'caption' => $post->title,
-            'description' => $post->description,
-            'link' => $post->url,
-            'message' => $post->body,
-        );
-        $params = json_encode($params);
-
-        $header = ['Content-Type' => 'application/json'];
-        $result = $this->service->request($path, $method, $params, $header);
+        $headers = ['Content-Type' => 'application/json'];
+        $result = parent::request($path, $method, $params, $headers);
 
         $json_result = json_decode($result, true);
 
-        // Check for explicit errors
         if (isset($json_result['error'])) {
             // Unauthorized error
             if ($json_result['error']['type'] == 'OAuthException') {
@@ -47,6 +36,26 @@ class Facebook extends AbstractEngine
                 throw new ExpiredTokenException($msg);
             }
         }
+
+        return $result;
+    }
+
+
+    public function post(Post $post)
+    {
+        $path = '/'.$this->getUid().'/feed';
+        $method = 'POST';
+        $params = array(
+            'caption' => $post->title,
+            'description' => $post->description,
+            'link' => $post->url,
+            'message' => $post->body,
+        );
+
+        $result = $this->request($path, $method, $params);
+
+        $json_result = json_decode($result, true);
+
         // If there's no ID, the post didn't go through
         if (!isset($json_result['id'])) {
             $msg = "Unknown error posting to Facebook profile.";
@@ -69,8 +78,9 @@ class Facebook extends AbstractEngine
 
     public function getProfile($uid = null)
     {
-        $response = $this->service->request('/me');
-        $profile_json = json_decode($response, true);
+        $path = '/me';
+        $result = $this->request($path);
+        $json_result = json_decode($result, true);
 
         $mapping = [
             'id' => 'id',
@@ -83,9 +93,9 @@ class Facebook extends AbstractEngine
             'link' => 'link'
         ];
 
-        $profile = Profile::create($mapping, $profile_json);
+        $profile = Profile::create($mapping, $json_result);
         $profile->provider = static::$provider_name;
-        $profile->raw_response = $response;
+        $profile->raw_response = $result;
 
         return $profile;
     }
@@ -102,29 +112,10 @@ class Facebook extends AbstractEngine
      ***************************************************/
     public function getFriendsCount()
     {
-        // $facebook = new \Facebook(array(
-        //     'appId'  => $this->config['consumer_key'],
-        //     'secret' => $this->config['consumer_secret'],
-        // ));
-        // $token = $this->storage->retrieveAccessToken('Facebook')->getAccessToken();
-        // $facebook->setAccessToken($token);
-        // $user = $facebook->getUser();
-        // // d($user);
-        // $profile = $facebook->api('/me');
-        // // d($profile);
-        // // $followers = $facebook->api('/fql?q=SELECT subscriber_id FROM subscription WHERE subscribed_id = me()');
-        // $followers = $facebook->api('/'.$user.'/subscribers');
-        // d($followers);
-        // exit;
-
-
-
-
         $path = '/'.$this->getUid().'/subscribers';
-        // $path = '/fql?q=SELECT friend_count FROM user WHERE uid = '.$this->getUid();
-        $method = 'GET';
+        $result = $this->request($path);
 
-        $response = json_decode($this->service->request($path, $method));
+        $response = json_decode($result);
         $response = $response->summary->total_count;
 
         return $response;
@@ -133,28 +124,8 @@ class Facebook extends AbstractEngine
     public function getPages()
     {
         $path = '/'.$this->getUid().'/accounts?fields=name,picture,access_token,id,can_post,likes,link,username';
-        $method = 'GET';
-
-        $header = ['Content-Type' => 'application/json'];
-        $result = $this->service->request($path, $method);
+        $result = $this->request($path);
         $json_result = json_decode($result, true);
-
-        // Check for explicit errors
-        if (isset($json_result['error'])) {
-            // Unauthorized error
-            if ($json_result['error']['type'] == 'OAuthException') {
-                $msg = 'Error type: %s. Error code: %s. Error subcode: %s. Message: %s';
-                $msg = sprintf(
-                    $msg,
-                    $json_result['error']['type'],
-                    $json_result['error']['code'],
-                    $json_result['error']['error_subcode'],
-                    $json_result['error']['message']
-                );
-
-                throw new ExpiredTokenException($msg);
-            }
-        }
 
         $pages = [];
 
