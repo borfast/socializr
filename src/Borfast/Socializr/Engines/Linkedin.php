@@ -9,10 +9,39 @@ use Borfast\Socializr\Group;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
+use OAuth\Common\Token\Exception\ExpiredTokenException;
 
 class Linkedin extends AbstractEngine
 {
     public static $provider_name = 'linkedin';
+
+    public function request($path, $method = 'GET', $params = [], $headers = [])
+    {
+        $result = parent::request($path, $method, $params, $headers);
+
+        $json_result = json_decode($result, true);
+
+        // dd($json_result);
+
+        if (isset($json_result['status']) && $json_result['status'] != 200) {
+            $msg = 'Error accessing LinkedIn API. Status: %s. Error code: %s. Message: %s';
+            $msg = sprintf(
+                $msg,
+                $json_result['status'],
+                $json_result['errorCode'],
+                $json_result['message']
+            );
+
+            if ($json_result['status'] == 401) {
+                throw new ExpiredTokenException($msg);
+            } else {
+                throw new \Exception($msg);
+            }
+
+        }
+
+        return $result;
+    }
 
 
     public function post(Post $post)
@@ -32,17 +61,9 @@ class Linkedin extends AbstractEngine
         ];
         $params = json_encode($params);
 
-        $header = ['Content-Type' => 'application/json'];
-        $result = $this->service->request($path, $method, $params, $header);
-
-        // The response comes in JSON
+        $headers = ['Content-Type' => 'application/json'];
+        $result = $this->request($path, $method, $params, $headers);
         $json_result = json_decode($result, true);
-
-        if (isset($json_result['status']) && $json_result['status'] != 200) {
-            $msg = "Error posting to Linkedin profile. Error code from Linkedin: %s. Error message from Linkedin: %s";
-            $msg = sprintf($msg, $json_result['errorCode'], $json_result['message']);
-            throw new \Exception($msg, $json_result['status']);
-        }
 
         $response = new Response;
         $response->setRawResponse($result); // This is already JSON.
@@ -63,16 +84,8 @@ class Linkedin extends AbstractEngine
     public function getProfile($uid = null)
     {
         $path = '/people/~:(id,first-name,last-name,maiden-name,public-profile-url,formatted-name,num-connections,email-address,num-recommenders)?format=json';
-        $result = $this->service->request($path);
-
-        // The response comes in JSON
+        $result = $this->request($path);
         $json_result = json_decode($result, true);
-
-        if (isset($json_result['status']) && $json_result['status'] != 200) {
-            $msg = "Error getting Linkedin profile. Error code from Linkedin: %s. Error message from Linkedin: %s";
-            $msg = sprintf($msg, $json_result['errorCode'], $json_result['message']);
-            throw new \Exception($msg, $json_result['status']);
-        }
 
         $mapping = [
             'id' => 'id',
@@ -102,17 +115,7 @@ class Linkedin extends AbstractEngine
     public function getPages()
     {
         $path = '/companies:(id,name,universal-name,square-logo-url,num-followers)?is-company-admin=true&format=json';
-        $result = $this->service->request($path);
-
-        // The response comes in JSON
-        $json_result = json_decode($result, true);
-
-        if (isset($json_result['status']) && $json_result['status'] != 200) {
-            $msg = "Error getting Linkedin profile. Error code from Linkedin: %s. Error message from Linkedin: %s";
-            $msg = sprintf($msg, $json_result['errorCode'], $json_result['message']);
-            throw new \Exception($msg, $json_result['status']);
-        }
-
+        $result = $this->request($path);
         $json_result = json_decode($result, true);
 
         $pages = [];
@@ -141,14 +144,8 @@ class Linkedin extends AbstractEngine
     public function getGroups()
     {
         $path = '/people/~/group-memberships:(group:(id,name,site-group-url,small-logo-url,num-members,relation-to-viewer))?&format=json&count=999';
-        $response = $this->service->request($path);
+        $response = $this->request($path);
         $groups = json_decode($response, true);
-
-        if (isset($groups['status']) && $groups['status'] != 200) {
-            $msg = "Error retrieving Linkedin groups. Error code from Linkedin: %s. Error message from Linkedin: %s";
-            $msg = sprintf($msg, $groups['errorCode'], $groups['message']);
-            throw new \Exception($msg, 1);
-        }
 
         $group_pages = [];
 
