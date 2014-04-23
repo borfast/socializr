@@ -35,11 +35,17 @@ class Twitter extends AbstractEngine
     }
 
 
-    public function authorize(array $params = array())
+    /**
+     * Twitter needs an extra step for authentication before providing an
+     * authorization URL.
+     *
+     * @author Raúl Santos
+     */
+    public function authorizeUrl(array $params = array())
     {
         $token = $this->service->requestRequestToken();
         $extra = array('oauth_token' => $token->getRequestToken());
-        parent::authorize($extra);
+        return parent::authorizeUrl($extra);
     }
 
 
