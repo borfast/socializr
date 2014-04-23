@@ -7,6 +7,7 @@ use Borfast\Socializr\Profile;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
+use OAuth\Common\Token\Exception\ExpiredTokenException;
 
 class Twitter extends AbstractEngine
 {
@@ -14,6 +15,43 @@ class Twitter extends AbstractEngine
 
     protected $user_id;
     protected $screen_name;
+
+
+    public function request($path, $method = 'GET', $params = [], $headers = [])
+    {
+        $result = parent::request($path, $method, $params, $headers);
+        $json_result = json_decode($result, true);
+
+        // Since Twitter can return more than one error, we'll need to check if
+        // we have an expired token separately.
+        $error_type = 'generic';
+        if (isset($json_result['errors'])) {
+            $errors = $json_result['errors'];
+            $msg = 'Error accessing Twitter. Error count: %s.';
+            $msg = sprintf($msg, count($errors));
+            $i = 0;
+
+            foreach ($errors as $error) {
+                $msg2 = "\nError %d -- Error code: %s. Message: %s";
+                $msg .= sprintf($msg2, $i, $error['code'], $error['message']);
+                $i++;
+
+                // If it's an expired token...
+                if ($error['code'] == 89) {
+                    $error_type = 'expired';
+                }
+            }
+
+            if ($error_type == 'expired') {
+                throw new ExpiredTokenException($msg);
+            } else {
+                throw new \Exception($msg);
+            }
+        }
+
+        return $result;
+    }
+
 
     public function post(Post $post)
     {
@@ -23,7 +61,7 @@ class Twitter extends AbstractEngine
             'status' => $post->body,
         );
 
-        $result = $this->service->request($path, 'POST', $params);
+        $result = $this->request($path, $method, $params);
 
         $response = new Response;
         $response->setRawResponse(json_encode($result));
@@ -73,8 +111,9 @@ class Twitter extends AbstractEngine
 
     public function getProfile($uid = null)
     {
-        $response = $this->service->request('/users/show.json?user_id='.$uid);
-        $profile_json = json_decode($response, true);
+        $path = '/users/show.json?user_id='.$uid;
+        $result = $this->request($path);
+        $profile_json = json_decode($result, true);
 
         $mapping = [
             'id' => 'id_str',
@@ -89,14 +128,15 @@ class Twitter extends AbstractEngine
 
         $profile = Profile::create($mapping, $profile_json);
         $profile->provider = static::$provider_name;
-        $profile->raw_response = $response;
+        $profile->raw_response = $result;
 
         return $profile;
     }
 
     public function getStats($uid = null)
     {
-        $response = $this->service->request('/followers/ids.json?user_id='.$uid);
+        $path = '/followers/ids.json?user_id='.$uid;
+        $response = $this->request($path);
         $response = json_decode($response);
         $response = count($response->ids);
         return $response;
