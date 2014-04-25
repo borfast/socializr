@@ -17,6 +17,7 @@ class Linkedin extends AbstractEngine
 
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
+        $headers['Content-Type'] = 'application/json';
         $result = parent::request($path, $method, $params, $headers);
 
         $json_result = json_decode($result, true);
@@ -32,7 +33,7 @@ class Linkedin extends AbstractEngine
                 $json_result['message']
             );
 
-            if ($json_result['status'] == 401) {
+            if ($json_result['status'] == '401') {
                 throw new ExpiredTokenException($msg);
             } else {
                 throw new \Exception($msg);
@@ -61,8 +62,7 @@ class Linkedin extends AbstractEngine
         ];
         $params = json_encode($params);
 
-        $headers = ['Content-Type' => 'application/json'];
-        $result = $this->request($path, $method, $params, $headers);
+        $result = $this->request($path, $method, $params);
         $json_result = json_decode($result, true);
 
         $response = new Response;
@@ -127,7 +127,7 @@ class Linkedin extends AbstractEngine
             'link' => 'publicProfileUrl'
         ];
 
-        // Make the page IDs available as the array keys and get their picture
+        // Make th epage IDs available as the array keys and get their picture
         if (!empty($json_result['values'])) {
             foreach ($json_result['values'] as $company) {
                 $pages[$company['id']] = Page::create($mapping, $company);
