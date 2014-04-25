@@ -103,6 +103,16 @@ abstract class AbstractEngine implements EngineInterface
 
 
     /**
+     * For when the OAuth token expires and we need to refresh it.
+     */
+    public function refreshAccessToken()
+    {
+        $token = $this->storage->retrieveAccessToken(static::$provider_name);
+        $this->service->refreshAccessToken($token);
+    }
+
+
+    /**
      * Check that the CSRF token
      */
     public function checkCsrf(array $get)
