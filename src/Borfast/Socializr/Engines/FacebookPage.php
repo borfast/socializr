@@ -26,12 +26,18 @@ class FacebookPage extends AbstractEngine
         $json_result = json_decode($result, true);
 
         if (isset($json_result['error'])) {
+            if (isset($json_result['error']['error_subcode'])) {
+                $error_subcode = $json_result['error']['error_subcode'];
+            } else {
+                $error_subcode = 'n/a';
+            }
+
             $msg = 'Error type: %s. Error code: %s. Error subcode: %s. Message: %s';
             $msg = sprintf(
                 $msg,
                 $json_result['error']['type'],
                 $json_result['error']['code'],
-                $json_result['error']['error_subcode'],
+                $error_subcode,
                 $json_result['error']['message']
             );
 
