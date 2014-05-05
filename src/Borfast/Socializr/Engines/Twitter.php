@@ -79,11 +79,11 @@ class Twitter extends AbstractEngine
      *
      * @author Raúl Santos
      */
-    public function authorizeUrl(array $params = array())
+    public function getAuthorizationUri(array $params = array())
     {
         $token = $this->service->requestRequestToken();
         $extra = array('oauth_token' => $token->getRequestToken());
-        return parent::authorizeUrl($extra);
+        return parent::getAuthorizationUri($extra);
     }
 
 

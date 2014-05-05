@@ -4,7 +4,7 @@ namespace Borfast\Socializr\Engines;
 
 interface EngineInterface
 {
-	public function authorizeUrl(array $params = array());
+	public function getAuthorizationUri(array $params = array());
 	public function storeOauthToken($params);
 	public function getSessionData();
 

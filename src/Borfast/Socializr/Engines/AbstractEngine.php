@@ -80,7 +80,7 @@ abstract class AbstractEngine implements EngineInterface
      *
      * @todo Use pluggable\swappable CSRF token storage.
      */
-    public function authorizeUrl(array $params = array())
+    public function getAuthorizationUri(array $params = array())
     {
         // Check if this provider uses an CSRF token at all.
         if (!empty($this->config['csrf_token_name'])) {
