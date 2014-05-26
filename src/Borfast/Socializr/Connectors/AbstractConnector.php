@@ -1,6 +1,6 @@
 <?php
 
-namespace Borfast\Socializr\Engines;
+namespace Borfast\Socializr\Connectors;
 
 use Borfast\Socializr\Post;
 
@@ -10,7 +10,7 @@ use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\Common\Http\Client\CurlClient;
 use OAuth\ServiceFactory;
 
-abstract class AbstractEngine implements EngineInterface
+abstract class AbstractConnector implements ConnectorInterface
 {
     public static $provider_name;
 
@@ -161,7 +161,7 @@ abstract class AbstractEngine implements EngineInterface
      * called after the authorize() method. Retrieves the auth token from the
      * provider's response and store it.
      *
-     * @params array $params The URL params. Each engine knows how to get the
+     * @params array $params The URL params. Each Connector knows how to get the
      * token for its specific provider.
      */
     public function storeOauthToken($params)

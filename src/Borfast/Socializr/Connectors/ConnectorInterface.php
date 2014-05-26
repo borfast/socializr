@@ -1,8 +1,8 @@
 <?php
 
-namespace Borfast\Socializr\Engines;
+namespace Borfast\Socializr\Connectors;
 
-interface EngineInterface
+interface ConnectorInterface
 {
     public function getAuthorizationUri(array $params = array());
     public function storeOauthToken($params);
