@@ -4,6 +4,7 @@ namespace Borfast\Socializr\Engines;
 
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
+use Borfast\Socializr\Page;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
@@ -83,7 +84,8 @@ class FacebookPage extends AbstractEngine
 
     public function getUid()
     {
-        return $this->page_id;
+        $profile = $this->getProfile();
+        return $profile['id'];
     }
 
     public function getProfile($uid = null)
@@ -92,7 +94,19 @@ class FacebookPage extends AbstractEngine
         $result = $this->request($path);
         $json_result = json_decode($result, true);
 
-        return $json_result;
+        $mapping = [
+            'id' => 'id',
+            'name' => 'name',
+            'link' => 'link',
+            'can_post' => 'can_post',
+            'access_token' => 'access_token'
+        ];
+
+        $page = Page::create($mapping, $json_result);
+        $page->provider = static::$provider_name;
+        $page->raw_response = $result;
+
+        return $page;
     }
 
     /**

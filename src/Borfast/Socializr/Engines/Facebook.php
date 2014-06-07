@@ -9,10 +9,29 @@ use Borfast\Socializr\Response;
 use Borfast\Socializr\Engines\AbstractEngine;
 use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\Common\Token\Exception\ExpiredTokenException;
+use OAuth\Common\Http\Uri\Uri;
 
 class Facebook extends AbstractEngine
 {
     public static $provider_name = 'Facebook';
+
+    /**
+     * Constructor for Facebook Graph API v2.0. Not used yet. The only
+     * difference is that it passes the 2.0 API URI to the OAuth service.
+     */
+    // public function __construct(array $config, TokenStorageInterface $storage)
+    // {
+    //     parent::__construct($config, $storage);
+
+    //     $uri = new Uri('https://graph.facebook.com/v2.0/');
+    //     $this->service = $this->service_factory->createService(
+    //         static::$provider_name,
+    //         $this->credentials,
+    //         $this->storage,
+    //         $this->config['scopes'],
+    //         $uri
+    //     );
+    // }
 
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
@@ -98,6 +117,7 @@ class Facebook extends AbstractEngine
             'middle_name' => 'middle_name',
             'last_name' => 'last_name',
             'username' => 'username',
+            // 'username' => 'email', // Facebook Graph API 2.0 doesn't have username
             'link' => 'link'
         ];
 
