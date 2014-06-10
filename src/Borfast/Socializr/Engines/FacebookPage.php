@@ -55,6 +55,7 @@ class FacebookPage extends AbstractEngine
     public function post(Post $post)
     {
         $this->page_id = $post->options['page_id'];
+        $access_token = $post->options['page_access_token'];
         $path = '/'.$this->page_id.'/feed';
         $method = 'POST';
         $params = array(
@@ -62,6 +63,7 @@ class FacebookPage extends AbstractEngine
             'description' => $post->description,
             'link' => $post->url,
             'message' => $post->body,
+            'access_token' => $access_token
         );
 
         $result = $this->request($path, $method, $params);
