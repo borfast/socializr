@@ -169,8 +169,24 @@ abstract class AbstractEngine implements EngineInterface
         $this->service->requestAccessToken($params['code']);
     }
 
+
+    // These should be implementation-specific.
+    public function getProfile($uid = null)
+    {
+        throw new Exception('Trying to get a Profile from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using. For example, trying to get a Facebook Profile from a FacebookPage connector.');
+    }
+
+    public function getPage($uid = null)
+    {
+        throw new Exception('Trying to get a Page from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using. For example, trying to get a Facebook Page from a FacebookGroup connector.');
+    }
+
+    public function getGroup($uid = null)
+    {
+        throw new Exception('Trying to get a Group from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using. For example, trying to get a Facebook Group from a FacebookPage connector.');
+    }
+
     abstract public function post(Post $post);
     abstract public function getUid();
-    abstract public function getProfile($uid = null);
     abstract public function getStats($uid = null);
 }
