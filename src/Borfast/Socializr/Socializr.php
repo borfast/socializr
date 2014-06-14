@@ -25,9 +25,9 @@ class Socializr
      * Get the specified provider engine. This method tries to get an existing
      * instance first and only creates a new one if it doesn't already exist.
      *
-     * @return EngineInterface The engine for the requested provider.
+     * @return ConnectorInterface The engine for the requested provider.
      */
-    public function getProviderEngine($provider, TokenStorageInterface $storage, array $options = array())
+    public function getConnector($provider, TokenStorageInterface $storage, array $options = array())
     {
         // Only allow configured providers.
         if (!array_key_exists($provider, $this->config['providers'])) {
@@ -39,9 +39,9 @@ class Socializr
             $this->config['providers'][$provider]['callback'] = $this->config['callback'];
         }
 
-        // Only create a new ProviderEngine instance if necessary.
+        // Only create a new Connector instance if necessary.
         if (!isset($this->engines[$provider])) {
-            $provider_engine = '\\Borfast\\Socializr\\Engines\\'.$provider;
+            $provider_engine = '\\Borfast\\Socializr\\Connectors\\'.$provider;
             $provider_config = $this->config['providers'][$provider];
             $this->engines[$provider] = new $provider_engine($provider_config, $storage);
         }
@@ -80,7 +80,7 @@ class Socializr
      *******************/
     public function getFacebookPages()
     {
-        $engine = $this->getProviderEngine('Facebook');
+        $engine = $this->getConnector('Facebook');
         return $engine->getFacebookPages();
     }
 }

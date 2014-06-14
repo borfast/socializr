@@ -1,17 +1,17 @@
 <?php
 
-namespace Borfast\Socializr\Engines;
+namespace Borfast\Socializr\Connectors;
 
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Page;
 use Borfast\Socializr\Group;
 use Borfast\Socializr\Response;
-use Borfast\Socializr\Engines\AbstractEngine;
+use Borfast\Socializr\Connectors\AbstractConnector;
 use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\Common\Token\Exception\ExpiredTokenException;
 
-class Linkedin extends AbstractEngine
+class Linkedin extends AbstractConnector
 {
     public static $provider_name = 'linkedin';
 

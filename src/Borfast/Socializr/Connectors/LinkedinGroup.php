@@ -1,17 +1,17 @@
 <?php
 
-namespace Borfast\Socializr\Engines;
+namespace Borfast\Socializr\Connectors;
 
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Page;
 use Borfast\Socializr\Response;
-use Borfast\Socializr\Engines\AbstractEngine;
+use Borfast\Socializr\Connectors\AbstractConnector;
 use OAuth\Common\Storage\TokenStorageInterface;
 
 use \Requests;
 
-class LinkedinGroup extends AbstractEngine
+class LinkedinGroup extends AbstractConnector
 {
     public static $provider_name = 'linkedin';
 
