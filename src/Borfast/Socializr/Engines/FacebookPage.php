@@ -90,7 +90,7 @@ class FacebookPage extends AbstractEngine
         return $profile['id'];
     }
 
-    public function getProfile($uid = null)
+    public function getPage($uid = null)
     {
         $path = '/'.$uid;
         $result = $this->request($path);
@@ -110,6 +110,7 @@ class FacebookPage extends AbstractEngine
 
         return $page;
     }
+
 
     /**
      * Get the number of likes this page has.
