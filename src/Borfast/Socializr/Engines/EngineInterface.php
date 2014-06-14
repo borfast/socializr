@@ -10,7 +10,10 @@ interface EngineInterface
 
     public function get($path, $params = array());
 
-    public function getUid();
     public function getProfile($uid = null);
+    public function getPage($uid = null);
+    public function getGroup($uid = null);
+
+    public function getUid();
     public function getStats($uid = null);
 }
