@@ -112,7 +112,7 @@ class Linkedin extends AbstractConnector
     }
 
 
-    public function getPages()
+    public function getPages($uid = null)
     {
         $path = '/companies:(id,name,universal-name,square-logo-url,num-followers)?is-company-admin=true&format=json';
         $result = $this->request($path);
@@ -141,7 +141,7 @@ class Linkedin extends AbstractConnector
     }
 
 
-    public function getGroups()
+    public function getGroups($uid = null)
     {
         $path = '/people/~/group-memberships:(group:(id,name,site-group-url,small-logo-url,num-members,relation-to-viewer))?&format=json&count=999';
         $response = $this->request($path);
