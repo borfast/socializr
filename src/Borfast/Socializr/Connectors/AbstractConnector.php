@@ -173,17 +173,27 @@ abstract class AbstractConnector implements ConnectorInterface
     // These should be implementation-specific.
     public function getProfile($uid = null)
     {
-        throw new Exception('Trying to get a Profile from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using. For example, trying to get a Facebook Profile from a FacebookPage connector.');
+        throw new \Exception('Trying to get a Profile from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using. For example, trying to get a Facebook Profile from a FacebookPage connector.');
     }
 
     public function getPage($uid = null)
     {
-        throw new Exception('Trying to get a Page from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using. For example, trying to get a Facebook Page from a FacebookGroup connector.');
+        throw new \Exception('Trying to get a Page from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using. For example, trying to get a Facebook Page from a FacebookGroup connector.');
+    }
+
+    public function getPages($uid = null)
+    {
+        throw new \Exception('Trying to get Pages from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using.');
     }
 
     public function getGroup($uid = null)
     {
-        throw new Exception('Trying to get a Group from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using. For example, trying to get a Facebook Group from a FacebookPage connector.');
+        throw new \Exception('Trying to get a Group from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using. For example, trying to get a Facebook Group from a FacebookPage connector.');
+    }
+
+    public function getGroups($uid = null)
+    {
+        throw new \Exception('Trying to get Groups from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using.');
     }
 
     abstract public function post(Post $post);

@@ -13,6 +13,8 @@ interface ConnectorInterface
     public function getProfile($uid = null);
     public function getPage($uid = null);
     public function getGroup($uid = null);
+    public function getPages($uid = null);
+    public function getGroups($uid = null);
 
     public function getUid();
     public function getStats($uid = null);
