@@ -133,23 +133,7 @@ class Facebook extends AbstractConnector
         return $this->getFriendsCount();
     }
 
-    /****************************************************
-     *
-     * From here on these are Facebook-specific methods.
-     *
-     ***************************************************/
-    public function getFriendsCount()
-    {
-        $path = '/'.$this->getUid().'/subscribers';
-        $result = $this->request($path);
-
-        $response = json_decode($result);
-        $response = $response->summary->total_count;
-
-        return $response;
-    }
-
-    public function getPages()
+    public function getPages($uid = null)
     {
         $path = '/'.$this->getUid().'/accounts?fields=name,picture,access_token,id,can_post,likes,link,username';
         $result = $this->request($path);
@@ -176,5 +160,21 @@ class Facebook extends AbstractConnector
         }
 
         return $pages;
+    }
+
+    /****************************************************
+     *
+     * From here on these are Facebook-specific methods.
+     *
+     ***************************************************/
+    public function getFriendsCount()
+    {
+        $path = '/'.$this->getUid().'/subscribers';
+        $result = $this->request($path);
+
+        $response = json_decode($result);
+        $response = $response->summary->total_count;
+
+        return $response;
     }
 }

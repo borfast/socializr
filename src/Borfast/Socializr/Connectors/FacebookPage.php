@@ -90,9 +90,9 @@ class FacebookPage extends AbstractConnector
         return $profile['id'];
     }
 
-    public function getPage($uid = null)
+    public function getPage($page_id = null)
     {
-        $path = '/'.$uid.'?fields=id,name,picture,access_token,can_post,likes,link,username';
+        $path = '/'.$page_id.'?fields=id,name,picture,access_token,can_post,likes,link,username';
         $result = $this->request($path);
         $json_result = json_decode($result, true);
 
@@ -115,7 +115,7 @@ class FacebookPage extends AbstractConnector
     /**
      * Get the number of likes this page has.
      */
-    public function getStats($uid = null)
+    public function getStats($page_id = null)
     {
         return $this->getLikesCount();
     }
