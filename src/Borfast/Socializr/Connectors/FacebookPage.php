@@ -92,7 +92,7 @@ class FacebookPage extends AbstractConnector
 
     public function getPage($uid = null)
     {
-        $path = '/'.$uid;
+        $path = '/'.$uid.'?fields=id,name,picture,access_token,can_post,likes,link,username';
         $result = $this->request($path);
         $json_result = json_decode($result, true);
 
