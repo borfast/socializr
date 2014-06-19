@@ -1,15 +1,15 @@
 <?php
 
-namespace Borfast\Socializr\Engines;
+namespace Borfast\Socializr\Connectors;
 
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Response;
-use Borfast\Socializr\Engines\AbstractEngine;
+use Borfast\Socializr\Connectors\AbstractConnector;
 use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\Common\Token\Exception\ExpiredTokenException;
 
-class Twitter extends AbstractEngine
+class Twitter extends AbstractConnector
 {
     public static $provider_name = 'Twitter';
 

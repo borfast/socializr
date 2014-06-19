@@ -1,44 +1,30 @@
 <?php
 
-namespace Borfast\Socializr\Engines;
+namespace Borfast\Socializr\Connectors;
 
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Page;
 use Borfast\Socializr\Response;
-use Borfast\Socializr\Engines\AbstractEngine;
+use Borfast\Socializr\Connectors\AbstractConnector;
 use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\Common\Token\Exception\ExpiredTokenException;
-use OAuth\Common\Http\Uri\Uri;
 
-class Facebook extends AbstractEngine
+// use \Requests;
+
+class FacebookPage extends AbstractConnector
 {
     public static $provider_name = 'Facebook';
+    protected $page_id;
 
     /**
-     * Constructor for Facebook Graph API v2.0. Not used yet. The only
-     * difference is that it passes the 2.0 API URI to the OAuth service.
+     * @todo This is repeated from the Facebook class, we should keep this DRY.
      */
-    // public function __construct(array $config, TokenStorageInterface $storage)
-    // {
-    //     parent::__construct($config, $storage);
-
-    //     $uri = new Uri('https://graph.facebook.com/v2.0/');
-    //     $this->service = $this->service_factory->createService(
-    //         static::$provider_name,
-    //         $this->credentials,
-    //         $this->storage,
-    //         $this->config['scopes'],
-    //         $uri
-    //     );
-    // }
-
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
         $result = parent::request($path, $method, $params, $headers);
 
         $json_result = json_decode($result, true);
-
 
         if (isset($json_result['error'])) {
             if (isset($json_result['error']['error_subcode'])) {
@@ -61,36 +47,36 @@ class Facebook extends AbstractEngine
             } else {
                 throw new \Exception($msg);
             }
-
         }
 
         return $result;
     }
 
-
     public function post(Post $post)
     {
-        $path = '/'.$this->getUid().'/feed';
+        $this->page_id = $post->options['page_id'];
+        $access_token = $post->options['page_access_token'];
+        $path = '/'.$this->page_id.'/feed';
         $method = 'POST';
         $params = array(
             'caption' => $post->title,
             'description' => $post->description,
             'link' => $post->url,
             'message' => $post->body,
+            'access_token' => $access_token
         );
 
         $result = $this->request($path, $method, $params);
-
         $json_result = json_decode($result, true);
 
         // If there's no ID, the post didn't go through
         if (!isset($json_result['id'])) {
-            $msg = "Unknown error posting to Facebook profile.";
+            $msg = "Unknown error posting to Facebook page.";
             throw new \Exception($msg, 1);
         }
 
         $response = new Response;
-        $response->setRawResponse($result); // This is already JSON.
+        $response->setRawResponse($result);
         $response->setProvider('Facebook');
         $response->setPostId($json_result['id']);
 
@@ -100,62 +86,15 @@ class Facebook extends AbstractEngine
 
     public function getUid()
     {
-        return $this->getProfile()->id;
+        $profile = $this->getProfile();
+        return $profile['id'];
     }
 
-    public function getProfile($uid = null)
+    public function getPage($page_id = null)
     {
-        $path = '/me';
+        $path = '/'.$page_id.'?fields=id,name,picture,access_token,can_post,likes,link,username';
         $result = $this->request($path);
         $json_result = json_decode($result, true);
-
-        $mapping = [
-            'id' => 'id',
-            'email' => 'email',
-            'name' => 'name',
-            'first_name' => 'first_name',
-            'middle_name' => 'middle_name',
-            'last_name' => 'last_name',
-            'username' => 'username',
-            // 'username' => 'email', // Facebook Graph API 2.0 doesn't have username
-            'link' => 'link'
-        ];
-
-        $profile = Profile::create($mapping, $json_result);
-        $profile->provider = static::$provider_name;
-        $profile->raw_response = $result;
-
-        return $profile;
-    }
-
-    public function getStats($uid = null)
-    {
-        return $this->getFriendsCount();
-    }
-
-    /****************************************************
-     *
-     * From here on these are Facebook-specific methods.
-     *
-     ***************************************************/
-    public function getFriendsCount()
-    {
-        $path = '/'.$this->getUid().'/subscribers';
-        $result = $this->request($path);
-
-        $response = json_decode($result);
-        $response = $response->summary->total_count;
-
-        return $response;
-    }
-
-    public function getPages()
-    {
-        $path = '/'.$this->getUid().'/accounts?fields=name,picture,access_token,id,can_post,likes,link,username';
-        $result = $this->request($path);
-        $json_result = json_decode($result, true);
-
-        $pages = [];
 
         $mapping = [
             'id' => 'id',
@@ -165,16 +104,54 @@ class Facebook extends AbstractEngine
             'access_token' => 'access_token'
         ];
 
-        // Make the page IDs available as the array keys
-        if (!empty($json_result['data'])) {
-            foreach ($json_result['data'] as $page) {
-                $pages[$page['id']] = Page::create($mapping, $page);
-                $pages[$page['id']]->picture = $page['picture']['data']['url'];
-                $pages[$page['id']]->provider = static::$provider_name;
-                $pages[$page['id']]->raw_response = $result;
-            }
-        }
+        $page = Page::create($mapping, $json_result);
+        $page->provider = static::$provider_name;
+        $page->raw_response = $result;
 
-        return $pages;
+        return $page;
+    }
+
+
+    /**
+     * Get the number of likes this page has.
+     */
+    public function getStats($page_id = null)
+    {
+        return $this->getLikesCount();
+    }
+
+    /****************************************************
+     *
+     * From here on these are Facebook-specific methods.
+     *
+     ***************************************************/
+
+    public function getLikesCount()
+    {
+        $path = '/'.$this->getUid();
+        $result = $this->request($path);
+
+        $response = json_decode($result);
+        $response = $response->summary->total_count;
+
+        return $response;
+    }
+
+
+    public function addTab($page_id, $page_access_token, $app_id, array $params = array())
+    {
+        $path = '/'.$page_id.'/tabs';
+        $method = 'POST';
+        $static_params = [
+            'app_id' => $app_id,
+            'access_token' => $page_access_token
+        ];
+
+        $params = array_merge($static_params, $params);
+
+        $response = $this->request($path, $method, $params);
+        $response = json_decode($response);
+
+        return $response;
     }
 }
