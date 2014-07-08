@@ -154,4 +154,20 @@ class FacebookPage extends AbstractConnector
 
         return $response;
     }
+
+    public function renameTab($page_id, $page_access_token, $app_id, $tab_name)
+    {
+        $path = '/'.$page_id.'/tabs/app_'.$app_id;
+        $method = 'POST';
+        $params = [
+            'access_token' => $page_access_token,
+            'custom_name' => $tab_name
+        ];
+
+        $response = $this->request($path, $method, $params);
+        $response = json_decode($response);
+
+        return $response;
+
+    }
 }
