@@ -22,12 +22,14 @@ class Socializr
 
 
     /**
-     * Get the specified provider engine. This method tries to get an existing
+     * Get the specified provider connector. This method tries to get an existing
      * instance first and only creates a new one if it doesn't already exist.
      *
+     * @param string $provider The name of the provider we want to connect to.
+     * @param TokenStorageInterface $storage The storage implementation to use.
      * @return ConnectorInterface The engine for the requested provider.
      */
-    public function getConnector($provider, TokenStorageInterface $storage, array $options = array())
+    public function getConnector($provider, TokenStorageInterface $storage)
     {
         // Only allow configured providers.
         if (!array_key_exists($provider, $this->config['providers'])) {
@@ -59,16 +61,6 @@ class Socializr
             $this->post($content, $provider::$provider_name);
         }
     }
-
-
-    /**
-     * Get the list of supported service providers.
-     */
-    public function getProviders()
-    {
-        return $this->engines;
-    }
-
 
 
 

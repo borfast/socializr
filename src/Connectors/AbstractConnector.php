@@ -30,12 +30,6 @@ abstract class AbstractConnector implements ConnectorInterface
         // token request) in the access token request.
         $this->storage = $storage;
 
-        $this->credentials = new Credentials(
-            $this->config['consumer_key'],
-            $this->config['consumer_secret'],
-            $this->config['callback']
-        );
-
         // Cater for the possibility of no scope being defined
         if (!isset($this->config['scopes'])) {
             $this->config['scopes'] = array();
@@ -46,6 +40,12 @@ abstract class AbstractConnector implements ConnectorInterface
         if (!is_array($this->config['scopes'])) {
             $this->config['scopes'] = explode(', ', $this->config['scopes']);
         }
+
+        $this->credentials = new Credentials(
+            $this->config['consumer_key'],
+            $this->config['consumer_secret'],
+            $this->config['callback']
+        );
 
         $this->service_factory = new ServiceFactory;
         $this->http_client = new CurlClient;
