@@ -41,9 +41,9 @@ class Socializr
 
         // Only create a new Connector instance if necessary.
         if (!isset($this->engines[$provider])) {
-            $provider_engine = '\\Borfast\\Socializr\\Connectors\\'.$provider;
+            $connector_class = '\\Borfast\\Socializr\\Connectors\\'.$provider;
             $provider_config = $this->config['providers'][$provider];
-            $this->engines[$provider] = new $provider_engine($provider_config, $storage);
+            $this->engines[$provider] = new $connector_class($provider_config, $storage);
         }
 
         return $this->engines[$provider];
