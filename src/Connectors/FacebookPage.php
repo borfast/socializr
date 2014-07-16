@@ -155,6 +155,38 @@ class FacebookPage extends AbstractConnector
         return $response;
     }
 
+    public function getTabs($page_id, $page_access_token, $app_id)
+    {
+        $path = '/'.$page_id.'/tabs';
+        $method = 'GET';
+        $params = [
+            'app_id' => $app_id,
+            'access_token' => $page_access_token
+        ];
+
+        $response = $this->request($path, $method);
+        $response = json_decode($response);
+
+        return $response;
+    }
+
+
+    public function getTab($page_id, $page_access_token, $app_id)
+    {
+        $path = '/'.$page_id.'/tabs/app_'.$app_id;
+        $method = 'GET';
+        $params = [
+            'app_id' => $app_id,
+            'access_token' => $page_access_token
+        ];
+
+        $response = $this->request($path, $method);
+        $response = json_decode($response);
+
+        return $response;
+    }
+
+
     public function renameTab($page_id, $page_access_token, $app_id, $tab_name)
     {
         $path = '/'.$page_id.'/tabs/app_'.$app_id;
@@ -168,6 +200,5 @@ class FacebookPage extends AbstractConnector
         $response = json_decode($response);
 
         return $response;
-
     }
 }
