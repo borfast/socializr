@@ -155,6 +155,7 @@ class FacebookPage extends AbstractConnector
         return $response;
     }
 
+
     public function getTabs($page_id, $page_access_token, $app_id)
     {
         $path = '/'.$page_id.'/tabs';
@@ -194,6 +195,23 @@ class FacebookPage extends AbstractConnector
         $params = [
             'access_token' => $page_access_token,
             'custom_name' => $tab_name
+        ];
+
+        $response = $this->request($path, $method, $params);
+        $response = json_decode($response);
+
+        return $response;
+    }
+
+
+    public function removeTab($page_id, $page_access_token, $app_id)
+    {
+        $path = '/'.$page_id.'/tabs/app_'.$app_id;
+        $path .= '?access_token='.$page_access_token;
+        $method = 'DELETE';
+        $params = [
+            'app_id' => $app_id,
+            'access_token' => $page_access_token
         ];
 
         $response = $this->request($path, $method, $params);
