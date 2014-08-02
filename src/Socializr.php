@@ -50,29 +50,4 @@ class Socializr
 
         return $this->engines[$provider];
     }
-
-
-    /**
-     * Post the given content to all the configured providers.
-     */
-    public function postToAll($content)
-    {
-        foreach ($this->getProviders() as $provider) {
-            $this->post($content, $provider::$provider_name);
-        }
-    }
-
-
-
-
-
-    /********************
-     * HERE BE DRAGONS!
-     * This really needs to be moved away.
-     *******************/
-    public function getFacebookPages()
-    {
-        $engine = $this->getConnector('Facebook');
-        return $engine->getFacebookPages();
-    }
 }
