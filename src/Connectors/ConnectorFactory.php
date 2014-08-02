@@ -1,26 +1,33 @@
 <?php
 namespace Borfast\Socializr\Connectors;
 
+use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\Common\Http\Client\ClientInterface;
-use OAuth\Common\Service\ServiceInterface;
-use OAuth\Common\Consumer\CredentialsInterface;
-use OAuth\Common\Consumer\Credentials;
 use OAuth\ServiceFactory;
+use OAuth\Common\Consumer\CredentialsInterface;
+use OAuth\Common\Http\Client\CurlClient;
+use OAuth\Common\Consumer\Credentials;
 
 use Borfast\Socializr\Exceptions\InvalidProviderException;
 
 class ConnectorFactory
 {
-    public function create(
+    protected $config;
+
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
+
+    public function createConnector(
         $provider,
-        array $config,
         TokenStorageInterface $storage,
         ClientInterface $http_client = null,
         ServiceFactory $service_factory = null,
         CredentialsInterface $credentials = null
     ) {
         // Only allow configured providers.
-        if (!array_key_exists($provider, $config['providers'])) {
+        if (!array_key_exists($provider, $this->config['providers'])) {
             throw new InvalidProviderException($provider);
         }
 
@@ -34,13 +41,13 @@ class ConnectorFactory
             $service_factory = new ServiceFactory;
         }
 
-        // We're already getting the credentials via $config, we might not want
-        // to always pass them as an argument.
+        // We're already getting the credentials via $this->config, we might not
+        // want to always pass them as an argument.
         if (is_null($credentials)) {
             $credentials = new Credentials(
-                $config['consumer_key'],
-                $config['consumer_secret'],
-                $config['callback']
+                $this->config['consumer_key'],
+                $this->config['consumer_secret'],
+                $this->config['callback']
             );
         }
 
@@ -49,12 +56,12 @@ class ConnectorFactory
             static::$provider,
             $credentials,
             $storage,
-            $config['scopes']
+            $this->config['scopes']
         );
 
 
         $connector_class = '\\Borfast\\Socializr\\Connectors\\'.$provider;
-        $provider_config = $config['providers'][$provider];
+        $provider_config = $this->config['providers'][$provider];
         $connector = new $connector_class($provider_config, $service);
 
         return $connector;
