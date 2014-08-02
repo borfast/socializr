@@ -12,45 +12,9 @@ use OAuth\Common\Token\Exception\ExpiredTokenException;
 
 // use \Requests;
 
-class FacebookPage extends AbstractConnector
+class FacebookPage extends Facebook
 {
-    public static $provider_name = 'Facebook';
     protected $page_id;
-
-    /**
-     * @todo This is repeated from the Facebook class, we should keep this DRY.
-     */
-    public function request($path, $method = 'GET', $params = [], $headers = [])
-    {
-        $result = parent::request($path, $method, $params, $headers);
-
-        $json_result = json_decode($result, true);
-
-        if (isset($json_result['error'])) {
-            if (isset($json_result['error']['error_subcode'])) {
-                $error_subcode = $json_result['error']['error_subcode'];
-            } else {
-                $error_subcode = 'n/a';
-            }
-
-            $msg = 'Error type: %s. Error code: %s. Error subcode: %s. Message: %s';
-            $msg = sprintf(
-                $msg,
-                $json_result['error']['type'],
-                $json_result['error']['code'],
-                $error_subcode,
-                $json_result['error']['message']
-            );
-
-            if ($json_result['error']['type'] == 'OAuthException') {
-                throw new ExpiredTokenException($msg);
-            } else {
-                throw new \Exception($msg);
-            }
-        }
-
-        return $result;
-    }
 
     public function post(Post $post)
     {
@@ -105,7 +69,7 @@ class FacebookPage extends AbstractConnector
         ];
 
         $page = Page::create($mapping, $json_result);
-        $page->provider = static::$provider_name;
+        $page->provider = static::$provider;
         $page->raw_response = $result;
 
         return $page;

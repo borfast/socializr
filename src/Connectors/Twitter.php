@@ -11,7 +11,7 @@ use OAuth\Common\Token\Exception\ExpiredTokenException;
 
 class Twitter extends AbstractConnector
 {
-    public static $provider_name = 'Twitter';
+    public static $provider = 'Twitter';
 
     protected $user_id;
     protected $screen_name;
@@ -127,7 +127,7 @@ class Twitter extends AbstractConnector
         ];
 
         $profile = Profile::create($mapping, $profile_json);
-        $profile->provider = static::$provider_name;
+        $profile->provider = static::$provider;
         $profile->raw_response = $result;
 
         return $profile;

@@ -7,14 +7,32 @@ use Borfast\Socializr\Post;
 
 abstract class AbstractConnector implements ConnectorInterface
 {
-    protected $provider_name;
+    protected $provider;
     protected $service;
-    protected $config = array();
+    protected $config = [];
 
     public function __construct(array $config, ServiceInterface $service)
     {
         $this->config = $config;
         $this->service = $service;
+        $this->provider = $service->service();
+
+        // Cater for the possibility of having one single general callback URL.
+        if (empty($config['providers'][$this->provider]['callback'])) {
+            $this->config['providers'][$this->provider]['callback'] = $config['callback'];
+        }
+
+        // Cater for the possibility of no scope being defined
+        if (!isset($config['scopes'])) {
+            $this->config['scopes'] = [];
+        }
+
+        // Make it possible to define the scopes as a comma separated string
+        // instead of an array.
+        if (!is_array($config['scopes'])) {
+            $this->config['scopes'] = explode(', ', $config['scopes']);
+        }
+
     }
 
 
@@ -69,7 +87,7 @@ abstract class AbstractConnector implements ConnectorInterface
     public function refreshAccessToken()
     {
         $token = $this->service->getStorage()
-            ->retrieveAccessToken(static::$provider_name);
+            ->retrieveAccessToken(static::$provider);
         $this->service->refreshAccessToken($token);
     }
 
@@ -107,7 +125,7 @@ abstract class AbstractConnector implements ConnectorInterface
     public function getSessionData()
     {
         return $this->service->getStorage()
-            ->retrieveAccessToken(static::$provider_name)->getAccessToken();
+            ->retrieveAccessToken(static::$provider)->getAccessToken();
     }
 
 

@@ -3,6 +3,8 @@ namespace Borfast\Socializr\Connectors;
 
 use OAuth\Common\Http\Client\ClientInterface;
 use OAuth\Common\Service\ServiceInterface;
+use OAuth\Common\Consumer\CredentialsInterface;
+use OAuth\Common\Consumer\Credentials;
 use OAuth\ServiceFactory;
 
 use Borfast\Socializr\Exceptions\InvalidProviderException;
@@ -13,46 +15,38 @@ class ConnectorFactory
         $provider,
         array $config,
         TokenStorageInterface $storage,
-        Credentials $credentials,
-        ServiceFactory $service_factory,
-        ClientInterface $http_client
+        ClientInterface $http_client = null,
+        ServiceFactory $service_factory = null,
+        CredentialsInterface $credentials = null
     ) {
         // Only allow configured providers.
         if (!array_key_exists($provider, $config['providers'])) {
             throw new InvalidProviderException($provider);
         }
 
-        // Cater for the possibility of having one single general callback URL.
-        if (empty($config['providers'][$provider]['callback'])) {
-            $config['providers'][$provider]['callback'] = $config['callback'];
+        // Default to CurlClient (why isn't this the default? :( )
+        if (is_null($http_client)) {
+            $http_client = new CurlClient;
         }
 
-
-
-        // Cater for the possibility of no scope being defined
-        if (!isset($config['scopes'])) {
-            $config['scopes'] = array();
+        // Just if we want to be lazy and not pass this as an argument.
+        if (is_null($service_factory)) {
+            $service_factory = new ServiceFactory;
         }
 
-        // Make it possible to define the scopes as a comma separated string
-        // instead of an array.
-        if (!is_array($config['scopes'])) {
-            $config['scopes'] = explode(', ', $config['scopes']);
+        // We're already getting the credentials via $config, we might not want
+        // to always pass them as an argument.
+        if (is_null($credentials)) {
+            $credentials = new Credentials(
+                $config['consumer_key'],
+                $config['consumer_secret'],
+                $config['callback']
+            );
         }
-
-        // $credentials = new Credentials(
-        //     $config['consumer_key'],
-        //     $config['consumer_secret'],
-        //     $config['callback']
-        // );
-
-        // $service_factory = new ServiceFactory;
-
-        // $http_client = new CurlClient;
 
         $service_factory->setHttpClient($http_client);
         $service = $service_factory->createService(
-            static::$provider_name,
+            static::$provider,
             $credentials,
             $storage,
             $config['scopes']

@@ -11,7 +11,7 @@ use OAuth\Common\Storage\TokenStorageInterface;
 
 class LinkedinPage extends AbstractConnector
 {
-    public static $provider_name = 'linkedin';
+    public static $provider = 'linkedin';
 
     public function post(Post $post)
     {
@@ -46,7 +46,7 @@ class LinkedinPage extends AbstractConnector
 
         $response = new Response;
         $response->setRawResponse(json_encode($result));
-        $response->setProvider(static::$provider_name);
+        $response->setProvider(static::$provider);
         $result_json = json_decode($result);
         $response->setPostId($result_json->updateKey);
         $response->setPostUrl($result_json->updateUrl);
@@ -78,7 +78,7 @@ class LinkedinPage extends AbstractConnector
         ];
 
         $profile = Profile::create($mapping, $profile_json);
-        $profile->provider = static::$provider_name;
+        $profile->provider = static::$provider;
         $profile->raw_response = $response;
 
         return $profile;

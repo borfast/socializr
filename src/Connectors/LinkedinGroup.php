@@ -13,7 +13,7 @@ use \Requests;
 
 class LinkedinGroup extends AbstractConnector
 {
-    public static $provider_name = 'linkedin';
+    public static $provider = 'linkedin';
 
     public function post(Post $post)
     {
@@ -46,7 +46,7 @@ class LinkedinGroup extends AbstractConnector
 
         $response = new Response;
         $response->setRawResponse($result->raw); // This is already JSON.
-        $response->setProvider(static::$provider_name);
+        $response->setProvider(static::$provider);
         // $response->setPostId($result->headers['x-li-uuid']);
         // $response->setPostUrl($result->headers['location']);
 
@@ -77,7 +77,7 @@ class LinkedinGroup extends AbstractConnector
         ];
 
         $profile = Profile::create($mapping, $profile_json);
-        $profile->provider = static::$provider_name;
+        $profile->provider = static::$provider;
         $profile->raw_response = $response;
 
         return $profile;
