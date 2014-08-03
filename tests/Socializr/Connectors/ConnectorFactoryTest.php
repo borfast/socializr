@@ -4,9 +4,9 @@ namespace Borfast\Socializr\Tests;
 
 use OAuth\Common\Storage\TokenStorageInterface;
 use \Mockery as m;
-use Borfast\Socializr\Socializr;
+use Borfast\Socializr\Connectors\ConnectorFactory;
 
-class SocializrTest extends \PHPUnit_Framework_TestCase
+class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -44,13 +44,14 @@ class SocializrTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testGettingFacebookConnectorReturnsCorrectClass()
+    public function testCreateFacebookConnectorReturnsCorrectClass()
     {
-        // $socializr = new Socializr($this->config);
+        $mock_storage = m::mock("\\OAuth\\Common\\Storage\\TokenStorageInterface");
+        $mock_service = m::mock('\\OAuth\Common\Service\ServiceInterface');
 
-        // $mock_storage = m::mock('OAuth\Common\Storage\TokenStorageInterface');
-        // $connector = $socializr->getConnector('Facebook', $mock_storage);
+        $factory = new ConnectorFactory($this->config);
+        $connector = $factory->createConnector('Facebook', $mock_storage);
 
-        // $this->assertTrue($connector instanceof \Borfast\Socializr\Connectors\Facebook);
+        $this->assertInstanceOf("\\Borfast\\Socializr\\Connectors\\Facebook", $connector);
     }
 }
