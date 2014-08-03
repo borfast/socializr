@@ -15,7 +15,7 @@ abstract class AbstractConnector implements ConnectorInterface
     {
         $this->config = $config;
         $this->service = $service;
-        $this->provider = $service->service();
+        static::$provider = $service->service();
     }
 
 
