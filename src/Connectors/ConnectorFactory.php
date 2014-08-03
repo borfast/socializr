@@ -7,6 +7,7 @@ use OAuth\ServiceFactory;
 use OAuth\Common\Consumer\CredentialsInterface;
 use OAuth\Common\Http\Client\CurlClient;
 use OAuth\Common\Consumer\Credentials;
+use OAuth\Common\Service\ServiceInterface;
 
 use Borfast\Socializr\Exceptions\InvalidProviderException;
 
@@ -41,29 +42,56 @@ class ConnectorFactory
             $service_factory = new ServiceFactory;
         }
 
+        // Simplify config access
+        $config = $this->getFlatConfig($provider);
+
+
         // We're already getting the credentials via $this->config, we might not
         // want to always pass them as an argument.
         if (is_null($credentials)) {
             $credentials = new Credentials(
-                $this->config['consumer_key'],
-                $this->config['consumer_secret'],
-                $this->config['callback']
+                $config['consumer_key'],
+                $config['consumer_secret'],
+                $config['callback']
             );
         }
 
         $service_factory->setHttpClient($http_client);
         $service = $service_factory->createService(
-            static::$provider,
+            $provider,
             $credentials,
             $storage,
-            $this->config['scopes']
+            $config['scopes']
         );
 
 
         $connector_class = '\\Borfast\\Socializr\\Connectors\\'.$provider;
-        $provider_config = $this->config['providers'][$provider];
-        $connector = new $connector_class($provider_config, $service);
+        $connector = new $connector_class($config, $service);
 
         return $connector;
+    }
+
+
+    protected function getFlatConfig($provider)
+    {
+        $config = $this->config['providers'][$provider];
+
+        // Cater for the possibility of having one single general callback URL.
+        if (empty($config['callback'])) {
+            $config['callback'] = $this->config['callback'];
+        }
+
+        // Cater for the possibility of no scope being defined
+        if (!isset($config['scopes'])) {
+            $config['scopes'] = [];
+        }
+
+        // Make it possible to define the scopes as a comma separated string
+        // instead of an array.
+        if (!is_array($config['scopes'])) {
+            $config['scopes'] = explode(', ', $config['scopes']);
+        }
+
+        return $config;
     }
 }

@@ -7,7 +7,7 @@ use Borfast\Socializr\Post;
 
 abstract class AbstractConnector implements ConnectorInterface
 {
-    protected $provider;
+    protected static $provider;
     protected $service;
     protected $config = [];
 
@@ -16,23 +16,6 @@ abstract class AbstractConnector implements ConnectorInterface
         $this->config = $config;
         $this->service = $service;
         $this->provider = $service->service();
-
-        // Cater for the possibility of having one single general callback URL.
-        if (empty($config['providers'][$this->provider]['callback'])) {
-            $this->config['providers'][$this->provider]['callback'] = $config['callback'];
-        }
-
-        // Cater for the possibility of no scope being defined
-        if (!isset($config['scopes'])) {
-            $this->config['scopes'] = [];
-        }
-
-        // Make it possible to define the scopes as a comma separated string
-        // instead of an array.
-        if (!is_array($config['scopes'])) {
-            $this->config['scopes'] = explode(', ', $config['scopes']);
-        }
-
     }
 
 
