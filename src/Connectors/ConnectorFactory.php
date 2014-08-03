@@ -40,12 +40,12 @@ class ConnectorFactory
     /**
      * Creates a Connector object for the given provider type.
      *
-     * @param  string                $provider        The provider type you want.
-     * @param  TokenStorageInterface $storage         The storage for PHPoAuthLib.
-     * @param  ClientInterface       $http_client     The HTTP client for PHPoAuthLib.
-     * @param  ServiceFactory        $service_factory The PHPoAuthLib service factory.
-     * @param  CredentialsInterface  $credentials     The credentials for PHPoAuthLib.
-     * @return ConnectorInterface    An instance of the requested connector type.
+     * @param  string                     $provider        The provider type you want.
+     * @param  TokenStorageInterface      $storage         The storage for PHPoAuthLib.
+     * @param  null|ClientInterface       $http_client     The HTTP client for PHPoAuthLib.
+     * @param  null|ServiceFactory        $service_factory The PHPoAuthLib service factory.
+     * @param  null|CredentialsInterface  $credentials     The credentials for PHPoAuthLib.
+     * @return ConnectorInterface         An instance of the requested connector type.
      */
     public function createConnector(
         $provider,
