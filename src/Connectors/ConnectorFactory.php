@@ -58,7 +58,7 @@ class ConnectorFactory
 
         $service_factory->setHttpClient($http_client);
         $service = $service_factory->createService(
-            $provider,
+            $config['service'],
             $credentials,
             $storage,
             $config['scopes']
@@ -76,13 +76,22 @@ class ConnectorFactory
     {
         $config = $this->config['providers'][$provider];
 
+        /*
+         * Make sure we will create the correct PHPoAuthLib service. Each
+         * configured provider can specify which service to use. If none is
+         * specified, then the provider name is used.
+         */
+        if (empty($config['service'])) {
+            $config['service'] = $provider;
+        }
+
         // Cater for the possibility of having one single general callback URL.
         if (empty($config['callback'])) {
             $config['callback'] = $this->config['callback'];
         }
 
         // Cater for the possibility of no scope being defined
-        if (!isset($config['scopes'])) {
+        if (empty($config['scopes'])) {
             $config['scopes'] = [];
         }
 
