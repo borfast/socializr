@@ -25,6 +25,7 @@ class ConnectorFactory
     /**
      * The constructor for the ConnectorFactory.
      * @param array $config Contains the configuration for each provider.
+     * @throws InvalidConfigurationException if $config has no 'providers' key.
      */
     public function __construct(array $config)
     {
@@ -35,6 +36,17 @@ class ConnectorFactory
         }
     }
 
+
+    /**
+     * Creates a Connector object for the given provider type.
+     *
+     * @param  string                $provider        The provider type you want.
+     * @param  TokenStorageInterface $storage         The storage for PHPoAuthLib.
+     * @param  ClientInterface       $http_client     The HTTP client for PHPoAuthLib.
+     * @param  ServiceFactory        $service_factory The PHPoAuthLib service factory.
+     * @param  CredentialsInterface  $credentials     The credentials for PHPoAuthLib.
+     * @return ConnectorInterface    An instance of the requested connector type.
+     */
     public function createConnector(
         $provider,
         TokenStorageInterface $storage,
@@ -87,6 +99,12 @@ class ConnectorFactory
     }
 
 
+    /**
+     * Gets a config array for the given provider, taking care of a few checks
+     * to make sure it has the needed data.
+     * @param  string $provider The provider type we want the config for.
+     * @return array            The config for the requested provider type.
+     */
     protected function getFlatConfig($provider)
     {
         $config = $this->config['providers'][$provider];
