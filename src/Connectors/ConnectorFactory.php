@@ -10,14 +10,29 @@ use OAuth\Common\Consumer\Credentials;
 use OAuth\Common\Service\ServiceInterface;
 
 use Borfast\Socializr\Exceptions\InvalidProviderException;
+use Borfast\Socializr\Exceptions\InvalidConfigurationException;
 
 class ConnectorFactory
 {
-    protected $config;
+    /**
+     * An array that will contain the configuration for the various providers
+     * Socializr's connectors can use.
+     * @var array
+     */
+    protected $config = [];
 
+
+    /**
+     * The constructor for the ConnectorFactory.
+     * @param array $config Contains the configuration for each provider.
+     */
     public function __construct(array $config)
     {
         $this->config = $config;
+
+        if (!array_key_exists('providers', $config)) {
+            throw new InvalidConfigurationException;
+        }
     }
 
     public function createConnector(

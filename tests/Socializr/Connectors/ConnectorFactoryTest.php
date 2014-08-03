@@ -52,6 +52,14 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testEmptyArrayConfigThrowsException()
+    {
+        $this->setExpectedException('Borfast\\Socializr\\Exceptions\\InvalidConfigurationException');
+
+        $factory = new ConnectorFactory([]);
+    }
+
+
     public function testCreateTwitterConnectorReturnsCorrectClass()
     {
         $mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
