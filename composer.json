@@ -11,6 +11,7 @@
         }
     ],
     "require": {
+        "php": ">=5.4",
         "lusitanian/oauth": "dev-master",
         "facebook/php-sdk": "dev-master",
         "rmccue/requests": ">=1.6"

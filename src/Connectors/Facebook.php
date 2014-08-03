@@ -13,7 +13,7 @@ use OAuth\Common\Http\Uri\Uri;
 
 class Facebook extends AbstractConnector
 {
-    public static $provider_name = 'Facebook';
+    public static $provider = 'Facebook';
 
     /**
      * Constructor for Facebook Graph API v2.0. Not used yet. The only
@@ -25,7 +25,7 @@ class Facebook extends AbstractConnector
 
     //     $uri = new Uri('https://graph.facebook.com/v2.0/');
     //     $this->service = $this->service_factory->createService(
-    //         static::$provider_name,
+    //         static::$provider,
     //         $this->credentials,
     //         $this->storage,
     //         $this->config['scopes'],
@@ -122,7 +122,7 @@ class Facebook extends AbstractConnector
         ];
 
         $profile = Profile::create($mapping, $json_result);
-        $profile->provider = static::$provider_name;
+        $profile->provider = static::$provider;
         $profile->raw_response = $result;
 
         return $profile;
@@ -154,7 +154,7 @@ class Facebook extends AbstractConnector
             foreach ($json_result['data'] as $page) {
                 $pages[$page['id']] = Page::create($mapping, $page);
                 $pages[$page['id']]->picture = $page['picture']['data']['url'];
-                $pages[$page['id']]->provider = static::$provider_name;
+                $pages[$page['id']]->provider = static::$provider;
                 $pages[$page['id']]->raw_response = $result;
             }
         }

@@ -13,7 +13,7 @@ use OAuth\Common\Token\Exception\ExpiredTokenException;
 
 class Linkedin extends AbstractConnector
 {
-    public static $provider_name = 'linkedin';
+    public static $provider = 'linkedin';
 
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
@@ -67,7 +67,7 @@ class Linkedin extends AbstractConnector
 
         $response = new Response;
         $response->setRawResponse($result); // This is already JSON.
-        $response->setProvider(static::$provider_name);
+        $response->setProvider(static::$provider);
         $result_json = json_decode($result);
         $response->setPostId($result_json->updateKey);
         $response->setPostUrl($result_json->updateUrl);
@@ -99,7 +99,7 @@ class Linkedin extends AbstractConnector
         ];
 
         $profile = Profile::create($mapping, $json_result);
-        $profile->provider = static::$provider_name;
+        $profile->provider = static::$provider;
         $profile->raw_response = $result;
 
         return $profile;
@@ -132,7 +132,7 @@ class Linkedin extends AbstractConnector
             foreach ($json_result['values'] as $company) {
                 $pages[$company['id']] = Page::create($mapping, $company);
                 $pages[$company['id']]->link = 'http://www.linkedin.com/company/'.$company['universalName'];
-                $pages[$company['id']]->provider = static::$provider_name;
+                $pages[$company['id']]->provider = static::$provider;
                 $pages[$company['id']]->raw_response = $result;
             }
         }
@@ -160,7 +160,7 @@ class Linkedin extends AbstractConnector
         if (!empty($groups['values'])) {
             foreach ($groups['values'] as $group) {
                 $group_pages[$group['_key']] = Group::create($mapping, $group['group']);
-                $group_pages[$group['_key']]->provider = static::$provider_name;
+                $group_pages[$group['_key']]->provider = static::$provider;
                 $group_pages[$group['_key']]->raw_response = $response;
 
                 // Let's check if our user can post to this group.

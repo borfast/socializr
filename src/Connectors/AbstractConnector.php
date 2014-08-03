@@ -2,60 +2,20 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use OAuth\Common\Service\ServiceInterface;
 use Borfast\Socializr\Post;
-
-use OAuth\Common\Storage\Session;
-use OAuth\Common\Consumer\Credentials;
-use OAuth\Common\Storage\TokenStorageInterface;
-use OAuth\Common\Http\Client\CurlClient;
-use OAuth\ServiceFactory;
 
 abstract class AbstractConnector implements ConnectorInterface
 {
-    public static $provider_name;
-
-    protected $storage;
-    protected $credentials;
-    protected $service_factory;
+    protected static $provider;
     protected $service;
-    protected $config = array();
-    protected $http_client;
+    protected $config = [];
 
-    public function __construct(array $config, TokenStorageInterface $storage)
+    public function __construct(array $config, ServiceInterface $service)
     {
         $this->config = $config;
-
-        // We need to use a persistent storage to save the token, because oauth
-        // requires the token secret received before' the redirect (request
-        // token request) in the access token request.
-        $this->storage = $storage;
-
-        // Cater for the possibility of no scope being defined
-        if (!isset($this->config['scopes'])) {
-            $this->config['scopes'] = array();
-        }
-
-        // Make it possible to define the scopes as a comma separated string
-        // instead of an array.
-        if (!is_array($this->config['scopes'])) {
-            $this->config['scopes'] = explode(', ', $this->config['scopes']);
-        }
-
-        $this->credentials = new Credentials(
-            $this->config['consumer_key'],
-            $this->config['consumer_secret'],
-            $this->config['callback']
-        );
-
-        $this->service_factory = new ServiceFactory;
-        $this->http_client = new CurlClient;
-        $this->service_factory->setHttpClient($this->http_client);
-        $this->service = $this->service_factory->createService(
-            static::$provider_name,
-            $this->credentials,
-            $this->storage,
-            $this->config['scopes']
-        );
+        $this->service = $service;
+        static::$provider = $service->service();
     }
 
 
@@ -88,6 +48,8 @@ abstract class AbstractConnector implements ConnectorInterface
             $csrf_token = base64_encode(openssl_random_pseudo_bytes(32));
 
             // Write our token in session so we can check it after auth.
+            // // TODO: This could be improved and make the session storage
+            // pluggable. Is it worth the trouble, though?
             session_start();
             $_SESSION['socializr_csrf_token'] = $csrf_token;
             session_write_close();
@@ -107,7 +69,8 @@ abstract class AbstractConnector implements ConnectorInterface
      */
     public function refreshAccessToken()
     {
-        $token = $this->storage->retrieveAccessToken(static::$provider_name);
+        $token = $this->service->getStorage()
+            ->retrieveAccessToken(static::$provider);
         $this->service->refreshAccessToken($token);
     }
 
@@ -144,13 +107,17 @@ abstract class AbstractConnector implements ConnectorInterface
 
     public function getSessionData()
     {
-        return $this->storage->retrieveAccessToken(static::$provider_name)->getAccessToken();
+        return $this->service->getStorage()
+            ->retrieveAccessToken(static::$provider)->getAccessToken();
     }
 
 
     public function get($path, $params = array())
     {
-        $response = json_decode($this->service->request($path, 'GET', $params), true);
+        $response = json_decode(
+            $this->service->request($path, 'GET', $params),
+            true
+        );
 
         return $response;
     }
