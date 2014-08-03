@@ -46,8 +46,7 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateFacebookConnectorReturnsCorrectClass()
     {
-        $mock_storage = m::mock("\\OAuth\\Common\\Storage\\TokenStorageInterface");
-        $mock_service = m::mock('\\OAuth\Common\Service\ServiceInterface');
+        $mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
 
         $factory = new ConnectorFactory($this->config);
         $connector = $factory->createConnector('Facebook', $mock_storage);
