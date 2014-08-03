@@ -53,4 +53,15 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf("\\Borfast\\Socializr\\Connectors\\Facebook", $connector);
     }
+
+
+    public function testCreateInvalidConnectorThrowsException()
+    {
+        $this->setExpectedException("Borfast\\Socializr\\Exceptions\\InvalidProviderException");
+
+        $mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
+
+        $factory = new ConnectorFactory($this->config);
+        $connector = $factory->createConnector('invalid', $mock_storage);
+    }
 }

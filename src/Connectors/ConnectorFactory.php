@@ -42,7 +42,7 @@ class ConnectorFactory
             $service_factory = new ServiceFactory;
         }
 
-        // Simplify config access
+        // Simplify config access for this provider.
         $config = $this->getFlatConfig($provider);
 
 
