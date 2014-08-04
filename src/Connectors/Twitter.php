@@ -92,7 +92,7 @@ class Twitter extends AbstractConnector
      */
     public function storeOauthToken($params)
     {
-        $token = $this->storage->retrieveAccessToken('Twitter');
+        $token = $this->service->getStorage()->retrieveAccessToken('Twitter');
         $result = $this->service->requestAccessToken($params['oauth_token'], $params['oauth_verifier'], $token->getRequestTokenSecret());
 
         // Why is this failing?!
