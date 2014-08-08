@@ -23,6 +23,13 @@ class ConnectorFactory
 
 
     /**
+     * The ID on the social network we're connecting to.
+     * @var string
+     */
+    protected $id;
+
+
+    /**
      * The constructor for the ConnectorFactory.
      * @param array $config Contains the configuration for each provider.
      * @throws InvalidConfigurationException if $config has no 'providers' key.
@@ -41,6 +48,7 @@ class ConnectorFactory
      * Creates a Connector object for the given provider type.
      *
      * @param  string                     $provider        The provider type you want.
+     * @param  string                     $id              The ID we're connecting to.
      * @param  TokenStorageInterface      $storage         The storage for PHPoAuthLib.
      * @param  null|ClientInterface       $http_client     The HTTP client for PHPoAuthLib.
      * @param  null|ServiceFactory        $service_factory The PHPoAuthLib service factory.
@@ -49,6 +57,7 @@ class ConnectorFactory
      */
     public function createConnector(
         $provider,
+        $id,
         TokenStorageInterface $storage,
         ClientInterface $http_client = null,
         ServiceFactory $service_factory = null,
@@ -93,7 +102,7 @@ class ConnectorFactory
 
 
         $connector_class = '\\Borfast\\Socializr\\Connectors\\'.$provider;
-        $connector = new $connector_class($config, $service);
+        $connector = new $connector_class($config, $service, $id);
 
         return $connector;
     }

@@ -15,24 +15,6 @@ class Facebook extends AbstractConnector
 {
     public static $provider = 'Facebook';
 
-    /**
-     * Constructor for Facebook Graph API v2.0. Not used yet. The only
-     * difference is that it passes the 2.0 API URI to the OAuth service.
-     */
-    // public function __construct(array $config, TokenStorageInterface $storage)
-    // {
-    //     parent::__construct($config, $storage);
-
-    //     $uri = new Uri('https://graph.facebook.com/v2.0/');
-    //     $this->service = $this->service_factory->createService(
-    //         static::$provider,
-    //         $this->credentials,
-    //         $this->storage,
-    //         $this->config['scopes'],
-    //         $uri
-    //     );
-    // }
-
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
         $result = parent::request($path, $method, $params, $headers);
@@ -97,13 +79,7 @@ class Facebook extends AbstractConnector
         return $response;
     }
 
-
-    public function getUid()
-    {
-        return $this->getProfile()->id;
-    }
-
-    public function getProfile($uid = null)
+    public function getProfile()
     {
         $path = '/me';
         $result = $this->request($path);
@@ -128,14 +104,14 @@ class Facebook extends AbstractConnector
         return $profile;
     }
 
-    public function getStats($uid = null)
+    public function getStats()
     {
         return $this->getFriendsCount();
     }
 
-    public function getPages($uid = null)
+    public function getPages()
     {
-        $path = '/'.$this->getUid().'/accounts?fields=name,picture,access_token,id,can_post,likes,link,username';
+        $path = '/'.$this->id.'/accounts?fields=name,picture,access_token,id,can_post,likes,link,username';
         $result = $this->request($path);
         $json_result = json_decode($result, true);
 
