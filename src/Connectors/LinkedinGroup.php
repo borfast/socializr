@@ -78,9 +78,11 @@ class LinkedinGroup extends AbstractConnector
         return $profile;
     }
 
-    // @todo Get actual statistics from LinkedIn.
     public function getStats()
     {
-        return 33;
+        $path = 'groups/'.$this->id.':(id,num-members)?format=json';
+        $response = json_decode($this->request($path));
+
+        return $response->numMembers;
     }
 }

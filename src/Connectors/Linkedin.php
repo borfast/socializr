@@ -100,7 +100,6 @@ class Linkedin extends AbstractConnector
         return $profile;
     }
 
-    // @todo Get actual statistics from LinkedIn.
     public function getStats()
     {
         return null;
