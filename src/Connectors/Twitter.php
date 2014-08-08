@@ -103,15 +103,9 @@ class Twitter extends AbstractConnector
         $this->screen_name = $extra_params['screen_name'];
     }
 
-
-    public function getUid()
+    public function getProfile()
     {
-        return $this->user_id;
-    }
-
-    public function getProfile($uid = null)
-    {
-        $path = '/users/show.json?user_id='.$uid;
+        $path = '/users/show.json?user_id='.$this->id;
         $result = $this->request($path);
         $profile_json = json_decode($result, true);
 
@@ -133,9 +127,9 @@ class Twitter extends AbstractConnector
         return $profile;
     }
 
-    public function getStats($uid = null)
+    public function getStats()
     {
-        $path = '/followers/ids.json?user_id='.$uid;
+        $path = '/followers/ids.json?user_id='.$this->id;
         $response = $this->request($path);
         $response = json_decode($response);
         $response = count($response->ids);

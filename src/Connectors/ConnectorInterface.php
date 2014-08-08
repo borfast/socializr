@@ -10,12 +10,12 @@ interface ConnectorInterface
 
     public function get($path, $params = array());
 
-    public function getProfile($uid = null);
-    public function getPage($uid = null);
-    public function getGroup($uid = null);
-    public function getPages($uid = null);
-    public function getGroups($uid = null);
+    public function getProfile();
+    public function getPage();
+    public function getGroup();
+    public function getPages();
+    public function getGroups();
 
     public function getUid();
-    public function getStats($uid = null);
+    public function getStats();
 }

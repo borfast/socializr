@@ -33,5 +33,4 @@ class Response
         $this->post_url = $post_url;
         return $this;
     }
-
 }
