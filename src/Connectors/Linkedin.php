@@ -103,7 +103,7 @@ class Linkedin extends AbstractConnector
     // @todo Get actual statistics from LinkedIn.
     public function getStats()
     {
-        return 33;
+        return null;
     }
 
 
