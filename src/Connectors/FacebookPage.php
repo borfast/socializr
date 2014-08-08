@@ -14,13 +14,10 @@ use OAuth\Common\Token\Exception\ExpiredTokenException;
 
 class FacebookPage extends Facebook
 {
-    protected $page_id;
-
     public function post(Post $post)
     {
-        $this->page_id = $post->options['page_id'];
         $access_token = $post->options['page_access_token'];
-        $path = '/'.$this->page_id.'/feed';
+        $path = '/'.$this->id.'/feed';
         $method = 'POST';
         $params = array(
             'caption' => $post->title,
@@ -47,16 +44,9 @@ class FacebookPage extends Facebook
         return $response;
     }
 
-
-    public function getUid()
+    public function getPage()
     {
-        $profile = $this->getProfile();
-        return $profile['id'];
-    }
-
-    public function getPage($page_id = null)
-    {
-        $path = '/'.$page_id.'?fields=id,name,picture,access_token,can_post,likes,link,username';
+        $path = '/'.$this->id.'?fields=id,name,picture,access_token,can_post,likes,link,username';
         $result = $this->request($path);
         $json_result = json_decode($result, true);
 
@@ -65,7 +55,8 @@ class FacebookPage extends Facebook
             'name' => 'name',
             'link' => 'link',
             'can_post' => 'can_post',
-            'access_token' => 'access_token'
+            'access_token' => 'access_token',
+            'likes' => 'likes'
         ];
 
         $page = Page::create($mapping, $json_result);
@@ -79,24 +70,26 @@ class FacebookPage extends Facebook
     /**
      * Get the number of likes this page has.
      */
-    public function getStats($page_id = null)
+    public function getStats()
     {
         return $this->getLikesCount();
     }
 
-    /****************************************************
-     *
-     * From here on these are Facebook-specific methods.
-     *
-     ***************************************************/
 
-    public function getLikesCount()
+    /***************************************************************************
+     *
+     * From here on these are FacebookPage-specific methods that should not be
+     * accessed from other classes.
+     *
+     **************************************************************************/
+
+    protected function getLikesCount()
     {
-        $path = '/'.$this->getUid();
+        $path = '/'.$this->id;
         $result = $this->request($path);
 
         $response = json_decode($result);
-        $response = $response->summary->total_count;
+        $response = $response->likes;
 
         return $response;
     }

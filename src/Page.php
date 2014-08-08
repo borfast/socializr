@@ -10,6 +10,7 @@ class Page
     public $link;
     public $access_token;
     public $can_post = false;
+    public $likes;
 
     public $provider;
     public $raw_response;

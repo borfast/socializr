@@ -55,12 +55,7 @@ class LinkedinPage extends AbstractConnector
     }
 
 
-    public function getUid()
-    {
-        return $this->getProfile()->id;
-    }
-
-    public function getProfile($uid = null)
+    public function getProfile()
     {
         $path = '/people/~:(id,first-name,last-name,maiden-name,public-profile-url,formatted-name,num-connections,email-address,num-recommenders)?format=json';
         $response = $this->service->request($path);
@@ -85,7 +80,7 @@ class LinkedinPage extends AbstractConnector
     }
 
     // @todo Get actual statistics from LinkedIn.
-    public function getStats($uid = null)
+    public function getStats()
     {
         return 33;
     }
