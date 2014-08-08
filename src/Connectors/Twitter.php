@@ -95,9 +95,6 @@ class Twitter extends AbstractConnector
         $token = $this->service->getStorage()->retrieveAccessToken('Twitter');
         $result = $this->service->requestAccessToken($params['oauth_token'], $params['oauth_verifier'], $token->getRequestTokenSecret());
 
-        // Why is this failing?!
-        $response = $this->service->request('account/verify_credentials.json');
-
         $extra_params = $result->getExtraParams();
         $this->user_id = $extra_params['user_id'];
         $this->screen_name = $extra_params['screen_name'];

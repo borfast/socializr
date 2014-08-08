@@ -63,7 +63,6 @@ class Linkedin extends AbstractConnector
         $params = json_encode($params);
 
         $result = $this->request($path, $method, $params);
-        $json_result = json_decode($result, true);
 
         $response = new Response;
         $response->setRawResponse($result); // This is already JSON.
@@ -160,7 +159,7 @@ class Linkedin extends AbstractConnector
                 // Let's check if our user can post to this group.
                 // Thank you for this wonder, LinkedIn! It's so fun parsing infinitely nested arrays...
                 $actions = $group['group']['relationToViewer']['availableActions']['values'];
-                array_walk($actions, function ($value, $key) use ($group, $group_pages) {
+                array_walk($actions, function ($value) use ($group, $group_pages) {
                     if ($value['code'] === 'add-post') {
                         $group_pages[$group['_key']]->can_post = true;
                     }

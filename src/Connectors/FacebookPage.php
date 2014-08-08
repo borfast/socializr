@@ -117,10 +117,6 @@ class FacebookPage extends Facebook
     {
         $path = '/'.$page_id.'/tabs';
         $method = 'GET';
-        $params = [
-            'app_id' => $app_id,
-            'access_token' => $page_access_token
-        ];
 
         $response = $this->request($path, $method);
         $response = json_decode($response);
@@ -133,10 +129,6 @@ class FacebookPage extends Facebook
     {
         $path = '/'.$page_id.'/tabs/app_'.$app_id;
         $method = 'GET';
-        $params = [
-            'app_id' => $app_id,
-            'access_token' => $page_access_token
-        ];
 
         $response = $this->request($path, $method);
         $response = json_decode($response);

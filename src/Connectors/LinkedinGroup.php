@@ -20,7 +20,6 @@ class LinkedinGroup extends AbstractConnector
         $group_id = $post->options['group_id'];
         $token = $this->service->getStorage()->retrieveAccessToken('Linkedin')->getAccessToken();
         $path = '/groups/'.$group_id.'/posts?format=json&oauth2_access_token='.$token;
-        $method = 'POST';
         $params = array(
             'title' => $post->title,
             'summary' => $post->body,
