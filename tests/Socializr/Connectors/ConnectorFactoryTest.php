@@ -45,6 +45,9 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
         $this->config['providers']['LinkedinGroup'] = $this->config['providers']['Linkedin'];
 
         $this->id = 'foo';
+
+        $this->mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
+        $this->factory = new ConnectorFactory($this->config);
     }
 
 
@@ -64,10 +67,11 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateTwitterConnectorReturnsCorrectClass()
     {
-        $mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
-
-        $factory = new ConnectorFactory($this->config);
-        $connector = $factory->createConnector('Twitter', $this->id, $mock_storage);
+        $connector = $this->factory->createConnector(
+            'Twitter',
+            $this->mock_storage,
+            $this->id
+        );
 
         $this->assertInstanceOf("\\Borfast\\Socializr\\Connectors\\Twitter", $connector);
     }
@@ -75,10 +79,11 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateFacebookConnectorReturnsCorrectClass()
     {
-        $mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
-
-        $factory = new ConnectorFactory($this->config);
-        $connector = $factory->createConnector('Facebook', $this->id, $mock_storage);
+        $connector = $this->factory->createConnector(
+            'Facebook',
+            $this->mock_storage,
+            $this->id
+        );
 
         $this->assertInstanceOf("\\Borfast\\Socializr\\Connectors\\Facebook", $connector);
     }
@@ -86,10 +91,11 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateFacebookPageConnectorReturnsCorrectClass()
     {
-        $mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
-
-        $factory = new ConnectorFactory($this->config);
-        $connector = $factory->createConnector('FacebookPage', $this->id, $mock_storage);
+        $connector = $this->factory->createConnector(
+            'FacebookPage',
+            $this->mock_storage,
+            $this->id
+        );
 
         $this->assertInstanceOf("\\Borfast\\Socializr\\Connectors\\FacebookPage", $connector);
     }
@@ -97,10 +103,11 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateLinkedinConnectorReturnsCorrectClass()
     {
-        $mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
-
-        $factory = new ConnectorFactory($this->config);
-        $connector = $factory->createConnector('Linkedin', $this->id, $mock_storage);
+        $connector = $this->factory->createConnector(
+            'Linkedin',
+            $this->mock_storage,
+            $this->id
+        );
 
         $this->assertInstanceOf("\\Borfast\\Socializr\\Connectors\\Linkedin", $connector);
     }
@@ -108,10 +115,11 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateLinkedinPageConnectorReturnsCorrectClass()
     {
-        $mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
-
-        $factory = new ConnectorFactory($this->config);
-        $connector = $factory->createConnector('LinkedinPage', $this->id, $mock_storage);
+        $connector = $this->factory->createConnector(
+            'LinkedinPage',
+            $this->mock_storage,
+            $this->id
+        );
 
         $this->assertInstanceOf("\\Borfast\\Socializr\\Connectors\\LinkedinPage", $connector);
     }
@@ -119,10 +127,11 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateLinkedinGroupConnectorReturnsCorrectClass()
     {
-        $mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
-
-        $factory = new ConnectorFactory($this->config);
-        $connector = $factory->createConnector('LinkedinGroup', $this->id, $mock_storage);
+        $connector = $this->factory->createConnector(
+            'LinkedinGroup',
+            $this->mock_storage,
+            $this->id
+        );
 
         $this->assertInstanceOf("\\Borfast\\Socializr\\Connectors\\LinkedinGroup", $connector);
     }
@@ -132,9 +141,10 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException("Borfast\\Socializr\\Exceptions\\InvalidProviderException");
 
-        $mock_storage = m::mock("OAuth\\Common\\Storage\\TokenStorageInterface");
-
-        $factory = new ConnectorFactory($this->config);
-        $connector = $factory->createConnector('invalid', $this->id, $mock_storage);
+        $connector = $this->factory->createConnector(
+            'invalid',
+            $this->mock_storage,
+            $this->id
+        );
     }
 }
