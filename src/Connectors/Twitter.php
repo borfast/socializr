@@ -102,7 +102,7 @@ class Twitter extends AbstractConnector
 
     public function getProfile()
     {
-        $path = '/users/show.json?user_id='.$this->id;
+        $path = '/account/verify_credentials.json?skip_status=1';
         $result = $this->request($path);
         $profile_json = json_decode($result, true);
 
@@ -131,5 +131,20 @@ class Twitter extends AbstractConnector
         $response = json_decode($response);
         $response = count($response->ids);
         return $response;
+    }
+
+
+    /***************************************************************************
+     *
+     * From here on these are Twitter-specific methods that should not be
+     * accessed from other classes.
+     *
+     **************************************************************************/
+
+    public function getTweets()
+    {
+        $path = '/statuses/user_timeline.json?user_id='.$this->id;
+        $response = $this->request($path);
+        $response = json_decode($response);
     }
 }

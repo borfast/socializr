@@ -45,11 +45,12 @@ class ConnectorFactory
 
 
     /**
-     * Creates a Connector object for the given provider type.
+     * Creates a Connector object for the given provider type. The $id parameter
+     * may be null but should only be used like that when getting
      *
      * @param  string                     $provider        The provider type you want.
-     * @param  string                     $id              The ID we're connecting to.
      * @param  TokenStorageInterface      $storage         The storage for PHPoAuthLib.
+     * @param  string                     $id              The ID we're connecting to.
      * @param  null|ClientInterface       $http_client     The HTTP client for PHPoAuthLib.
      * @param  null|ServiceFactory        $service_factory The PHPoAuthLib service factory.
      * @param  null|CredentialsInterface  $credentials     The credentials for PHPoAuthLib.
@@ -57,8 +58,8 @@ class ConnectorFactory
      */
     public function createConnector(
         $provider,
-        $id,
         TokenStorageInterface $storage,
+        $id = null,
         ClientInterface $http_client = null,
         ServiceFactory $service_factory = null,
         CredentialsInterface $credentials = null
