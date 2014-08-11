@@ -132,19 +132,4 @@ class Twitter extends AbstractConnector
         $response = count($response->ids);
         return $response;
     }
-
-
-    /***************************************************************************
-     *
-     * From here on these are Twitter-specific methods that should not be
-     * accessed from other classes.
-     *
-     **************************************************************************/
-
-    public function getTweets()
-    {
-        $path = '/statuses/user_timeline.json?user_id='.$this->id;
-        $response = $this->request($path);
-        $response = json_decode($response);
-    }
 }
