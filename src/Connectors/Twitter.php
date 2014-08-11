@@ -102,7 +102,7 @@ class Twitter extends AbstractConnector
 
     public function getProfile()
     {
-        $path = '/users/show.json?user_id='.$this->id;
+        $path = '/account/verify_credentials.json?skip_status=1';
         $result = $this->request($path);
         $profile_json = json_decode($result, true);
 
