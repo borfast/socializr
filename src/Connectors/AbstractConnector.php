@@ -141,6 +141,11 @@ abstract class AbstractConnector implements ConnectorInterface
 
     public function getUid()
     {
+        if (is_null($this->id)) {
+            $profile = $this->getProfile();
+            $this->id = $profile->id;
+        }
+
         return $this->id;
     }
 
