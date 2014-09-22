@@ -137,14 +137,11 @@ class FacebookPage extends Facebook
     }
 
 
-    public function renameTab($page_id, $page_access_token, $app_id, $tab_name)
+    public function updateTab($page_id, $page_access_token, $app_id, array $params)
     {
         $path = '/'.$page_id.'/tabs/app_'.$app_id;
         $method = 'POST';
-        $params = [
-            'access_token' => $page_access_token,
-            'custom_name' => $tab_name
-        ];
+        $params['access_token'] = $page_access_token;
 
         $response = $this->request($path, $method, $params);
         $response = json_decode($response);
