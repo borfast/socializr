@@ -12,6 +12,11 @@ abstract class AbstractConnector implements ConnectorInterface
     protected $id;
     protected $config = [];
 
+    /**
+     * @param array $config
+     * @param ServiceInterface $service
+     * @param $id
+     */
     public function __construct(array $config, ServiceInterface $service, $id)
     {
         $this->config = $config;
