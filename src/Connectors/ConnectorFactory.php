@@ -1,6 +1,7 @@
 <?php
 namespace Borfast\Socializr\Connectors;
 
+use OAuth\Common\Http\Uri\Uri;
 use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\Common\Http\Client\ClientInterface;
 use OAuth\ServiceFactory;
@@ -93,12 +94,24 @@ class ConnectorFactory
             );
         }
 
+
+        // Temporary (or so I hope) hack to overcome PHPoAuthLib not being ready
+        // for Facebook's Graph API 1.0 deprecation.
+        $uri = null;
+        if ($provider == 'Facebook') {
+            $uri = new Uri('https://graph.facebook.com/v2.1/');
+        }
+
+        // Let's make use of CurlClient.
         $service_factory->setHttpClient($http_client);
+
+        // Finally, create the service already!
         $service = $service_factory->createService(
             $config['service'],
             $credentials,
             $storage,
-            $config['scopes']
+            $config['scopes'],
+            $uri
         );
 
 
