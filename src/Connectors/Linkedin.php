@@ -101,7 +101,10 @@ class Linkedin extends AbstractConnector
 
     public function getStats()
     {
-        return null;
+        $path = 'people/'.$this->id.':(id,num-connections)?format=json';
+        $response = json_decode($this->request($path));
+
+        return $response->numConnections;
     }
 
 
