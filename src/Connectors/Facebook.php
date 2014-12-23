@@ -5,6 +5,7 @@ namespace Borfast\Socializr\Connectors;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Page;
+use Borfast\Socializr\Group;
 use Borfast\Socializr\Response;
 use Borfast\Socializr\Connectors\AbstractConnector;
 use OAuth\Common\Storage\TokenStorageInterface;
@@ -136,6 +137,35 @@ class Facebook extends AbstractConnector
         }
 
         return $pages;
+    }
+
+    public function getGroups()
+    {
+        $path = '/'.$this->id.'/groups?fields=id,name,icon';
+        $result = $this->request($path);
+        $json_result = json_decode($result, true);
+
+        $groups = [];
+
+        $mapping = [
+            'id' => 'id',
+            'name' => 'name',
+            'picture' => 'icon'
+        ];
+
+        // Make the group IDs available as the array keys
+        if (!empty($json_result['data'])) {
+            foreach ($json_result['data'] as $group) {
+                $groups[$group['id']] = Group::create($mapping, $group);
+                $groups[$group['id']]->picture = $group['icon'];
+                $groups[$group['id']]->link = 'https://www.facebook.com/groups/' . $group['id'];
+                $groups[$group['id']]->can_post = true;
+                $groups[$group['id']]->provider = static::$provider;
+                $groups[$group['id']]->raw_response = $result;
+            }
+        }
+
+        return $groups;
     }
 
     /****************************************************
