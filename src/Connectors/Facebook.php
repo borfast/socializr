@@ -105,6 +105,12 @@ class Facebook extends AbstractConnector
         return $profile;
     }
 
+    public function getPermissions()
+    {
+        $path = '/'.$this->id.'/permissions';
+        return $this->request($path);
+    }
+
     public function getStats()
     {
         return $this->getFriendsCount();
