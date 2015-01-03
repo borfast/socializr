@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/borfast/socializr.svg?branch=feature%2Fimprovements)](https://travis-ci.org/borfast/socializr)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/borfast/socializr/badges/quality-score.png?b=feature%2Fimprovements)](https://scrutinizer-ci.com/g/borfast/socializr/?branch=feature%2Fimprovements)
+[![Build Status](https://travis-ci.org/borfast/socializr.svg?branch=master)](https://travis-ci.org/borfast/socializr)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/borfast/socializr/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/borfast/socializr/?branch=master)
 
 HERE BE DRAGONS!
 
