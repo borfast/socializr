@@ -124,6 +124,11 @@ class Twitter extends AbstractConnector
         return $profile;
     }
 
+    public function getPermissions()
+    {
+        return null;
+    }
+
     public function getStats()
     {
         $path = '/followers/ids.json?user_id='.$this->id;
