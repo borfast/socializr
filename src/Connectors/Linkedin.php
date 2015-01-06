@@ -107,6 +107,10 @@ class Linkedin extends AbstractConnector
         return $response->numConnections;
     }
 
+    public function getPermissions()
+    {
+        return null;
+    }
 
     public function getPages()
     {
