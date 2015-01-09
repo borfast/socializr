@@ -21,7 +21,7 @@ class FacebookGroup extends Facebook
         $method = 'POST';
         $params = array(
             'caption' => $post->title,
-            'description' => $post->description,
+            'description' => '',
             'link' => $post->url,
             'message' => $post->body,
         );

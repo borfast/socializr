@@ -57,7 +57,7 @@ class Facebook extends AbstractConnector
         $method = 'POST';
         $params = array(
             'caption' => $post->title,
-            'description' => $post->description,
+            'description' => '',
             'link' => $post->url,
             'message' => $post->body,
         );
