@@ -22,11 +22,11 @@ class LinkedinPage extends AbstractConnector
             'visibility' => [
                 'code' => 'anyone'
             ],
-            'comment' => $post->body,
+            'comment' => '',
             'content' => [
                 'title' => $post->title,
                 'submitted-url' => $post->url,
-                'description' => $post->description,
+                'description' => $post->body,
             ],
         );
         $params = json_encode($params);
