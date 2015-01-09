@@ -21,11 +21,12 @@ class LinkedinGroup extends AbstractConnector
         $path = '/groups/'.$group_id.'/posts?format=json&oauth2_access_token='.$token;
         $params = array(
             'title' => $post->title,
-            'summary' => $post->body,
+            'summary' => '',
             'content' => [
-                'title' => $post->title,
+                'title' => $post->title . ' @',
                 'submitted-url' => $post->url,
-                'description' => $post->description,
+                'submitted-image-url' => $post->image_url,
+                'description' => $post->body,
             ],
         );
         $params = json_encode($params);
