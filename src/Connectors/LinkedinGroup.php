@@ -14,12 +14,17 @@ class LinkedinGroup extends AbstractConnector
 {
     public static $provider = 'linkedin';
 
+    /**
+     * @param Post $post
+     * @return Response
+     * @throws LinkedinPostingException
+     */
     public function post(Post $post)
     {
         $group_id = $post->options['group_id'];
         $token = $this->service->getStorage()->retrieveAccessToken('Linkedin')->getAccessToken();
         $path = '/groups/'.$group_id.'/posts?format=json&oauth2_access_token='.$token;
-        $params = array(
+        $params = [
             'title' => $post->title,
             'summary' => '',
             'content' => [
@@ -28,7 +33,7 @@ class LinkedinGroup extends AbstractConnector
                 'submitted-image-url' => $post->image_url,
                 'description' => $post->body,
             ],
-        );
+        ];
         $params = json_encode($params);
 
 
@@ -64,13 +69,16 @@ class LinkedinGroup extends AbstractConnector
         // So we need to make another API call to fetch the correct URL, because
         // it's not even possible to generate it manually.
 
-        $location = $result->getHeader('location');
-        $url = $location.':(id,site-group-post-url)?format=json&oauth2_access_token='.$token;
-        $result = $client->get($url);
-        $json = $result->json();
+        // Moderated groups don't return a 'location' header, so let's skip it if that's the case.
+        $location = $result->getHeader('Location');
+        if (!empty($location)) {
+            $url = $location . ':(id,site-group-post-url)?format=json&oauth2_access_token=' . $token;
+            $result = $client->get($url);
+            $json = $result->json();
 
-        $post_url = str_replace('api.linkedin.com/v1', 'www.linkedin.com', $json['siteGroupPostUrl']);
-        $response->setPostUrl($post_url);
+            $post_url = str_replace('api.linkedin.com/v1', 'www.linkedin.com', $json['siteGroupPostUrl']);
+            $response->setPostUrl($post_url);
+        }
 
         return $response;
     }
