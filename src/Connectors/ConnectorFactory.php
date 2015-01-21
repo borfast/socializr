@@ -110,6 +110,7 @@ class ConnectorFactory
             $credentials,
             $storage,
             $config['scopes'],
+            null,
             $api_version
         );
 
