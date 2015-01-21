@@ -104,14 +104,21 @@ class ConnectorFactory
             $api_version = '2.2';
         }
 
+        // Temporary (or so I hope) hack to overcome PHPoAuthLib not being ready
+        // for Facebook's Graph API 1.0 deprecation.
+        $uri = null;
+        if ($provider == 'Facebook') {
+            $uri = new Uri('https://graph.facebook.com/v2.1/');
+        }
+
         // Finally, create the service already!
         $service = $service_factory->createService(
             $config['service'],
             $credentials,
             $storage,
-            $config['scopes']
-            /*null,
-            $api_version*/
+            $config['scopes'],
+            $uri
+            //$api_version
         );
 
 
