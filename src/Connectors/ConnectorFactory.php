@@ -109,9 +109,9 @@ class ConnectorFactory
             $config['service'],
             $credentials,
             $storage,
-            $config['scopes'],
-            null,
-            $api_version
+            $config['scopes']
+            /*null,
+            $api_version*/
         );
 
 
