@@ -8,6 +8,5 @@ class Post
     public $title = '';
     public $description = '';
     public $url = '';
-    public $image_url = '';
     public $options = array();
 }
