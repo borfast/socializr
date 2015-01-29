@@ -53,14 +53,35 @@ class Facebook extends AbstractConnector
 
     public function post(Post $post)
     {
-        $path = '/'.$this->getUid().'/feed';
+        if (empty($post->media)) {
+            $path = '/'.$this->getUid().'/feed';
+
+            $msg  = strtoupper($post->title);
+            $msg .= "\n\n";
+            $msg .= $post->body;
+
+            $params = [
+                'caption' => $post->title,
+                'description' => '',
+                'link' => $post->url,
+                'message' => $msg
+            ];
+        } else {
+            $path = '/'.$this->getUid().'/photos';
+
+            $msg  = strtoupper($post->title);
+            $msg .= "\n\n";
+            $msg .= $post->body;
+            $msg .= "\n";
+            $msg .= $post->url;
+
+            $params = [
+                'url' => $post->media[0],
+                'message' => $msg
+            ];
+        }
+
         $method = 'POST';
-        $params = array(
-            'caption' => $post->title,
-            'description' => '',
-            'link' => $post->url,
-            'message' => $post->body,
-        );
 
         $result = $this->request($path, $method, $params);
 
