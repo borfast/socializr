@@ -9,5 +9,6 @@ class Post
     public $description = '';
     public $url = '';
     public $image_url = '';
-    public $options = array();
+    public $options = [];
+    public $media = [];
 }
