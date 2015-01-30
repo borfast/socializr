@@ -60,6 +60,11 @@ class Linkedin extends AbstractConnector
                 'description' => $post->body,
             ]
         ];
+
+        if (!empty($post->media)) {
+            $params['content']['submitted-image-url'] = $post->media[0];
+        }
+
         $params = json_encode($params);
 
         $result = $this->request($path, $method, $params);
