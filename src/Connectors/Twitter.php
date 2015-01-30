@@ -57,9 +57,13 @@ class Twitter extends AbstractConnector
     {
         $path = '/statuses/update.json';
         $method = 'POST';
-        $params = array(
-            'status' => $post->body,
-        );
+        $params = [
+            'status' => $post->body
+        ];
+
+        if (!empty($post->media)) {
+            $params['media_ids'] = implode(',', $post->media);
+        }
 
         $result = $this->request($path, $method, $params);
 
@@ -73,16 +77,31 @@ class Twitter extends AbstractConnector
     }
 
 
+    public function postMedia($media)
+    {
+        $path = 'https://upload.twitter.com/1.1/media/upload.json';
+        $method = 'POST';
+        $params = [
+            'media' => $media
+        ];
+
+        $result = $this->request($path, $method, $params);
+        $json_result = json_decode($result, true);
+
+        return $json_result;
+    }
+
+
     /**
      * Twitter needs an extra step for authentication before providing an
      * authorization URL.
      *
      * @author Raúl Santos
      */
-    public function getAuthorizationUri(array $params = array())
+    public function getAuthorizationUri(array $params = [])
     {
         $token = $this->service->requestRequestToken();
-        $extra = array('oauth_token' => $token->getRequestToken());
+        $extra = ['oauth_token' => $token->getRequestToken()];
         return parent::getAuthorizationUri($extra);
     }
 
