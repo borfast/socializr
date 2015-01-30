@@ -30,13 +30,11 @@ class LinkedinGroup extends AbstractConnector
             'content' => [
                 'title' => $post->title . ' @',
                 'submitted-url' => $post->url,
-                'submitted-image-url' => $post->image_url,
+                'submitted-image-url' => $post->media[0],
                 'description' => $post->body,
             ],
         ];
         $params = json_encode($params);
-
-
 
         // Linkedin API requires the Content-Type header set to application/json
         $url = 'https://api.linkedin.com/v1'.$path;

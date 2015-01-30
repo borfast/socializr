@@ -18,7 +18,7 @@ class LinkedinPage extends AbstractConnector
         $page_id = $post->options['page_id'];
         $path = '/companies/'.$page_id.'/shares?format=json';
         $method = 'POST';
-        $params = array(
+        $params = [
             'visibility' => [
                 'code' => 'anyone'
             ],
@@ -28,7 +28,12 @@ class LinkedinPage extends AbstractConnector
                 'submitted-url' => $post->url,
                 'description' => $post->body,
             ],
-        );
+        ];
+
+        if (!empty($post->media)) {
+            $params['content']['submitted-image-url'] = $post->media[0];
+        }
+
         $params = json_encode($params);
 
         // Linkedin API requires the Content-Type header set to application/json
