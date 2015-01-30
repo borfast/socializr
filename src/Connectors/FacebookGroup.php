@@ -17,14 +17,35 @@ class FacebookGroup extends Facebook
 
     public function post(Post $post)
     {
-        $path = '/'.$this->id.'/feed';
+        if (empty($post->media)) {
+            $path = '/'.$this->id.'/feed';
+
+            $msg  = strtoupper($post->title);
+            $msg .= "\n\n";
+            $msg .= $post->body;
+
+            $params = [
+                'caption' => $post->title,
+                'description' => '',
+                'link' => $post->url,
+                'message' => $msg
+            ];
+        } else {
+            $path = '/'.$this->id.'/photos';
+
+            $msg  = strtoupper($post->title);
+            $msg .= "\n\n";
+            $msg .= $post->body;
+            $msg .= "\n";
+            $msg .= $post->url;
+
+            $params = [
+                'url' => $post->media[0],
+                'message' => $msg
+            ];
+        }
+
         $method = 'POST';
-        $params = array(
-            'caption' => $post->title,
-            'description' => '',
-            'link' => $post->url,
-            'message' => $post->body,
-        );
 
         $result = $this->request($path, $method, $params);
         $json_result = json_decode($result, true);

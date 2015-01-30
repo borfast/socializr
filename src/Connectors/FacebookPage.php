@@ -14,18 +14,40 @@ use OAuth\Common\Token\Exception\ExpiredTokenException;
 
 class FacebookPage extends Facebook
 {
+
     public function post(Post $post)
     {
-        $access_token = $post->options['page_access_token'];
-        $path = '/'.$this->id.'/feed';
+        if (empty($post->media)) {
+            $path = '/'.$this->id.'/feed';
+            $access_token = $post->options['page_access_token'];
+
+            $msg  = strtoupper($post->title);
+            $msg .= "\n\n";
+            $msg .= $post->body;
+
+            $params = [
+                'caption' => $post->title,
+                'description' => '',
+                'link' => $post->url,
+                'message' => $msg,
+                'access_token' => $access_token
+            ];
+        } else {
+            $path = '/'.$this->id.'/photos';
+
+            $msg  = strtoupper($post->title);
+            $msg .= "\n\n";
+            $msg .= $post->body;
+            $msg .= "\n";
+            $msg .= $post->url;
+
+            $params = [
+                'url' => $post->media[0],
+                'message' => $msg
+            ];
+        }
+
         $method = 'POST';
-        $params = array(
-            'caption' => $post->title,
-            'description' => '',
-            'link' => $post->url,
-            'message' => $post->body,
-            'access_token' => $access_token
-        );
 
         $result = $this->request($path, $method, $params);
         $json_result = json_decode($result, true);
@@ -95,7 +117,7 @@ class FacebookPage extends Facebook
     }
 
 
-    public function addTab($page_id, $page_access_token, $app_id, array $params = array())
+    public function addTab($page_id, $page_access_token, $app_id, array $params = [])
     {
         $path = '/'.$page_id.'/tabs';
         $method = 'POST';
