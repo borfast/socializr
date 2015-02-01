@@ -2,13 +2,13 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use Borfast\Socializr\Exceptions\LinkedinForbiddenException;
 use Borfast\Socializr\Exceptions\LinkedinPostingException;
-use Exception;
-use GuzzleHttp\Client as Guzzle;
-
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Response;
+use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\Exception\ClientException;
 
 class LinkedinGroup extends AbstractConnector
 {
@@ -17,6 +17,7 @@ class LinkedinGroup extends AbstractConnector
     /**
      * @param Post $post
      * @return Response
+     * @throws LinkedinForbiddenException
      * @throws LinkedinPostingException
      */
     public function post(Post $post)
@@ -43,7 +44,15 @@ class LinkedinGroup extends AbstractConnector
             'body' => $params
         ];
         $client = new Guzzle();
-        $result = $client->post($url, $options);
+        try {
+            $result = $client->post($url, $options);
+        } catch (ClientException $e) {
+            if ($e->getCode() == 403) {
+                throw new LinkedinForbiddenException($e);
+            } else {
+                throw $e;
+            }
+        }
 
         if ($result->getStatusCode() > 300) {
             $msg = "Error posting to Linkedin group. Error code from Linkedin: %s. Error message from Linkedin: %s";
