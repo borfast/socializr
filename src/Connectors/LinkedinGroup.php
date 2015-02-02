@@ -31,18 +31,24 @@ class LinkedinGroup extends AbstractConnector
             'content' => [
                 'title' => $post->title . ' @',
                 'submitted-url' => $post->url,
-                'submitted-image-url' => $post->media[0],
                 'description' => $post->body,
             ],
         ];
+
+        // Add media files, if they were sent.
+        if (isset($post->media) && array_key_exists(0, $post->media)) {
+            $params['submitted-image-url'] = $post->media[0];
+        }
+
         $params = json_encode($params);
 
-        // Linkedin API requires the Content-Type header set to application/json
         $url = 'https://api.linkedin.com/v1'.$path;
+        // Linkedin API requires the Content-Type header set to application/json
         $options = [
             'headers' => ['Content-Type' => 'application/json'],
             'body' => $params
         ];
+
         $client = new Guzzle();
         try {
             $result = $client->post($url, $options);
