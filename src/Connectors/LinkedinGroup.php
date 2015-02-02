@@ -37,7 +37,7 @@ class LinkedinGroup extends AbstractConnector
 
         // Add media files, if they were sent.
         if (isset($post->media) && array_key_exists(0, $post->media)) {
-            $params['submitted-image-url'] = $post->media[0];
+            $params['content']['submitted-image-url'] = $post->media[0];
         }
 
         $params = json_encode($params);
