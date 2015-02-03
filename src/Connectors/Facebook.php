@@ -57,7 +57,7 @@ class Facebook extends AbstractConnector
         if (empty($post->media)) {
             $path = '/'.$this->getUid().'/feed';
 
-            $msg  = strtoupper($post->title);
+            $msg  = $post->title;
             $msg .= "\n\n";
             $msg .= $post->body;
 
@@ -70,7 +70,7 @@ class Facebook extends AbstractConnector
         } else {
             $path = '/'.$this->getUid().'/photos';
 
-            $msg  = strtoupper($post->title);
+            $msg  = $post->title;
             $msg .= "\n\n";
             $msg .= $post->body;
             $msg .= "\n";

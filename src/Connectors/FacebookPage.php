@@ -21,7 +21,7 @@ class FacebookPage extends Facebook
             $path = '/'.$this->id.'/feed';
             $access_token = $post->options['page_access_token'];
 
-            $msg  = strtoupper($post->title);
+            $msg  = $post->title;
             $msg .= "\n\n";
             $msg .= $post->body;
 
@@ -35,7 +35,7 @@ class FacebookPage extends Facebook
         } else {
             $path = '/'.$this->id.'/photos';
 
-            $msg  = strtoupper($post->title);
+            $msg  = $post->title;
             $msg .= "\n\n";
             $msg .= $post->body;
             $msg .= "\n";
