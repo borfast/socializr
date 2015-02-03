@@ -20,7 +20,7 @@ class FacebookGroup extends Facebook
         if (empty($post->media)) {
             $path = '/'.$this->id.'/feed';
 
-            $msg  = strtoupper($post->title);
+            $msg  = $post->title;
             $msg .= "\n\n";
             $msg .= $post->body;
 
@@ -33,7 +33,7 @@ class FacebookGroup extends Facebook
         } else {
             $path = '/'.$this->id.'/photos';
 
-            $msg  = strtoupper($post->title);
+            $msg  = $post->title;
             $msg .= "\n\n";
             $msg .= $post->body;
             $msg .= "\n";
