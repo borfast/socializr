@@ -5,6 +5,7 @@ namespace Borfast\Socializr\Connectors;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Response;
+use GuzzleHttp\Exception\BadResponseException;
 
 class Tumblr extends AbstractConnector
 {
@@ -17,7 +18,12 @@ class Tumblr extends AbstractConnector
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
         $result = parent::request($path, $method, $params, $headers);
-        $json_result = json_decode($result, true);
+
+        $json = json_decode($result);
+
+//        if (intval($json['meta']['status']) >= 300) {
+//            throw new BadResponseException()
+//        }
 
         return $result;
     }
@@ -26,9 +32,9 @@ class Tumblr extends AbstractConnector
     {
         $path = '/statuses/update.json';
         $method = 'POST';
-        $params = array(
+        $params = [
             'status' => $post->body,
-        );
+        ];
 
         $result = $this->request($path, $method, $params);
 
@@ -62,31 +68,22 @@ class Tumblr extends AbstractConnector
     public function storeOauthToken($params)
     {
         $token = $this->service->getStorage()->retrieveAccessToken('Tumblr');
-        $result = $this->service->requestAccessToken($params['oauth_token'], $params['oauth_verifier'], $token->getRequestTokenSecret());
-
-        $extra_params = $result->getExtraParams();
-        $this->user_id = $extra_params['user_id'];
-        $this->screen_name = $extra_params['screen_name'];
+        $this->service->requestAccessToken($params['oauth_token'], $params['oauth_verifier'], $token->getRequestTokenSecret());
     }
 
     public function getProfile()
     {
-        $path = '/account/verify_credentials.json?skip_status=1';
+        $path = 'user/info';
         $result = $this->request($path);
         $profile_json = json_decode($result, true);
 
         $mapping = [
-            'id' => 'id_str',
-            // 'email' => 'email',
+            'id' => 'name',
             'name' => 'name',
-            'first_name' => 'first_name',
-            'middle_name' => 'middle_name',
-            'last_name' => 'last_name',
-            'username' => 'screen_name',
-            'link' => 'link'
+            'username' => 'name',
         ];
 
-        $profile = Profile::create($mapping, $profile_json);
+        $profile = Profile::create($mapping, $profile_json['response']['user']);
         $profile->provider = static::$provider;
         $profile->raw_response = $result;
 
