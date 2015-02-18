@@ -19,22 +19,29 @@ class Tumblr extends AbstractConnector
     {
         $result = parent::request($path, $method, $params, $headers);
 
-        $json = json_decode($result);
-
-//        if (intval($json['meta']['status']) >= 300) {
-//            throw new BadResponseException()
-//        }
-
         return $result;
     }
 
     public function post(Post $post)
     {
-        $path = '/statuses/update.json';
+        $path = 'blog/'.$this->id.'/post';
         $method = 'POST';
-        $params = [
-            'status' => $post->body,
-        ];
+
+        $params = [];
+        if (!empty($post->tags)) {
+            $params['tags'] = $post->tags;
+        }
+
+
+        if (empty($post->media)) {
+            $params['type'] = 'text';
+            $params['body'] = $post->body;
+        } else {
+            $params['caption'] = $post->title;
+            $params['link'] = $post->url;
+            $params['source'] = $post->media[0];
+        }
+
 
         $result = $this->request($path, $method, $params);
 
@@ -90,6 +97,13 @@ class Tumblr extends AbstractConnector
         return $profile;
     }
 
+
+    public function getBlogs()
+    {
+        return $this->getProfile()->blogs;
+    }
+
+
     public function getPermissions()
     {
         return null;
@@ -97,10 +111,8 @@ class Tumblr extends AbstractConnector
 
     public function getStats()
     {
-        $path = '/followers/ids.json?user_id='.$this->id;
-        $response = $this->request($path);
-        $response = json_decode($response);
-        $response = count($response->ids);
-        return $response;
+        $profile = $this->getProfile();
+
+        return $profile->following;
     }
 }
