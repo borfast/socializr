@@ -2,6 +2,7 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use Borfast\Socializr\Blog;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Response;
@@ -100,7 +101,26 @@ class Tumblr extends AbstractConnector
 
     public function getBlogs()
     {
-        return $this->getProfile()->blogs;
+        $path = 'user/info';
+        $result = $this->request($path);
+        $profile_json = json_decode($result, true);
+
+        $mapping = [
+            'title' => 'title',
+            'posts' => 'posts',
+            'name' => 'name',
+            'description' => 'description',
+            'ask' => 'ask',
+            'ask_anon' => 'ask_anon'
+        ];
+
+        $blogs = [];
+
+        foreach ($profile_json['response']['user']['blogs'] as $blog) {
+            $blogs[$blog['name']] = Blog::create($mapping, $blog);
+        }
+
+        return $blogs;
     }
 
 
