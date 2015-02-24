@@ -106,6 +106,7 @@ class Tumblr extends AbstractConnector
         $profile_json = json_decode($result, true);
 
         $mapping = [
+            'id' => 'name',
             'title' => 'title',
             'posts' => 'posts',
             'name' => 'name',
