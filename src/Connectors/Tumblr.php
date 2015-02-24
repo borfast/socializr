@@ -107,12 +107,12 @@ class Tumblr extends AbstractConnector
 
         $mapping = [
             'id' => 'name',
+            'link' => 'url',
             'title' => 'title',
-            'posts' => 'posts',
             'name' => 'name',
             'description' => 'description',
             'ask' => 'ask',
-            'ask_anon' => 'ask_anon'
+            'ask_anon' => 'ask_anon',
         ];
 
         $blogs = [];

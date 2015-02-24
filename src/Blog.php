@@ -6,6 +6,7 @@ class Blog
 {
     public $id = '';
     public $title = '';
+    public $link = '';
     public $posts = 0;
     public $name = '';
     public $updated;
