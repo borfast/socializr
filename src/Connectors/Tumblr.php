@@ -6,12 +6,12 @@ use Borfast\Socializr\Blog;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Response;
+use Exception;
 use GuzzleHttp\Exception\BadResponseException;
 
 class Tumblr extends AbstractConnector
 {
     public static $provider = 'Tumblr';
-    public static $blog_host = 'dosocialtests';
 
     protected $user_id;
     protected $screen_name;
@@ -23,36 +23,9 @@ class Tumblr extends AbstractConnector
         return $result;
     }
 
-    public function post(Post $post)
+    public function post(Post $post, array $options = [])
     {
-        $path = 'blog/'.$this->id.'/post';
-        $method = 'POST';
-
-        $params = [];
-        if (!empty($post->tags)) {
-            $params['tags'] = $post->tags;
-        }
-
-
-        if (empty($post->media)) {
-            $params['type'] = 'text';
-            $params['body'] = $post->body;
-        } else {
-            $params['caption'] = $post->title;
-            $params['link'] = $post->url;
-            $params['source'] = $post->media[0];
-        }
-
-
-        $result = $this->request($path, $method, $params);
-
-        $response = new Response;
-        $response->setRawResponse(json_encode($result));
-        $result_json = json_decode($result);
-        $response->setProvider('Tumblr');
-        $response->setPostId($result_json->id_str);
-
-        return $response;
+        throw new Exception('Trying to post to a Tumblr profile, which does not accept posts; only Tumblr blogs do.');
     }
 
 

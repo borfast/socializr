@@ -181,6 +181,6 @@ abstract class AbstractConnector implements ConnectorInterface
         throw new \Exception('Trying to get Groups from a generic provider. This probably means you are trying to get a type of data that does not make sense for the connector you are using.');
     }
 
-    abstract public function post(Post $post);
+    abstract public function post(Post $post, array $options = []);
     abstract public function getStats();
 }

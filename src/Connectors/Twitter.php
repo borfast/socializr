@@ -53,7 +53,7 @@ class Twitter extends AbstractConnector
     }
 
 
-    public function post(Post $post)
+    public function post(Post $post, array $options = [])
     {
         $path = '/statuses/update.json';
         $method = 'POST';
