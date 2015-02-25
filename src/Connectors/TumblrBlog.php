@@ -49,7 +49,7 @@ class TumblrBlog extends Tumblr
         $response->setRawResponse(json_encode($result));
         $result_json = json_decode($result);
         $response->setProvider('Tumblr');
-        $response->setPostId($result_json->id_str);
+        $response->setPostId($result_json->response->id);
 
         return $response;
     }
