@@ -15,6 +15,7 @@ class Profile
     public $link;
     public $raw_response;
     public $avatar;
+    public $likes;
 
 
     /**

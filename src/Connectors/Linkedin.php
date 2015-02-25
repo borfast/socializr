@@ -45,7 +45,7 @@ class Linkedin extends AbstractConnector
     }
 
 
-    public function post(Post $post, array $options = [])
+    public function post(Post $post)
     {
         $path = '/people/~/shares?format=json';
         $method = 'POST';

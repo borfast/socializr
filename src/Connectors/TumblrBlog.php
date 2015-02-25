@@ -12,8 +12,7 @@ class TumblrBlog extends Tumblr
 {
     public static $provider = 'Tumblr';
 
-    protected $user_id;
-    protected $screen_name;
+    protected $base_hostname;
 
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
@@ -22,9 +21,9 @@ class TumblrBlog extends Tumblr
         return $result;
     }
 
-    public function post(Post $post, array $options = [])
+    public function post(Post $post)
     {
-        $path = 'blog/'.$options['base_hostname'].'/post';
+        $path = 'blog/'.$this->options['base_hostname'].'/post';
         $method = 'POST';
 
         $params = [];
@@ -54,6 +53,31 @@ class TumblrBlog extends Tumblr
         return $response;
     }
 
+    public function getBlog()
+    {
+        $path = 'user/info';
+        $result = $this->request($path);
+        $profile_json = json_decode($result, true);
+
+        $mapping = [
+            'id' => 'name',
+            'link' => 'url',
+            'title' => 'title',
+            'name' => 'name',
+            'description' => 'description',
+            'ask' => 'ask',
+            'ask_anon' => 'ask_anon',
+        ];
+
+        $blogs = [];
+
+        foreach ($profile_json['response']['user']['blogs'] as $blog) {
+            $blogs[$blog['name']] = Blog::create($mapping, $blog);
+        }
+
+        return $blogs;
+    }
+
 
     public function getPermissions()
     {
@@ -64,6 +88,6 @@ class TumblrBlog extends Tumblr
     {
         $profile = $this->getProfile();
 
-        return $profile->following;
+        return $profile->likes;
     }
 }
