@@ -19,9 +19,6 @@
         "mockery/mockery": "dev-master"
     },
     "autoload": {
-        "psr-0": {
-            "Requests\\": "vendor/rmccue/requests/library"
-        },
         "psr-4": {
             "Borfast\\Socializr\\": "src"
         }

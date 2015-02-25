@@ -52,14 +52,14 @@ class Facebook extends AbstractConnector
     }
 
 
-    public function post(Post $post)
+    public function post(Post $post, array $options = [])
     {
+        $msg  = $post->title;
+        $msg .= "\n\n";
+        $msg .= $post->body;
+
         if (empty($post->media)) {
             $path = '/'.$this->getUid().'/feed';
-
-            $msg  = $post->title;
-            $msg .= "\n\n";
-            $msg .= $post->body;
 
             $params = [
                 'caption' => $post->title,
@@ -70,9 +70,6 @@ class Facebook extends AbstractConnector
         } else {
             $path = '/'.$this->getUid().'/photos';
 
-            $msg  = $post->title;
-            $msg .= "\n\n";
-            $msg .= $post->body;
             $msg .= "\n";
             $msg .= $post->url;
 

@@ -20,7 +20,7 @@ class LinkedinGroup extends AbstractConnector
      * @throws LinkedinForbiddenException
      * @throws LinkedinPostingException
      */
-    public function post(Post $post)
+    public function post(Post $post, array $options = [])
     {
         $group_id = $post->options['group_id'];
         $token = $this->service->getStorage()->retrieveAccessToken('Linkedin')->getAccessToken();

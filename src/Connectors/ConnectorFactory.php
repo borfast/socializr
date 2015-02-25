@@ -98,17 +98,17 @@ class ConnectorFactory
         // Let's make use of CurlClient.
         $service_factory->setHttpClient($http_client);
 
-        // If this is Facebook, let's specify we want API v2.2
-        $api_version = null;
-        if (strtolower($provider) == 'facebook') {
-            $api_version = '2.2';
-        }
-
         // Temporary (or so I hope) hack to overcome PHPoAuthLib not being ready
         // for Facebook's Graph API 1.0 deprecation.
+
+        // If this is Facebook, let's specify we want API v2.2
+//        $api_version = null;
+//        if (strtolower($provider) == 'facebook') {
+//            $api_version = '2.2';
+//        }
         $uri = null;
         if ($provider == 'Facebook') {
-            $uri = new Uri('https://graph.facebook.com/v2.1/');
+            $uri = new Uri('https://graph.facebook.com/v2.2/');
         }
 
         // Finally, create the service already!
