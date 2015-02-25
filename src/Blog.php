@@ -13,7 +13,7 @@ class Blog
     public $description = '';
     public $ask = false;
     public $ask_anon;
-    public $likes = 0;
+    public $followers = 0;
 
     /**
      * Create a new Blog object based on an array of attributes and a mapping
