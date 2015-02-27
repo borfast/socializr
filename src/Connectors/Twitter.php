@@ -139,6 +139,7 @@ class Twitter extends AbstractConnector
         $profile = Profile::create($mapping, $profile_json);
         $profile->provider = static::$provider;
         $profile->raw_response = $result;
+        $profile->link = 'https://twitter.com/'.$profile_json['screen_name'];
 
         return $profile;
     }
