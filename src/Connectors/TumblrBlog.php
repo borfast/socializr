@@ -65,6 +65,7 @@ class TumblrBlog extends Tumblr
         ];
 
         $blog = Blog::create($mapping, $json_result['response']['blog']);
+
         return $blog;
     }
 

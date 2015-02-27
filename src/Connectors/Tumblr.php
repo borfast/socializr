@@ -65,6 +65,7 @@ class Tumblr extends AbstractConnector
         $profile = Profile::create($mapping, $profile_json['response']['user']);
         $profile->provider = static::$provider;
         $profile->raw_response = $result;
+        $profile->link = 'https://www.tumblr.com';
 
         return $profile;
     }
