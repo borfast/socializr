@@ -52,7 +52,7 @@ class Facebook extends AbstractConnector
     }
 
 
-    public function post(Post $post, array $options = [])
+    public function post(Post $post)
     {
         $msg  = $post->title;
         $msg .= "\n\n";

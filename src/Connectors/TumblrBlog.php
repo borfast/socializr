@@ -12,19 +12,11 @@ class TumblrBlog extends Tumblr
 {
     public static $provider = 'Tumblr';
 
-    protected $user_id;
-    protected $screen_name;
+    protected $base_hostname;
 
-    public function request($path, $method = 'GET', $params = [], $headers = [])
+    public function post(Post $post)
     {
-        $result = parent::request($path, $method, $params, $headers);
-
-        return $result;
-    }
-
-    public function post(Post $post, array $options = [])
-    {
-        $path = 'blog/'.$options['base_hostname'].'/post';
+        $path = 'blog/'.$this->options['base_hostname'].'/post';
         $method = 'POST';
 
         $params = [];
@@ -54,6 +46,29 @@ class TumblrBlog extends Tumblr
         return $response;
     }
 
+    public function getBlog()
+    {
+        $api_key = $this->config['consumer_key'];
+        $path = 'blog/'.$this->options['base_hostname'].'/info?api_key='.$api_key;
+        $result = $this->request($path);
+        $json_result = json_decode($result, true);
+
+        $mapping = [
+            'id' => 'name',
+            'link' => 'url',
+            'title' => 'title',
+            'name' => 'name',
+            'description' => 'description',
+            'ask' => 'ask',
+            'ask_anon' => 'ask_anon',
+            'followers' => 'followers'
+        ];
+
+        $blog = Blog::create($mapping, $json_result['response']['blog']);
+
+        return $blog;
+    }
+
 
     public function getPermissions()
     {
@@ -62,8 +77,8 @@ class TumblrBlog extends Tumblr
 
     public function getStats()
     {
-        $profile = $this->getProfile();
+        $profile = $this->getBlog();
 
-        return $profile->following;
+        return $profile->followers;
     }
 }

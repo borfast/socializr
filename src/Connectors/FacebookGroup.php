@@ -15,7 +15,7 @@ use OAuth\Common\Token\Exception\ExpiredTokenException;
 class FacebookGroup extends Facebook
 {
 
-    public function post(Post $post, array $options = [])
+    public function post(Post $post)
     {
         if (empty($post->media)) {
             $path = '/'.$this->id.'/feed';

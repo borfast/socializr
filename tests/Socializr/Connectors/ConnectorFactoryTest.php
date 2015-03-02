@@ -70,6 +70,7 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
         $connector = $this->factory->createConnector(
             'Twitter',
             $this->mock_storage,
+            [],
             $this->id
         );
 
@@ -82,6 +83,7 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
         $connector = $this->factory->createConnector(
             'Facebook',
             $this->mock_storage,
+            [],
             $this->id
         );
 
@@ -94,6 +96,7 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
         $connector = $this->factory->createConnector(
             'FacebookPage',
             $this->mock_storage,
+            [],
             $this->id
         );
 
@@ -106,6 +109,7 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
         $connector = $this->factory->createConnector(
             'Linkedin',
             $this->mock_storage,
+            [],
             $this->id
         );
 
@@ -118,6 +122,7 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
         $connector = $this->factory->createConnector(
             'LinkedinPage',
             $this->mock_storage,
+            [],
             $this->id
         );
 
@@ -130,6 +135,7 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
         $connector = $this->factory->createConnector(
             'LinkedinGroup',
             $this->mock_storage,
+            [],
             $this->id
         );
 
@@ -144,6 +150,7 @@ class ConnectorFactoryTest extends \PHPUnit_Framework_TestCase
         $connector = $this->factory->createConnector(
             'invalid',
             $this->mock_storage,
+            [],
             $this->id
         );
     }

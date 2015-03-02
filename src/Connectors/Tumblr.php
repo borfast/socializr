@@ -13,9 +13,6 @@ class Tumblr extends AbstractConnector
 {
     public static $provider = 'Tumblr';
 
-    protected $user_id;
-    protected $screen_name;
-
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
         $result = parent::request($path, $method, $params, $headers);
@@ -23,7 +20,7 @@ class Tumblr extends AbstractConnector
         return $result;
     }
 
-    public function post(Post $post, array $options = [])
+    public function post(Post $post)
     {
         throw new Exception('Trying to post to a Tumblr profile, which does not accept posts; only Tumblr blogs do.');
     }
@@ -62,11 +59,13 @@ class Tumblr extends AbstractConnector
             'id' => 'name',
             'name' => 'name',
             'username' => 'name',
+            'likes' => 'likes'
         ];
 
         $profile = Profile::create($mapping, $profile_json['response']['user']);
         $profile->provider = static::$provider;
         $profile->raw_response = $result;
+        $profile->link = 'https://www.tumblr.com';
 
         return $profile;
     }
@@ -107,6 +106,6 @@ class Tumblr extends AbstractConnector
     {
         $profile = $this->getProfile();
 
-        return $profile->following;
+        return $profile->likes;
     }
 }

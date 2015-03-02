@@ -13,7 +13,7 @@ class LinkedinPage extends AbstractConnector
 {
     public static $provider = 'linkedin';
 
-    public function post(Post $post, array $options = [])
+    public function post(Post $post)
     {
         $page_id = $post->options['page_id'];
         $path = '/companies/'.$page_id.'/shares?format=json';
