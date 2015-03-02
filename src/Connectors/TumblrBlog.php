@@ -28,7 +28,7 @@ class TumblrBlog extends Tumblr
         if (empty($post->media)) {
             $params['type'] = 'text';
             $params['title'] = $post->title;
-            $params['body'] = $post->body;
+            $params['body'] = $post->body . "\n\n" . $post->url;
         } else {
             $params['caption'] = $post->title;
             $params['link'] = $post->url;
