@@ -26,12 +26,19 @@ class TumblrBlog extends Tumblr
 
 
         if (empty($post->media)) {
+            $body  = '<p>' . $post->body . '</p>';
+            $body .= '<strong>' . $post->url . '</strong>';
+
             $params['type'] = 'text';
             $params['title'] = $post->title;
-            $params['body'] = $post->body . "\n\n" . $post->url;
+            $params['body'] = $body;
         } else {
-            $params['caption'] = $post->title;
-            $params['link'] = $post->url;
+            $caption  = '<h2>' . $post->title . '</h2>';
+            $caption .= '<p>' . $post->body . '</p>';
+            $caption .= '<strong>' . $post->url . '</strong>';
+
+            $params['type'] = 'photo';
+            $params['caption'] = $caption;
             $params['source'] = $post->media[0];
         }
 
