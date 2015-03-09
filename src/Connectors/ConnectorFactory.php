@@ -51,6 +51,7 @@ class ConnectorFactory
      *
      * @param  string $provider The provider type you want.
      * @param  TokenStorageInterface $storage The storage for PHPoAuthLib.
+     * @param  array $options
      * @param  string $id The ID we're connecting to.
      * @param  null|ClientInterface $http_client The HTTP client for PHPoAuthLib.
      * @param  null|ServiceFactory $service_factory The PHPoAuthLib service factory.
@@ -61,6 +62,7 @@ class ConnectorFactory
     public function createConnector(
         $provider,
         TokenStorageInterface $storage,
+        array $options = [],
         $id = null,
         ClientInterface $http_client = null,
         ServiceFactory $service_factory = null,
@@ -98,17 +100,17 @@ class ConnectorFactory
         // Let's make use of CurlClient.
         $service_factory->setHttpClient($http_client);
 
-        // If this is Facebook, let's specify we want API v2.2
-        $api_version = null;
-        if (strtolower($provider) == 'facebook') {
-            $api_version = '2.2';
-        }
-
         // Temporary (or so I hope) hack to overcome PHPoAuthLib not being ready
         // for Facebook's Graph API 1.0 deprecation.
+
+        // If this is Facebook, let's specify we want API v2.2
+//        $api_version = null;
+//        if (strtolower($provider) == 'facebook') {
+//            $api_version = '2.2';
+//        }
         $uri = null;
         if ($provider == 'Facebook') {
-            $uri = new Uri('https://graph.facebook.com/v2.1/');
+            $uri = new Uri('https://graph.facebook.com/v2.2/');
         }
 
         // Finally, create the service already!
@@ -123,7 +125,7 @@ class ConnectorFactory
 
 
         $connector_class = '\\Borfast\\Socializr\\Connectors\\'.$provider;
-        $connector = new $connector_class($config, $service, $id);
+        $connector = new $connector_class($config, $service, $options, $id);
 
         return $connector;
     }

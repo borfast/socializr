@@ -11,16 +11,19 @@ abstract class AbstractConnector implements ConnectorInterface
     protected $service;
     protected $id;
     protected $config = [];
+    protected $options;
 
     /**
      * @param array $config
      * @param ServiceInterface $service
+     * @param array $options
      * @param $id
      */
-    public function __construct(array $config, ServiceInterface $service, $id)
+    public function __construct(array $config, ServiceInterface $service, array $options, $id)
     {
         $this->config = $config;
         $this->service = $service;
+        $this->options = $options;
         $this->id = $id;
         static::$provider = $service->service();
     }
@@ -47,7 +50,7 @@ abstract class AbstractConnector implements ConnectorInterface
      *
      * @todo Use pluggable\swappable CSRF token storage.
      */
-    public function getAuthorizationUri(array $params = array())
+    public function getAuthorizationUri(array $params = [])
     {
         // Check if this provider uses an CSRF token at all.
         if (!empty($this->config['csrf_token_name'])) {
@@ -119,7 +122,7 @@ abstract class AbstractConnector implements ConnectorInterface
     }
 
 
-    public function get($path, $params = array())
+    public function get($path, $params = [])
     {
         $response = json_decode(
             $this->service->request($path, 'GET', $params),

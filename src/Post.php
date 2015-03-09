@@ -11,4 +11,5 @@ class Post
     public $image_url = '';
     public $options = [];
     public $media = [];
+    public $tags;
 }
