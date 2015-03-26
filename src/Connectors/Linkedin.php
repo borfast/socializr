@@ -2,14 +2,13 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use Borfast\Socializr\Exceptions\ExpiredTokenException;
+use Borfast\Socializr\Exceptions\GenericPostingException;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Page;
 use Borfast\Socializr\Group;
 use Borfast\Socializr\Response;
-use Borfast\Socializr\Connectors\AbstractConnector;
-use OAuth\Common\Storage\TokenStorageInterface;
-use OAuth\Common\Token\Exception\ExpiredTokenException;
 
 class Linkedin extends AbstractConnector
 {
@@ -36,7 +35,7 @@ class Linkedin extends AbstractConnector
             if ($json_result['status'] == '401') {
                 throw new ExpiredTokenException($msg);
             } else {
-                throw new \Exception($msg);
+                throw new GenericPostingException($msg);
             }
 
         }

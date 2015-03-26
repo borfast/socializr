@@ -3,7 +3,7 @@ namespace Borfast\Socializr\Exceptions;
 
 use Exception;
 
-class LinkedinForbiddenException extends Exception
+class LinkedinForbiddenException extends AuthorizationException
 {
     /**
      * @param Exception $parent

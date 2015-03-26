@@ -4,6 +4,7 @@ namespace Borfast\Socializr\Connectors;
 
 use OAuth\Common\Service\ServiceInterface;
 use Borfast\Socializr\Post;
+use Borfast\Socializr\Exceptions\CSRFException;
 
 abstract class AbstractConnector implements ConnectorInterface
 {
@@ -97,7 +98,7 @@ abstract class AbstractConnector implements ConnectorInterface
 
             // If we don't have a token and should have one, crash and burn.
             if (!isset($_SESSION['socializr_csrf_token'])) {
-                throw new Exception('No CSRF token stored. Possible CSRF attack.', 1);
+                throw new CSRFException('No CSRF token stored. Possible CSRF attack.', 1);
             }
 
             $stored_token = $_SESSION['socializr_csrf_token'];
@@ -109,7 +110,7 @@ abstract class AbstractConnector implements ConnectorInterface
 
             // Finally check that the stored token and the received token match.
             if (strcmp($stored_token, $received_token) != 0) {
-                throw new Exception('Verification code mismatch. Possible CSRF attack.', 1);
+                throw new CSRFException('Verification code mismatch. Possible CSRF attack.', 1);
             }
         }
     }
