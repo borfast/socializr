@@ -2,6 +2,7 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use Borfast\Socializr\Exceptions\GenericPostingException;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
 use Borfast\Socializr\Page;
@@ -46,7 +47,7 @@ class LinkedinPage extends AbstractConnector
         if (isset($json_result['status']) && $json_result['status'] != 200) {
             $msg = "Error posting to Linkedin page. Error code from Linkedin: %s. Error message from Linkedin: %s";
             $msg = sprintf($msg, $json_result['errorCode'], $json_result['message']);
-            throw new \Exception($msg, $json_result['status']);
+            throw new GenericPostingException($msg, $json_result['status']);
         }
 
         $response = new Response;

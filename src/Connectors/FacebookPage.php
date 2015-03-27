@@ -2,15 +2,10 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use Borfast\Socializr\Exceptions\GenericPostingException;
 use Borfast\Socializr\Post;
-use Borfast\Socializr\Profile;
 use Borfast\Socializr\Page;
 use Borfast\Socializr\Response;
-use Borfast\Socializr\Connectors\AbstractConnector;
-use OAuth\Common\Storage\TokenStorageInterface;
-use OAuth\Common\Token\Exception\ExpiredTokenException;
-
-// use \Requests;
 
 class FacebookPage extends Facebook
 {
@@ -55,7 +50,7 @@ class FacebookPage extends Facebook
         // If there's no ID, the post didn't go through
         if (!isset($json_result['id'])) {
             $msg = "Unknown error posting to Facebook page.";
-            throw new \Exception($msg, 1);
+            throw new GenericPostingException($msg, 1);
         }
 
         $response = new Response;

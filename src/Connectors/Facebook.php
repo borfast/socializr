@@ -2,16 +2,13 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use Borfast\Socializr\Exceptions\ExpiredTokenException;
+use Borfast\Socializr\Exceptions\GenericPostingException;
+use Borfast\Socializr\Group;
+use Borfast\Socializr\Page;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
-use Borfast\Socializr\Page;
-use Borfast\Socializr\Group;
 use Borfast\Socializr\Response;
-use Borfast\Socializr\Connectors\AbstractConnector;
-use Exception;
-use OAuth\Common\Storage\TokenStorageInterface;
-use OAuth\Common\Token\Exception\ExpiredTokenException;
-use OAuth\Common\Http\Uri\Uri;
 
 class Facebook extends AbstractConnector
 {
@@ -43,7 +40,7 @@ class Facebook extends AbstractConnector
             if ($json_result['error']['type'] == 'OAuthException') {
                 throw new ExpiredTokenException($msg);
             } else {
-                throw new Exception($msg);
+                throw new GenericPostingException($msg);
             }
 
         }
@@ -88,7 +85,7 @@ class Facebook extends AbstractConnector
         // If there's no ID, the post didn't go through
         if (!isset($json_result['id'])) {
             $msg = "Unknown error posting to Facebook profile.";
-            throw new Exception($msg, 1);
+            throw new GenericPostingException($msg, 1);
         }
 
         $response = new Response;

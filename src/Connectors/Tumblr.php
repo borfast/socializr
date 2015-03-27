@@ -3,11 +3,9 @@
 namespace Borfast\Socializr\Connectors;
 
 use Borfast\Socializr\Blog;
+use Borfast\Socializr\Exceptions\TumblrPostingException;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
-use Borfast\Socializr\Response;
-use Exception;
-use GuzzleHttp\Exception\BadResponseException;
 
 class Tumblr extends AbstractConnector
 {
@@ -22,7 +20,7 @@ class Tumblr extends AbstractConnector
 
     public function post(Post $post)
     {
-        throw new Exception('Trying to post to a Tumblr profile, which does not accept posts; only Tumblr blogs do.');
+        throw new TumblrPostingException('Trying to post to a Tumblr profile, which does not accept posts; only Tumblr blogs do.');
     }
 
 

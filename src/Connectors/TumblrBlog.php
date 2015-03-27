@@ -4,9 +4,7 @@ namespace Borfast\Socializr\Connectors;
 
 use Borfast\Socializr\Blog;
 use Borfast\Socializr\Post;
-use Borfast\Socializr\Profile;
 use Borfast\Socializr\Response;
-use GuzzleHttp\Exception\BadResponseException;
 
 class TumblrBlog extends Tumblr
 {

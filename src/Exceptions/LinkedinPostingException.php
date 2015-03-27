@@ -2,9 +2,7 @@
 
 namespace Borfast\Socializr\Exceptions;
 
-use Exception;
-
-class LinkedinPostingException extends Exception
+class LinkedinPostingException extends GenericPostingException
 {
 
 }
