@@ -2,9 +2,11 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use OAuth\Common\Storage\Exception\TokenNotFoundException;
 use OAuth\Common\Service\ServiceInterface;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Exceptions\CSRFException;
+use Borfast\Socializr\Exceptions\AuthorizationException;
 
 abstract class AbstractConnector implements ConnectorInterface
 {
@@ -80,8 +82,11 @@ abstract class AbstractConnector implements ConnectorInterface
      */
     public function refreshAccessToken()
     {
-        $token = $this->service->getStorage()
-            ->retrieveAccessToken(static::$provider);
+        try {
+            $token = $this->service->getStorage()->retrieveAccessToken(static::$provider);
+        } catch (TokenNotFoundException $e) {
+            throw new AuthorizationException();
+        }
         $this->service->refreshAccessToken($token);
     }
 
@@ -118,8 +123,11 @@ abstract class AbstractConnector implements ConnectorInterface
 
     public function getSessionData()
     {
-        return $this->service->getStorage()
-            ->retrieveAccessToken(static::$provider)->getAccessToken();
+        try {
+            return $this->service->getStorage()->retrieveAccessToken(static::$provider)->getAccessToken();
+        } catch (TokenNotFoundException $e) {
+            throw new AuthorizationException();
+        }
     }
 
 

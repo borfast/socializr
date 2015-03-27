@@ -2,6 +2,8 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use OAuth\Common\Storage\Exception\TokenNotFoundException;
+use Borfast\Socializr\Exceptions\AuthorizationException;
 use Borfast\Socializr\Exceptions\GenericPostingException;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
@@ -110,7 +112,11 @@ class Twitter extends AbstractConnector
      */
     public function storeOauthToken($params)
     {
-        $token = $this->service->getStorage()->retrieveAccessToken('Twitter');
+        try {
+            $token = $this->service->getStorage()->retrieveAccessToken('Twitter');
+        } catch (TokenNotFoundException $e) {
+            throw new AuthorizationException();
+        }
         $result = $this->service->requestAccessToken($params['oauth_token'], $params['oauth_verifier'], $token->getRequestTokenSecret());
 
         $extra_params = $result->getExtraParams();

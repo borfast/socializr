@@ -2,6 +2,8 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use OAuth\Common\Storage\Exception\TokenNotFoundException;
+use Borfast\Socializr\Exceptions\AuthorizationException;
 use Borfast\Socializr\Exceptions\LinkedinForbiddenException;
 use Borfast\Socializr\Exceptions\LinkedinPostingException;
 use Borfast\Socializr\Post;
@@ -23,7 +25,13 @@ class LinkedinGroup extends AbstractConnector
     public function post(Post $post)
     {
         $group_id = $post->options['group_id'];
-        $token = $this->service->getStorage()->retrieveAccessToken('Linkedin')->getAccessToken();
+
+        try {
+            $token = $this->service->getStorage()->retrieveAccessToken('Linkedin')->getAccessToken();
+        } catch (TokenNotFoundException $e) {
+            throw new AuthorizationException();
+        }
+
         $path = '/groups/'.$group_id.'/posts?format=json&oauth2_access_token='.$token;
         $params = [
             'title' => $post->title,

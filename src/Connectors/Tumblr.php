@@ -2,7 +2,9 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use OAuth\Common\Storage\Exception\TokenNotFoundException;
 use Borfast\Socializr\Blog;
+use Borfast\Socializr\Exceptions\AuthorizationException;
 use Borfast\Socializr\Exceptions\TumblrPostingException;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Profile;
@@ -43,7 +45,11 @@ class Tumblr extends AbstractConnector
      */
     public function storeOauthToken($params)
     {
-        $token = $this->service->getStorage()->retrieveAccessToken('Tumblr');
+        try {
+            $token = $this->service->getStorage()->retrieveAccessToken('Tumblr');
+        } catch (TokenNotFoundException $e) {
+            throw new AuthorizationException();
+        }
         $this->service->requestAccessToken($params['oauth_token'], $params['oauth_verifier'], $token->getRequestTokenSecret());
     }
 
