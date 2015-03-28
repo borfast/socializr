@@ -2,10 +2,12 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use OAuth\Common\Token\Exception\ExpiredTokenException as OauthExpiredTokenException;
 use OAuth\Common\Storage\Exception\TokenNotFoundException;
 use OAuth\Common\Service\ServiceInterface;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Exceptions\CSRFException;
+use Borfast\Socializr\Exceptions\ExpiredTokenException;
 use Borfast\Socializr\Exceptions\AuthorizationException;
 
 abstract class AbstractConnector implements ConnectorInterface
@@ -38,7 +40,11 @@ abstract class AbstractConnector implements ConnectorInterface
             $params = null;
         }
 
-        $result = $this->service->request($path, $method, $params, $headers);
+        try {
+            $result = $this->service->request($path, $method, $params, $headers);
+        } catch (OauthExpiredTokenException $e) {
+            throw new ExpiredTokenException();
+        }
 
         return $result;
     }
