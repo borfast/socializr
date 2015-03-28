@@ -2,6 +2,7 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use Borfast\Socializr\Exceptions\AuthorizationException;
 use Borfast\Socializr\Exceptions\ExpiredTokenException;
 use Borfast\Socializr\Exceptions\GenericPostingException;
 use Borfast\Socializr\Group;
@@ -28,17 +29,23 @@ class Facebook extends AbstractConnector
                 $error_subcode = 'n/a';
             }
 
+            $error_type = $json_result['error']['type'];
+            $error_code = $json_result['error']['code'];
+
             $msg = 'Error type: %s. Error code: %s. Error subcode: %s. Message: %s';
             $msg = sprintf(
                 $msg,
-                $json_result['error']['type'],
-                $json_result['error']['code'],
+                $error_type,
+                $error_code,
                 $error_subcode,
                 $json_result['error']['message']
             );
 
-            if ($json_result['error']['type'] == 'OAuthException') {
+
+            if ($error_type == 'OAuthException') {
                 throw new ExpiredTokenException($msg);
+            } else if ($error_type == 'FacebookApiException' && $error_code == '200') {
+                throw new AuthorizationException();
             } else {
                 throw new GenericPostingException($msg);
             }
