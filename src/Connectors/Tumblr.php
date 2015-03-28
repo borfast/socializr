@@ -13,12 +13,6 @@ class Tumblr extends AbstractConnector
 {
     public static $provider = 'Tumblr';
 
-    public function request($path, $method = 'GET', $params = [], $headers = [])
-    {
-        $result = parent::request($path, $method, $params, $headers);
-
-        return $result;
-    }
 
     public function post(Post $post)
     {
