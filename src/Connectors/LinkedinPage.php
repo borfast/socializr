@@ -39,7 +39,7 @@ class LinkedinPage extends AbstractConnector
 
         // Linkedin API requires the Content-Type header set to application/json
         $header = ['Content-Type' => 'application/json'];
-        $result = parent::request($path, $method, $params, $header);
+        $result = $this->request($path, $method, $params, $header);
 
         // The response comes in JSON
         $json_result = json_decode($result, true);
