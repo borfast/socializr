@@ -61,7 +61,7 @@ class LinkedinGroup extends AbstractConnector
         try {
             $result = $client->post($url, $options);
         } catch (ClientException $e) {
-            if ($e->getCode() == 403) {
+            if ($e->getCode() >= 400) {
                 throw new LinkedinForbiddenException($e);
             } else {
                 throw $e;

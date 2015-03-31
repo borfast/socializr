@@ -44,6 +44,8 @@ abstract class AbstractConnector implements ConnectorInterface
             $result = $this->service->request($path, $method, $params, $headers);
         } catch (OauthExpiredTokenException $e) {
             throw new ExpiredTokenException();
+        } catch (TokenNotFoundException $e) {
+            throw new AuthorizationException();
         }
 
         return $result;
