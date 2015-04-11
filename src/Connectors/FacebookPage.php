@@ -9,11 +9,15 @@ use Borfast\Socializr\Response;
 
 class FacebookPage extends Facebook
 {
+    /** @var Page */
+    protected $page = null;
 
     public function post(Post $post)
     {
+        $page = $this->getPage();
+
         if (empty($post->media)) {
-            $path = '/'.$this->id.'/feed';
+            $path = '/'.$page->id.'/feed';
             $access_token = $post->options['page_access_token'];
 
             $msg  = $post->title;
@@ -28,7 +32,7 @@ class FacebookPage extends Facebook
                 'access_token' => $access_token
             ];
         } else {
-            $path = '/'.$this->id.'/photos';
+            $path = '/'.$page->id.'/photos';
 
             $msg  = $post->title;
             $msg .= "\n\n";
@@ -63,24 +67,26 @@ class FacebookPage extends Facebook
 
     public function getPage()
     {
-        $path = '/'.$this->id.'?fields=id,name,picture,access_token,can_post,likes,link,username';
-        $result = $this->request($path);
-        $json_result = json_decode($result, true);
+        if (is_null($this->page)) {
+            $path = '/'.$this->id.'?fields=id,name,picture,access_token,can_post,likes,link,username';
+            $result = $this->request($path);
+            $json_result = json_decode($result, true);
 
-        $mapping = [
-            'id' => 'id',
-            'name' => 'name',
-            'link' => 'link',
-            'can_post' => 'can_post',
-            'access_token' => 'access_token',
-            'likes' => 'likes'
-        ];
+            $mapping = [
+                'id' => 'id',
+                'name' => 'name',
+                'link' => 'link',
+                'can_post' => 'can_post',
+                'access_token' => 'access_token',
+                'likes' => 'likes'
+            ];
 
-        $page = Page::create($mapping, $json_result);
-        $page->provider = static::$provider;
-        $page->raw_response = $result;
+            $this->page = Page::create($mapping, $json_result);
+            $this->page->provider = static::$provider;
+            $this->page->raw_response = $result;
+        }
 
-        return $page;
+        return $this->page;
     }
 
 
@@ -102,7 +108,9 @@ class FacebookPage extends Facebook
 
     protected function getLikesCount()
     {
-        $path = '/'.$this->id;
+        $page = $this->getPage();
+
+        $path = '/'.$page->id;
         $result = $this->request($path);
 
         $response = json_decode($result);

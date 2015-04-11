@@ -11,11 +11,15 @@ use Borfast\Socializr\Response;
 
 class FacebookGroup extends Facebook
 {
+    /** @var Group */
+    protected $group = null;
 
     public function post(Post $post)
     {
+        $group = $this->getGroup();
+
         if (empty($post->media)) {
-            $path = '/'.$this->id.'/feed';
+            $path = '/'.$group->id.'/feed';
 
             $msg  = $post->title;
             $msg .= "\n\n";
@@ -28,7 +32,7 @@ class FacebookGroup extends Facebook
                 'message' => $msg
             ];
         } else {
-            $path = '/'.$this->id.'/photos';
+            $path = '/'.$group->id.'/photos';
 
             $msg  = $post->title;
             $msg .= "\n\n";
@@ -63,24 +67,26 @@ class FacebookGroup extends Facebook
 
     public function getGroup()
     {
-        $path = '/'.$this->id.'?fields=id,name,icon';
-        $result = $this->request($path);
-        $json_result = json_decode($result, true);
+        if (is_null($this->group)) {
+            $path = '/' . $this->id . '?fields=id,name,icon';
+            $result = $this->request($path);
+            $json_result = json_decode($result, true);
 
-        $mapping = [
-            'id' => 'id',
-            'name' => 'name',
-            'picture' => 'icon'
-        ];
+            $mapping = [
+                'id' => 'id',
+                'name' => 'name',
+                'picture' => 'icon'
+            ];
 
-        $group = Group::create($mapping, $json_result);
-        $group->picture = $json_result['icon'];
-        $group->link = 'https://www.facebook.com/groups/' . $json_result['id'];
-        $group->can_post = true;
-        $group->provider = static::$provider;
-        $group->raw_response = $result;
+            $this->group = Group::create($mapping, $json_result);
+            $this->group->picture = $json_result['icon'];
+            $this->group->link = 'https://www.facebook.com/groups/' . $json_result['id'];
+            $this->group->can_post = true;
+            $this->group->provider = static::$provider;
+            $this->group->raw_response = $result;
+        }
 
-        return $group;
+        return $this->group;
     }
 
     /**
@@ -101,7 +107,9 @@ class FacebookGroup extends Facebook
 
     protected function getMembersCount()
     {
-        $path = '/'.$this->id.'/members';
+        $group = $this->getGroup();
+
+        $path = '/'.$group->id.'/members';
         $result = $this->request($path);
 
         $response = json_decode($result);

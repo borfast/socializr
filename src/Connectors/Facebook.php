@@ -15,6 +15,7 @@ class Facebook extends AbstractConnector
 {
     public static $provider = 'Facebook';
 
+    /** @var Profile */
     protected $profile = null;
 
     public function request($path, $method = 'GET', $params = [], $headers = [])
@@ -148,6 +149,7 @@ class Facebook extends AbstractConnector
     public function getPages()
     {
         $profile = $this->getProfile();
+
         $path = '/'.$profile->id.'/accounts?fields=name,picture,access_token,id,can_post,likes,link,username';
         $result = $this->request($path);
         $json_result = json_decode($result, true);
@@ -178,7 +180,7 @@ class Facebook extends AbstractConnector
     public function getGroups()
     {
         $profile = $this->getProfile();
-        
+
         $path = '/'.$profile->id.'/groups?fields=id,name,icon';
         $result = $this->request($path);
         $json_result = json_decode($result, true);
