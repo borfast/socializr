@@ -15,6 +15,8 @@ class Facebook extends AbstractConnector
 {
     public static $provider = 'Facebook';
 
+    protected $profile = null;
+
     public function request($path, $method = 'GET', $params = [], $headers = [])
     {
         $result = parent::request($path, $method, $params, $headers);
@@ -105,32 +107,36 @@ class Facebook extends AbstractConnector
 
     public function getProfile()
     {
-        $path = '/me';
-        $result = $this->request($path);
-        $json_result = json_decode($result, true);
+        if (is_null($this->profile)) {
+            $path = '/me';
+            $result = $this->request($path);
+            $json_result = json_decode($result, true);
 
-        $mapping = [
-            'id' => 'id',
-            'email' => 'email',
-            'name' => 'name',
-            'first_name' => 'first_name',
-            'middle_name' => 'middle_name',
-            'last_name' => 'last_name',
-            'username' => 'username',
-            // 'username' => 'email', // Facebook Graph API 2.0 doesn't have username
-            'link' => 'link'
-        ];
+            $mapping = [
+                'id' => 'id',
+                'email' => 'email',
+                'name' => 'name',
+                'first_name' => 'first_name',
+                'middle_name' => 'middle_name',
+                'last_name' => 'last_name',
+                'username' => 'username',
+                // 'username' => 'email', // Facebook Graph API 2.0 doesn't have username
+                'link' => 'link'
+            ];
 
-        $profile = Profile::create($mapping, $json_result);
-        $profile->provider = static::$provider;
-        $profile->raw_response = $result;
+            $this->profile = Profile::create($mapping, $json_result);
+            $this->profile->provider = static::$provider;
+            $this->profile->raw_response = $result;
+        }
 
-        return $profile;
+        return $this->profile;
     }
 
     public function getPermissions()
     {
-        $path = '/'.$this->id.'/permissions';
+        $profile = $this->getProfile();
+
+        $path = '/'.$profile->id.'/permissions';
         return $this->request($path);
     }
 
@@ -141,7 +147,8 @@ class Facebook extends AbstractConnector
 
     public function getPages()
     {
-        $path = '/'.$this->id.'/accounts?fields=name,picture,access_token,id,can_post,likes,link,username';
+        $profile = $this->getProfile();
+        $path = '/'.$profile->id.'/accounts?fields=name,picture,access_token,id,can_post,likes,link,username';
         $result = $this->request($path);
         $json_result = json_decode($result, true);
 
@@ -170,7 +177,9 @@ class Facebook extends AbstractConnector
 
     public function getGroups()
     {
-        $path = '/'.$this->id.'/groups?fields=id,name,icon';
+        $profile = $this->getProfile();
+        
+        $path = '/'.$profile->id.'/groups?fields=id,name,icon';
         $result = $this->request($path);
         $json_result = json_decode($result, true);
 
