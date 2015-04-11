@@ -215,11 +215,11 @@ class Facebook extends AbstractConnector
      ***************************************************/
     public function getFriendsCount()
     {
-        $path = '/'.$this->getUid().'/subscribers';
+        $path = '/'.$this->getUid().'/friends';
         $result = $this->request($path);
 
         $response = json_decode($result);
-        $response = $response->summary->total_count;
+        $response = count($response->data);
 
         return $response;
     }
