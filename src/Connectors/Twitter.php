@@ -2,6 +2,7 @@
 
 namespace Borfast\Socializr\Connectors;
 
+use Borfast\Socializr\Exceptions\DuplicatePostException;
 use OAuth\Common\Storage\Exception\TokenNotFoundException;
 use Borfast\Socializr\Exceptions\AuthorizationException;
 use Borfast\Socializr\Exceptions\GenericPostingException;
@@ -40,11 +41,15 @@ class Twitter extends AbstractConnector
                 // If it's an expired token...
                 if ($error['code'] == 89) {
                     $error_type = 'expired';
+                } elseif ($error['code'] == 187) {
+                    $error_type = 'duplicate';
                 }
             }
 
             if ($error_type == 'expired') {
                 throw new ExpiredTokenException($msg);
+            } elseif ($error_type == 'duplicate') {
+                throw new DuplicatePostException($msg);
             } else {
                 throw new GenericPostingException($msg);
             }
