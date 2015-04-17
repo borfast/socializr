@@ -69,7 +69,7 @@ class Facebook extends AbstractConnector
             $path = '/'.$this->getUid().'/feed';
 
             $params = [
-                'caption' => $post->title,
+                // 'caption' => $post->title,
                 'description' => '',
                 'link' => $post->url,
                 'message' => $msg
