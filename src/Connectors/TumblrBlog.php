@@ -3,6 +3,7 @@
 namespace Borfast\Socializr\Connectors;
 
 use Borfast\Socializr\Blog;
+use Borfast\Socializr\Exceptions\TumblrPostingException;
 use Borfast\Socializr\Post;
 use Borfast\Socializr\Response;
 
@@ -11,6 +12,20 @@ class TumblrBlog extends Tumblr
     public static $provider = 'Tumblr';
 
     protected $base_hostname;
+
+    public function request($path, $method = 'GET', $params = [], $headers = [])
+    {
+        $result = parent::request($path, $method, $params, $headers);
+
+        $json_result = json_decode($result);
+
+        $status = $json_result->meta->status;
+
+        if ($status < 200 || $status > 299) {
+            throw new TumblrPostingException($json_result->meta->msg);
+        }
+    }
+
 
     public function post(Post $post)
     {
