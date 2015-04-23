@@ -22,8 +22,10 @@ class TumblrBlog extends Tumblr
         $status = $json_result->meta->status;
 
         if ($status < 200 || $status > 299) {
-            throw new TumblrPostingException($json_result->meta->msg);
+            throw new TumblrPostingException($json_result->meta->msg, $status);
         }
+
+        return $result;
     }
 
 
