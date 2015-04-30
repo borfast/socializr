@@ -11,9 +11,15 @@
     ],
     "require": {
         "php": ">=5.4",
-        "lusitanian/oauth": "dev-master",
+        "lusitanian/oauth": "dev-patch-1",
         "guzzlehttp/guzzle": "~4"
     },
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/borfast/PHPoAuthLib.git"
+      }
+    ],
     "require-dev": {
         "phpunit/phpunit": "~4",
         "mockery/mockery": "dev-master"
