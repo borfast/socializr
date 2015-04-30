@@ -17,7 +17,7 @@
     "repositories": [
       {
         "type": "vcs",
-        "url": "https://github.com/borfast/PHPoAuthLib.git"
+        "url": "git@github.com/borfast/PHPoAuthLib.git"
       }
     ],
     "require-dev": {
