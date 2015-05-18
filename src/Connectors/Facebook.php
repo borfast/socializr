@@ -82,7 +82,7 @@ class Facebook extends AbstractConnector
 
             $params = [
                 'url' => $post->media[0],
-                'message' => $msg
+                'caption' => $msg
             ];
         }
 

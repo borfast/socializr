@@ -42,7 +42,7 @@ class FacebookPage extends Facebook
 
             $params = [
                 'url' => $post->media[0],
-                'message' => $msg
+                'caption' => $msg
             ];
         }
 
