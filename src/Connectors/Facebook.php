@@ -64,6 +64,7 @@ class Facebook extends AbstractConnector
         $msg  = $post->title;
         $msg .= "\n\n";
         $msg .= $post->body;
+        $msg = trim($msg);
 
         if (empty($post->media)) {
             $path = '/'.$this->getUid().'/feed';

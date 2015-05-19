@@ -23,6 +23,7 @@ class FacebookPage extends Facebook
             $msg  = $post->title;
             $msg .= "\n\n";
             $msg .= $post->body;
+            $msg = trim($msg);
 
             $params = [
                 // 'caption' => $post->title,
