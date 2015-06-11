@@ -93,7 +93,8 @@ class Linkedin extends AbstractConnector
             'middle_name' => 'maidenName',
             'last_name' => 'lastName',
             // 'username' => 'username',
-            'link' => 'publicProfileUrl'
+            'link' => 'publicProfileUrl',
+            'likes' => 'numConnections'
         ];
 
         $profile = Profile::create($mapping, $json_result);
@@ -105,10 +106,9 @@ class Linkedin extends AbstractConnector
 
     public function getStats()
     {
-        $path = 'people/'.$this->id.':(id,num-connections)?format=json';
-        $response = json_decode($this->request($path));
+        $profile = $this->getProfile();
 
-        return $response->numConnections;
+        return $profile->likes;
     }
 
     public function getPermissions()
