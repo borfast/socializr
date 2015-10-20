@@ -221,7 +221,12 @@ class Facebook extends AbstractConnector
         $result = $this->request($path);
 
         $response = json_decode($result);
-        $response = count($response->data);
+
+        if (property_exists($response, 'summary')) {
+            $response = $response->summary->total_count;
+        } else {
+            $response = '-';
+        }
 
         return $response;
     }
