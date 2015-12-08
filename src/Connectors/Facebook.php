@@ -45,7 +45,7 @@ class Facebook extends AbstractConnector
             );
 
 
-            if ($error_type == 'OAuthException') {
+            if ($error_type == 'OAuthException' && $error_code != 1) {
                 throw new ExpiredTokenException($msg);
             } else if ($error_type == 'FacebookApiException' && $error_code == '200' ||
                 $error_type == 'GraphMethodException' && $error_code == '100') {
