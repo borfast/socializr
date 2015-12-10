@@ -34,6 +34,7 @@ class Facebook extends AbstractConnector
 
             $error_type = $json_result['error']['type'];
             $error_code = $json_result['error']['code'];
+            $error_message = $json_result['error']['message'];
 
             $msg = 'Error type: %s. Error code: %s. Error subcode: %s. Message: %s';
             $msg = sprintf(
@@ -41,11 +42,15 @@ class Facebook extends AbstractConnector
                 $error_type,
                 $error_code,
                 $error_subcode,
-                $json_result['error']['message']
+                $error_message
             );
 
 
-            if ($error_type == 'OAuthException' && $error_code != 1) {
+            if ($error_type == 'OAuthException' &&
+                // Handling random issues by steering them towards GenericPostingException
+                $error_code != 1 &&
+                strpos($error_message, 'Provided link was incorrect or disallowed') === false
+            ) {
                 throw new ExpiredTokenException($msg);
             } else if ($error_type == 'FacebookApiException' && $error_code == '200' ||
                 $error_type == 'GraphMethodException' && $error_code == '100') {
