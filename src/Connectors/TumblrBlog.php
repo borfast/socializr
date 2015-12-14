@@ -22,7 +22,17 @@ class TumblrBlog extends Tumblr
         $status = $json_result->meta->status;
 
         if ($status < 200 || $status > 299) {
-            throw new TumblrPostingException($json_result->meta->msg, $status);
+            $msg = $json_result->meta->msg;
+
+            if ($status == 400) {
+                $media_error_message = 'Error uploading photo.';
+
+                if (array_search($media_error_message, $json_result->response->errors) !== false) {
+                    $msg .= ': ' . $media_error_message;
+                }
+            }
+
+            throw new TumblrPostingException($msg, $status);
         }
 
         return $result;
