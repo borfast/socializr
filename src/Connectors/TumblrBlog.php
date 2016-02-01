@@ -25,10 +25,15 @@ class TumblrBlog extends Tumblr
             $msg = $json_result->meta->msg;
 
             if ($status == 400) {
-                $media_error_message = 'Error uploading photo.';
+                $media_error_messages = [
+                    "Error uploading photo.",
+                    "Nice image, but we don't support that format. Try resaving it as a gif, jpg, or png.",
+                ];
 
-                if (array_search($media_error_message, $json_result->response->errors) !== false) {
-                    $msg .= ': ' . $media_error_message;
+                foreach ($media_error_messages as $media_error_message) {
+                    if (strpos($json_result->response->errors[0], $media_error_message) !== false) {
+                        $msg .= ': ' . $media_error_message;
+                    }
                 }
             }
 
