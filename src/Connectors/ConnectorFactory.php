@@ -109,7 +109,7 @@ class ConnectorFactory
 //            $api_version = '2.2';
 //        }
         $uri = null;
-        if ($provider == 'Facebook') {
+        if (in_array($provider, ['Facebook', 'FacebookGroup', 'FacebookPage'])) {
             $uri = new Uri('https://graph.facebook.com/v2.2/');
         }
 
