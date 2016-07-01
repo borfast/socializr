@@ -142,6 +142,7 @@ class FacebookPage extends Facebook
     public function getTabs($page_id, $page_access_token, $app_id)
     {
         $path = '/'.$page_id.'/tabs';
+        $path .= '?access_token='.$page_access_token;
         $method = 'GET';
 
         $response = $this->request($path, $method);
@@ -154,6 +155,7 @@ class FacebookPage extends Facebook
     public function getTab($page_id, $page_access_token, $app_id)
     {
         $path = '/'.$page_id.'/tabs/app_'.$app_id;
+        $path .= '?access_token='.$page_access_token;
         $method = 'GET';
 
         $response = $this->request($path, $method);
