@@ -49,7 +49,8 @@ class Facebook extends AbstractConnector
             if ($error_type == 'OAuthException' &&
                 // Handling random issues by steering them towards GenericPostingException
                 $error_code != 1 &&
-                strpos($error_message, 'Provided link was incorrect or disallowed') === false
+                strpos($error_message, 'Provided link was incorrect or disallowed') === false &&
+                strpos($error_message, 'Service temporarily unavailable') === false
             ) {
                 throw new ExpiredTokenException($msg);
             } else if ($error_type == 'GraphMethodException' && $error_code == '100') {
