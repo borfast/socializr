@@ -110,7 +110,7 @@ class ConnectorFactory
 //        }
         $uri = null;
         if (in_array($provider, ['Facebook', 'FacebookGroup', 'FacebookPage'])) {
-            $uri = new Uri('https://graph.facebook.com/v2.2/');
+            $uri = new Uri('https://graph.facebook.com/v2.8/');
         }
 
         // Finally, create the service already!
