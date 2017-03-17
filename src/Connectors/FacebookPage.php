@@ -69,7 +69,7 @@ class FacebookPage extends Facebook
     public function getPage()
     {
         if (is_null($this->page)) {
-            $path = '/'.$this->id.'?fields=id,name,picture,access_token,can_post,likes,link,username';
+            $path = '/'.$this->id.'?fields=id,name,picture,access_token,can_post,likes,fan_count,link,username';
             $result = $this->request($path);
             $json_result = json_decode($result, true);
 
@@ -79,7 +79,8 @@ class FacebookPage extends Facebook
                 'link' => 'link',
                 'can_post' => 'can_post',
                 'access_token' => 'access_token',
-                'likes' => 'likes'
+                'likes' => 'likes',
+                'fan_count' => 'fan_count'
             ];
 
             $this->page = Page::create($mapping, $json_result);
@@ -109,15 +110,7 @@ class FacebookPage extends Facebook
 
     protected function getLikesCount()
     {
-        $page = $this->getPage();
-
-        $path = '/'.$page->id;
-        $result = $this->request($path);
-
-        $response = json_decode($result);
-        $response = $response->likes;
-
-        return $response;
+        return $this->getPage()->fan_count;
     }
 
 

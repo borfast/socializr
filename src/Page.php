@@ -11,6 +11,7 @@ class Page
     public $access_token;
     public $can_post = false;
     public $likes;
+    public $fan_count;
 
     public $provider;
     public $raw_response;
