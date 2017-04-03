@@ -73,7 +73,7 @@ class Facebook extends AbstractConnector
         $msg = trim($msg);
 
         if (empty($post->media)) {
-            $path = '/'.$this->getUid().'/feed';
+            $path = '/'.$this->getProfile()->id.'/feed';
 
             $params = [
                 // 'caption' => $post->title,
@@ -82,7 +82,7 @@ class Facebook extends AbstractConnector
                 'message' => $msg
             ];
         } else {
-            $path = '/'.$this->getUid().'/photos';
+            $path = '/'.$this->getProfile()->id.'/photos';
 
             $msg .= "\n";
             $msg .= $post->url;
@@ -222,7 +222,7 @@ class Facebook extends AbstractConnector
      ***************************************************/
     public function getFriendsCount()
     {
-        $path = '/'.$this->getUid().'/friends';
+        $path = '/'.$this->getProfile()->id.'/friends';
         $result = $this->request($path);
 
         $response = json_decode($result);
